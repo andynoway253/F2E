@@ -28,8 +28,6 @@ export class TodoListComponent implements OnInit {
 
   completedCount = 0;
 
-  interval: any;
-
   ngOnInit(): void {
     this.service.todoList$.subscribe({
       next: (res) => {
@@ -46,13 +44,6 @@ export class TodoListComponent implements OnInit {
         this.completedCount = res;
       },
     });
-
-    interval(1000).pipe(
-      map((x) => {
-        /* your code here */
-        console.log(x);
-      })
-    );
   }
 
   add(): void {

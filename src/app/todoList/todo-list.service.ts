@@ -22,8 +22,6 @@ export class TodoListService {
     if (title || title.trim()) {
       this.todoList.push(new Todo(title));
 
-      this.active$.next(this.todoList.length);
-
       this.nextTodo();
     }
   }
@@ -37,20 +35,10 @@ export class TodoListService {
   removeCompleted(): void {
     this.todoList = this.todoList.filter((todo: Todo) => !todo.completed);
 
-    this.completed$.next(0);
-
     this.nextTodo();
   }
 
   getWithCompleted(): void {
-    this.active$.next(
-      this.todoList.filter((todo: Todo) => !todo.completed).length
-    );
-
-    this.completed$.next(
-      this.todoList.filter((todo: Todo) => todo.completed).length
-    );
-
     this.nextTodo();
   }
 
@@ -69,6 +57,14 @@ export class TodoListService {
           ? !todo.completed
           : todo.completed
       )
+    );
+
+    this.active$.next(
+      this.todoList.filter((todo: Todo) => !todo.completed).length
+    );
+
+    this.completed$.next(
+      this.todoList.filter((todo: Todo) => todo.completed).length
     );
   }
 }
