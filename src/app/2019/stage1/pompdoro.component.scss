@@ -1,0 +1,25 @@
+.circle {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+  background-color: #ff4384;
+  border-radius: 50%;
+
+  &.break {
+    background-color: #4397ff;
+  }
+
+  .task {
+    color: #f2f0c9;
+    font-size: 80px;
+    margin: 0;
+  }
+
+  .time {
+    color: #f2f0c9;
+    font-size: 100px;
+  }
+}

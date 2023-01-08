@@ -1,0 +1,64 @@
+<div fxFill fxLayout="row" fxLayoutGap="8px">
+  <div fxFlex="20" fxLayout="column" fxLayoutGap="4px">
+    <nb-form-field>
+      <nb-icon nbPrefix icon="at-outline" pack="eva"></nb-icon>
+      <input
+        nbInput
+        type="text"
+        placeholder="What needs to be done?"
+        [(ngModel)]="task"
+        (keyup.enter)="addTask()"
+      />
+    </nb-form-field>
+
+    <nb-card-header> 任務清單 </nb-card-header>
+    <nb-list>
+      <nb-list-item *ngFor="let task of taskList; let i = index">
+        <div class="view">
+          <input class="toggle" type="checkbox" />
+          <label (dblclick)="editTask(task)"> {{ task.itemTitle }}</label>
+          <button class="destroy" (click)="removeTask(i)"></button>
+        </div>
+      </nb-list-item>
+    </nb-list>
+  </div>
+
+  <div fxFlex="75" fxLayoutAlign="center center">
+    <div [class]="break ? 'circle break' : 'circle'" fxLayout="column">
+      <p class="task">{{ taskName }}</p>
+
+      <p class="time">{{ nowMin + ":" + nowSec }}</p>
+
+      <div class="control">
+        <div fxLayout="row" fxLayoutGap="8px">
+          <button
+            nbButton
+            ghost
+            size="giant"
+            (click)="status !== 1 ? startTimer() : pauseTimer()"
+          >
+            <nb-icon
+              [icon]="status !== 1 ? 'arrow-right' : 'pause-circle-outline'"
+            ></nb-icon>
+          </button>
+
+          <button nbButton ghost size="giant" (click)="timesUp()">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div fxFlex="5" fxLayout="column" fxLayoutGap="8px">
+    <button nbButton (click)="timesUp()">
+      <nb-icon icon="list"></nb-icon>
+    </button>
+    <button nbButton (click)="timesUp()">
+      <nb-icon icon="bar-chart"></nb-icon>
+    </button>
+    <button nbButton (click)="timesUp()">
+      <nb-icon icon="settings-2"></nb-icon>
+    </button>
+  </div>
+</div>

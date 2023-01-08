@@ -1,5 +1,5 @@
 {
-  "name": "todo-list",
+  "name": "F2E",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -11,7 +11,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.2.0",
-    "@angular/cdk": "^12.0.0",
+    "@angular/cdk": "^12.2.13",
     "@angular/common": "~12.2.0",
     "@angular/compiler": "~12.2.0",
     "@angular/core": "~12.2.0",

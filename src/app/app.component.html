@@ -1,1 +1,9 @@
-<app-todo-list></app-todo-list>
+<nb-layout>
+  <nb-layout-column fxFlex="20">
+    <nb-menu [items]="items"> </nb-menu>
+  </nb-layout-column>
+
+  <nb-layout-column >
+    <router-outlet ></router-outlet>
+  </nb-layout-column>
+</nb-layout>

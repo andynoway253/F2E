@@ -5,9 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TodoListModule } from './todoList/todo-list.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule } from '@nebular/theme';
-import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { NbLayoutModule, NbMenuModule, NbSidebarModule, NbThemeModule } from '@nebular/theme';
+import { PompdoroModule } from './2019/stage1/pompdoro.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -15,13 +15,16 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NbThemeModule.forRoot({ name: 'default' }),
+
+    NbThemeModule.forRoot(),
+    NbMenuModule.forRoot(),
+    NbSidebarModule.forRoot(),
     NbLayoutModule,
-    NbEvaIconsModule,
 
     FlexLayoutModule,
 
     TodoListModule,
+    PompdoroModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
