@@ -12,12 +12,20 @@
     </nb-form-field>
 
     <nb-card-header> 任務清單 </nb-card-header>
-    <nb-list>
+    <nb-list class="list">
       <nb-list-item *ngFor="let task of taskList; let i = index">
-        <div class="view">
+        <div
+          fxLayout="row"
+          fxLayoutGap="8px"
+          fxLayoutAlign="start center"
+          class="view"
+          (click)="test()"
+        >
           <input class="toggle" type="checkbox" />
           <label (dblclick)="editTask(task)"> {{ task.itemTitle }}</label>
-          <button class="destroy" (click)="removeTask(i)"></button>
+          <button nbButton size="small" (click)="removeTask(i)">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
         </div>
       </nb-list-item>
     </nb-list>
@@ -25,7 +33,7 @@
 
   <div fxFlex="75" fxLayoutAlign="center center">
     <div [class]="break ? 'circle break' : 'circle'" fxLayout="column">
-      <p class="task">{{ taskName }}</p>
+      <!-- <p class="task">{{ taskName }}</p> -->
 
       <p class="time">{{ nowMin + ":" + nowSec }}</p>
 

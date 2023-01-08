@@ -17,8 +17,6 @@ export class PompdoroComponent implements OnInit {
 
   taskList: Task[] = [];
 
-  taskName = ''; //  顯示在時鐘上的任務名稱
-
   task = ''; //  要添加的任務名稱
 
   nowMin = ''; //  分鐘
@@ -43,6 +41,10 @@ export class PompdoroComponent implements OnInit {
   editTask(task: Task) {}
 
   removeTask(index: number) {}
+
+  test() {
+    console.log(111);
+  }
 
   startTimer() {
     this.status = 1;

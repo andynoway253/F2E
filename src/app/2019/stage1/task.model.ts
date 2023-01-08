@@ -84,11 +84,4 @@ export class Task {
   toggleCompletion(): void {
     this.done = !this.done;
   }
-
-  /**
-   *
-   */
-  addTask(title: string): void {
-    
-  }
 }
