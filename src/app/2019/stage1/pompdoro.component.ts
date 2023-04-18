@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Task } from './task.model';
 
 @Component({
@@ -9,90 +9,123 @@ import { Task } from './task.model';
 export class PompdoroComponent implements OnInit {
   constructor() {}
 
+  @ViewChild('editItem') editItem!: ElementRef;
+
   interval: any;
 
-  leftTime = 5; // 剩餘時間
+  taskObj!: Task;
 
   status = 0; // 0為初始、1為進行、2為暫停
 
   taskList: Task[] = [];
 
-  task = ''; //  要添加的任務名稱
+  newTaskName = ''; //  要添加的任務名稱
 
-  nowMin = ''; //  分鐘
+  nowMin = '00'; //  分
 
-  nowSec = ''; //  秒數
+  nowSec = '00'; //  秒
 
-  break = false; //
+  ngOnInit(): void {}
 
-  canTakeBreak = true;
+  getTask(task: Task) {
+    console.log(task);
+    if (this.status === 1) {
+      return;
+    }
 
-  ngOnInit(): void {
-    this.textRenderer(this.leftTime);
+    this.taskObj = task;
+
+    this.textRenderer(task.time);
+
+    this.cancalEditTask(task);
   }
 
   addTask() {
-    if (this.task) {
-      this.taskList.push(new Task(this.task));
-      this.task = '';
+    if (this.newTaskName) {
+      this.taskList.push(new Task(this.newTaskName));
+      this.newTaskName = '';
     }
   }
 
-  editTask(task: Task) {}
+  editTask(task: Task) {
+    //  如果已經完成不能被編輯
+    task.editable = task.completed || this.status === 1 ? false : true;
 
-  removeTask(index: number) {}
+    this.cancalEditTask(task);
 
-  test() {
-    console.log(111);
+    setTimeout(() => {
+      this.editItem.nativeElement.focus();
+    });
   }
 
-  startTimer() {
-    this.status = 1;
-    this.interval = setInterval(() => {
-      if (this.leftTime > 0) {
-        this.leftTime--;
-        this.textRenderer(this.leftTime);
-      } else if (!this.leftTime && this.canTakeBreak) {
-        this.break = true;
+  updateTask(task: Task, newTitle: string) {
+    task.editable = false;
 
-        this.timeBreak();
+    task.itemName = newTitle;
+  }
+
+  removeTask(task: Task) {
+    clearInterval(this.interval);
+
+    const index = this.taskList.indexOf(task);
+    this.taskList.splice(index, 1);
+
+    this.taskObj = new Task('');
+  }
+
+  //  在編輯其中一個項目時，如果單雙擊其他項目，都必須取消當前任務的編輯狀態
+  cancalEditTask(task: Task) {
+    this.taskList.forEach((item) => {
+      if (item !== task) {
+        item.editable = false;
+      }
+    });
+  }
+
+  completedTask(task: Task, e: boolean = true) {
+    clearInterval(this.interval);
+
+    task.toggleCompletion(e);
+  }
+
+  startTimer(task: Task) {
+    task.start = true;
+    this.interval = setInterval(() => {
+      if (task.time > 0) {
+        task.time--;
+        this.textRenderer(task.time);
+      } else if (!task.time && !task.breakStatus) {
+        this.timeBreak(task);
       } else {
-        this.timesUp();
+        this.completedTask(task);
       }
     }, 1000);
   }
 
-  pauseTimer() {
+  pauseTimer(task: Task) {
     clearInterval(this.interval);
 
-    this.status = 2;
+    task.start = false;
   }
 
-  timesUp() {
+  //  跳過
+  skip(task: Task) {
     clearInterval(this.interval);
 
-    this.status = 0;
-
-    this.leftTime = 5;
-
-    this.canTakeBreak = true;
-
-    this.break = false;
-
-    this.textRenderer(this.leftTime);
+    this.completedTask(task);
   }
 
-  // 休息時間
-  timeBreak() {
+  //  休息
+  timeBreak(task: Task) {
     clearInterval(this.interval);
 
-    this.leftTime = 10;
+    task.toggleBreak();
 
-    this.canTakeBreak = false; //  進入休息時間後，要把可休息狀態改為false
+    task.time = 10;
 
-    this.textRenderer(this.leftTime);
+    this.textRenderer(task.time);
 
-    this.startTimer();
+    this.startTimer(task);
   }
 
   textRenderer(seconds: number) {

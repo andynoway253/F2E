@@ -1,5 +1,30 @@
 .list {
   max-height: 500px;
+  border: 1px solid #8f9bb37a;
+  border-radius: 10px;
+  overflow: hidden;
+  li.editing {
+    border-bottom: none;
+    padding: 0;
+  }
+
+  nb-list-item {
+    padding: 5px 10px 5px 15px;
+    border-bottom: 1px solid #8f9bb37a;
+
+    &.completed .view {
+      text-decoration: line-through;
+    }
+
+    &.editing .view {
+      display: none !important;
+    }
+
+    &.editing .edit {
+      width: 180px;
+      padding: 5px 10px 5px 15px;
+    }
+  }
 }
 
 .circle {
@@ -9,11 +34,11 @@
   align-items: center;
   width: 500px;
   height: 500px;
-  background-color: #ff4384;
+  background-color: #832143;
   border-radius: 50%;
 
   &.break {
-    background-color: #4397ff;
+    background-color: #0b4c9d;
   }
 
   .task {

@@ -5,6 +5,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import {
   NbButtonModule,
   NbCardModule,
+  NbCheckboxModule,
   NbFormFieldModule,
   NbIconModule,
   NbInputModule,
@@ -21,6 +22,7 @@ import { FormsModule } from '@angular/forms';
 
     NbButtonModule,
     NbCardModule,
+    NbCheckboxModule,
     NbFormFieldModule,
     NbListModule,
     NbInputModule,

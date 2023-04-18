@@ -6,35 +6,64 @@
         nbInput
         type="text"
         placeholder="What needs to be done?"
-        [(ngModel)]="task"
+        [(ngModel)]="newTaskName"
         (keyup.enter)="addTask()"
       />
     </nb-form-field>
 
     <nb-card-header> 任務清單 </nb-card-header>
     <nb-list class="list">
-      <nb-list-item *ngFor="let task of taskList; let i = index">
+      <nb-list-item
+        fxLayout="row"
+        fxLayoutGap="8px"
+        *ngFor="let task of taskList; let i = index"
+        [class.completed]="task.completed"
+        [class.editing]="task.editing"
+      >
+        <nb-checkbox
+          [disabled]="taskObj?.start"
+          (checkedChange)="completedTask(task, $event)"
+        ></nb-checkbox>
+
         <div
-          fxLayout="row"
+          #taskList
+          fxFlex
           fxLayoutGap="8px"
           fxLayoutAlign="start center"
           class="view"
-          (click)="test()"
+          (click)="getTask(task)"
+          (dblclick)="editTask(task)"
         >
-          <input class="toggle" type="checkbox" />
-          <label (dblclick)="editTask(task)"> {{ task.itemTitle }}</label>
-          <button nbButton size="small" (click)="removeTask(i)">
-            <nb-icon icon="close-outline"></nb-icon>
-          </button>
+          <label> {{ task.itemName }}</label>
+          <div fxFlex fxLayoutAlign="end">
+            <button
+              nbButton
+              [disabled]="taskObj?.start"
+              (click)="removeTask(task)"
+            >
+              <nb-icon icon="close-outline"></nb-icon>
+            </button>
+          </div>
         </div>
+
+        <input
+          *ngIf="task.editing"
+          #editItem
+          class="edit"
+          [value]="task.itemName"
+          (keyup.enter)="updateTask(task, editItem.value)"
+          (keyup.esc)="updateTask(task, editItem.value)"
+        />
       </nb-list-item>
     </nb-list>
   </div>
 
   <div fxFlex="75" fxLayoutAlign="center center">
-    <div [class]="break ? 'circle break' : 'circle'" fxLayout="column">
-      <!-- <p class="task">{{ taskName }}</p> -->
-
+    <div
+      [class]="taskObj?.breakStatus ? 'circle break' : 'circle'"
+      fxLayout="column"
+    >
+      <p class="task">{{ taskObj?.itemName }}</p>
       <p class="time">{{ nowMin + ":" + nowSec }}</p>
 
       <div class="control">
@@ -43,15 +72,22 @@
             nbButton
             ghost
             size="giant"
-            (click)="status !== 1 ? startTimer() : pauseTimer()"
+            [disabled]="!taskObj?.itemName || taskObj?.completed"
+            (click)="taskObj?.start ? pauseTimer(taskObj) : startTimer(taskObj)"
           >
             <nb-icon
-              [icon]="status !== 1 ? 'arrow-right' : 'pause-circle-outline'"
+              [icon]="taskObj?.start ? 'pause-circle-outline' : 'arrow-right'"
             ></nb-icon>
           </button>
 
-          <button nbButton ghost size="giant" (click)="timesUp()">
-            <nb-icon icon="close-outline"></nb-icon>
+          <button
+            nbButton
+            ghost
+            size="giant"
+            [disabled]="!taskObj?.itemName || taskObj?.completed"
+            (click)="skip(taskObj)"
+          >
+            <nb-icon icon="skip-forward-outline"></nb-icon>
           </button>
         </div>
       </div>
@@ -59,13 +95,13 @@
   </div>
 
   <div fxFlex="5" fxLayout="column" fxLayoutGap="8px">
-    <button nbButton (click)="timesUp()">
+    <button nbButton>
       <nb-icon icon="list"></nb-icon>
     </button>
-    <button nbButton (click)="timesUp()">
+    <button nbButton>
       <nb-icon icon="bar-chart"></nb-icon>
     </button>
-    <button nbButton (click)="timesUp()">
+    <button nbButton>
       <nb-icon icon="settings-2"></nb-icon>
     </button>
   </div>
