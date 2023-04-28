@@ -9,23 +9,23 @@ export class Task {
   }
 
   private title = '';
-  private conduct = false; //  是否為進行或暫停狀態，true為進行、false為暫停
-  private done = false; // 是否為完成狀態
-  private break = false; // 是否為休息狀態
+  private conduct = false; //  任務是否為進行或暫停狀態，true為進行、false為暫停
+  private done = false; // 任務是否為完成狀態
+  private break = false; // 任務是否為休息狀態
   private editMode = false; //  是否處於編輯模式
-  private remainingTime = 5; //  剩餘時間
+  private remainingTime = 5; //  任務剩餘時間
 
   /**
    * 取得此事項的進行狀態
    */
-  get start(): boolean {
+  get isStart(): boolean {
     return this.conduct;
   }
 
   /**
    * 設定此事項是否為進行狀態
    */
-  set start(bl: boolean) {
+  set isStart(bl: boolean) {
     this.conduct = bl;
   }
 
@@ -96,8 +96,8 @@ export class Task {
    * 切換完成狀態
    */
   toggleCompletion(e: boolean): void {
-    this.done = true;
-    // this.start = false;
+    this.done = e;
+    this.isStart = false;
     // this.break = true;
   }
 }

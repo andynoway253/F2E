@@ -1,64 +1,17 @@
-<div fxFill fxLayout="row" fxLayoutGap="8px">
-  <div fxFlex="20" fxLayout="column" fxLayoutGap="4px">
-    <nb-form-field>
-      <nb-icon nbPrefix icon="at-outline" pack="eva"></nb-icon>
-      <input
-        nbInput
-        type="text"
-        placeholder="What needs to be done?"
-        [(ngModel)]="newTaskName"
-        (keyup.enter)="addTask()"
-      />
-    </nb-form-field>
-
-    <nb-card-header> 任務清單 </nb-card-header>
-    <nb-list class="list">
-      <nb-list-item
-        fxLayout="row"
-        fxLayoutGap="8px"
-        *ngFor="let task of taskList; let i = index"
-        [class.completed]="task.completed"
-        [class.editing]="task.editing"
-      >
-        <nb-checkbox
-          [disabled]="taskObj?.start"
-          (checkedChange)="completedTask(task, $event)"
-        ></nb-checkbox>
-
-        <div
-          #taskList
-          fxFlex
-          fxLayoutGap="8px"
-          fxLayoutAlign="start center"
-          class="view"
-          (click)="getTask(task)"
-          (dblclick)="editTask(task)"
-        >
-          <label> {{ task.itemName }}</label>
-          <div fxFlex fxLayoutAlign="end">
-            <button
-              nbButton
-              [disabled]="taskObj?.start"
-              (click)="removeTask(task)"
-            >
-              <nb-icon icon="close-outline"></nb-icon>
-            </button>
-          </div>
-        </div>
-
-        <input
-          *ngIf="task.editing"
-          #editItem
-          class="edit"
-          [value]="task.itemName"
-          (keyup.enter)="updateTask(task, editItem.value)"
-          (keyup.esc)="updateTask(task, editItem.value)"
-        />
-      </nb-list-item>
-    </nb-list>
+<div fxFill fxLayout="column" fxLayoutGap="8px">
+  <div fxFlex="5" fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end">
+    <button nbButton>
+      <nb-icon icon="list"></nb-icon>
+    </button>
+    <button nbButton>
+      <nb-icon icon="bar-chart"></nb-icon>
+    </button>
+    <button nbButton>
+      <nb-icon icon="settings-2"></nb-icon>
+    </button>
   </div>
 
-  <div fxFlex="75" fxLayoutAlign="center center">
+  <div fxLayoutAlign="center center">
     <div
       [class]="taskObj?.breakStatus ? 'circle break' : 'circle'"
       fxLayout="column"
@@ -72,11 +25,13 @@
             nbButton
             ghost
             size="giant"
-            [disabled]="!taskObj?.itemName || taskObj?.completed"
-            (click)="taskObj?.start ? pauseTimer(taskObj) : startTimer(taskObj)"
+            [disabled]="taskObj?.completed"
+            (click)="
+              taskObj?.isStart ? pauseTimer(taskObj) : startTimer(taskObj)
+            "
           >
             <nb-icon
-              [icon]="taskObj?.start ? 'pause-circle-outline' : 'arrow-right'"
+              [icon]="taskObj?.isStart ? 'pause-circle-outline' : 'arrow-right'"
             ></nb-icon>
           </button>
 
@@ -84,7 +39,7 @@
             nbButton
             ghost
             size="giant"
-            [disabled]="!taskObj?.itemName || taskObj?.completed"
+            [disabled]="taskObj?.completed"
             (click)="skip(taskObj)"
           >
             <nb-icon icon="skip-forward-outline"></nb-icon>
@@ -94,15 +49,85 @@
     </div>
   </div>
 
-  <div fxFlex="5" fxLayout="column" fxLayoutGap="8px">
-    <button nbButton>
-      <nb-icon icon="list"></nb-icon>
-    </button>
-    <button nbButton>
-      <nb-icon icon="bar-chart"></nb-icon>
-    </button>
-    <button nbButton>
-      <nb-icon icon="settings-2"></nb-icon>
-    </button>
+  <div fxFlex fxLayout="column" fxLayoutGap="4px">
+    <nb-form-field>
+      <nb-icon nbPrefix icon="at-outline" pack="eva"></nb-icon>
+      <input
+        nbInput
+        type="text"
+        placeholder="What needs to be done?"
+        [(ngModel)]="newTaskName"
+        (keyup.enter)="addTask()"
+      />
+    </nb-form-field>
+
+    <nb-card-header> 任務清單 </nb-card-header>
+    <nb-tabset (changeTab)="onChangeTab($event)">
+      <nb-tab fxFill tabTitle="未完成">
+        <ng-container
+          *ngTemplateOutlet="
+            taskListTemplate;
+            context: { tasks: incompleteTasks }
+          "
+        ></ng-container>
+      </nb-tab>
+
+      <nb-tab fxFill tabTitle="已完成">
+        <ng-container
+          *ngTemplateOutlet="
+            taskListTemplate;
+            context: { tasks: completedTasks }
+          "
+        ></ng-container>
+      </nb-tab>
+    </nb-tabset>
+
+    <ng-template #taskListTemplate let-tasks="tasks">
+      <nb-list fxFill class="list">
+        <nb-list-item
+          fxLayout="row"
+          fxLayoutGap="8px"
+          *ngFor="let task of tasks; let i = index"
+          [class.completed]="task.completed"
+          [class.editing]="task.editing"
+        >
+          <nb-checkbox
+            [checked]="task.completed"
+            [disabled]="task?.isStart"
+            (checkedChange)="completedTask(task, $event)"
+          ></nb-checkbox>
+
+          <div
+            #taskList
+            fxFlex
+            fxLayoutGap="8px"
+            fxLayoutAlign="start center"
+            class="view"
+            (click)="getTask(task)"
+            (dblclick)="editTask(task)"
+          >
+            <label> {{ task.itemName }}</label>
+            <div fxFlex fxLayoutAlign="end">
+              <button
+                nbButton
+                [disabled]="task?.isStart"
+                (click)="removeTask(task)"
+              >
+                <nb-icon icon="close-outline"></nb-icon>
+              </button>
+            </div>
+          </div>
+
+          <input
+            *ngIf="task.editing"
+            #editItem
+            class="edit"
+            [value]="task.itemName"
+            (keyup.enter)="updateTask(task, editItem.value)"
+            (keyup.esc)="updateTask(task, editItem.value)"
+          />
+        </nb-list-item>
+      </nb-list>
+    </ng-template>
   </div>
 </div>

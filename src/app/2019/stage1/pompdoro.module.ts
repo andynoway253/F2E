@@ -10,6 +10,7 @@ import {
   NbIconModule,
   NbInputModule,
   NbListModule,
+  NbTabsetModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ import { FormsModule } from '@angular/forms';
     NbFormFieldModule,
     NbListModule,
     NbInputModule,
+    NbTabsetModule,
     NbIconModule,
     NbEvaIconsModule,
   ],

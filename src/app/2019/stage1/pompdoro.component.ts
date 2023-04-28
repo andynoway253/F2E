@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Task } from './task.model';
+import { NbTabComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-pompdoro',
@@ -15,9 +16,13 @@ export class PompdoroComponent implements OnInit {
 
   taskObj!: Task;
 
-  status = 0; // 0為初始、1為進行、2為暫停
-
   taskList: Task[] = [];
+
+  completedTasks: Task[] = [];
+
+  incompleteTasks: Task[] = [];
+
+  start = 0;
 
   newTaskName = ''; //  要添加的任務名稱
 
@@ -25,13 +30,12 @@ export class PompdoroComponent implements OnInit {
 
   nowSec = '00'; //  秒
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.filterTasks();
+  }
 
   getTask(task: Task) {
-    console.log(task);
-    if (this.status === 1) {
-      return;
-    }
+    if (this.start === 1) return;
 
     this.taskObj = task;
 
@@ -44,15 +48,19 @@ export class PompdoroComponent implements OnInit {
     if (this.newTaskName) {
       this.taskList.push(new Task(this.newTaskName));
       this.newTaskName = '';
+
+      this.filterTasks();
     }
   }
 
   editTask(task: Task) {
-    //  如果已經完成不能被編輯
-    task.editable = task.completed || this.status === 1 ? false : true;
+    if (task.isStart) {
+      return;
+    }
+
+    task.editable = true;
 
     this.cancalEditTask(task);
-
     setTimeout(() => {
       this.editItem.nativeElement.focus();
     });
@@ -71,6 +79,8 @@ export class PompdoroComponent implements OnInit {
     this.taskList.splice(index, 1);
 
     this.taskObj = new Task('');
+
+    this.filterTasks();
   }
 
   //  在編輯其中一個項目時，如果單雙擊其他項目，都必須取消當前任務的編輯狀態
@@ -85,11 +95,16 @@ export class PompdoroComponent implements OnInit {
   completedTask(task: Task, e: boolean = true) {
     clearInterval(this.interval);
 
+    this.start = 0;
     task.toggleCompletion(e);
   }
 
   startTimer(task: Task) {
-    task.start = true;
+    if (!task) {
+      return;
+    }
+    this.start = 1;
+    task.isStart = true;
     this.interval = setInterval(() => {
       if (task.time > 0) {
         task.time--;
@@ -105,7 +120,9 @@ export class PompdoroComponent implements OnInit {
   pauseTimer(task: Task) {
     clearInterval(this.interval);
 
-    task.start = false;
+    this.start = 0;
+
+    task.isStart = false;
   }
 
   //  跳過
@@ -134,5 +151,19 @@ export class PompdoroComponent implements OnInit {
 
     this.nowMin = min.toString().padStart(2, '0');
     this.nowSec = sec.toString().padStart(2, '0');
+  }
+
+  onChangeTab(e: NbTabComponent) {
+    if (e.tabTitle === '已完成') {
+      this.completedTasks = this.taskList.filter((task) => task.completed);
+    } else {
+      this.incompleteTasks = this.taskList.filter((task) => !task.completed);
+    }
+  }
+
+  filterTasks() {
+    this.completedTasks = this.taskList.filter((task) => task.completed);
+
+    this.incompleteTasks = this.taskList.filter((task) => !task.completed);
   }
 }
