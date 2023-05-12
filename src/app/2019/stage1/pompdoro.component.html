@@ -1,17 +1,36 @@
 <div fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex="5" fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end">
-    <button nbButton>
-      <nb-icon icon="list"></nb-icon>
-    </button>
-    <button nbButton>
-      <nb-icon icon="bar-chart"></nb-icon>
-    </button>
-    <button nbButton>
-      <nb-icon icon="settings-2"></nb-icon>
+    <button nbButton><nb-icon icon="bar-chart"></nb-icon>Report</button>
+    <button nbButton (click)="openSetting(dialog)">
+      <nb-icon icon="settings-2"></nb-icon>Setting
     </button>
   </div>
 
   <div fxLayoutAlign="center center">
+    <svg class="outer" height="540" width="540">
+      <circle
+        cx="270"
+        cy="270"
+        r="260"
+        fill="white"
+        fill-opacity="0"
+        [attr.stroke]="taskObj?.breakStatus ? '#0b4c9d' : '#832143'"
+        stroke-width="3"
+      ></circle>
+    </svg>
+
+    <svg class="inner" height="520" width="520">
+      <circle
+        cx="260"
+        cy="260"
+        r="250"
+        [attr.stroke]="taskObj?.breakStatus ? '#0b4c9d' : '#832143'"
+        [attr.stroke-width]="taskObj?.isStart ? 18 : 0"
+        [attr.stroke-dashoffset]="taskObj?.test"
+        [attr.stroke-dasharray]="1570"
+      ></circle>
+    </svg>
+
     <div
       [class]="taskObj?.breakStatus ? 'circle break' : 'circle'"
       fxLayout="column"
@@ -131,3 +150,47 @@
     </ng-template>
   </div>
 </div>
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>Setting</nb-card-header>
+
+    <nb-card-body fxLayout="column" fxLayoutGap="8px">
+      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+        <span>Work Time</span>
+        <nb-select
+          placeholder="Select Work Time"
+          [(selected)]="selectedWorkTime"
+          (selectedChange)="onSelectedChange($event, 'Work')"
+        >
+          <nb-option [value]="5">5 second</nb-option>
+          <nb-option [value]="60">1 min</nb-option>
+          <nb-option [value]="300">5 min</nb-option>
+          <nb-option [value]="600">10 min</nb-option>
+          <nb-option [value]="900">15 min</nb-option>
+          <nb-option [value]="1200">20 min</nb-option>
+          <nb-option [value]="1500">25 min</nb-option>
+        </nb-select>
+      </div>
+
+      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+        <span>Break Time</span>
+        <nb-select
+          placeholder="Select Break Time"
+          [(selected)]="selectedBreakTime"
+          (selectedChange)="onSelectedChange($event, 'Break')"
+        >
+          <nb-option [value]="10">10 second</nb-option>
+          <nb-option [value]="60">1 min</nb-option>
+          <nb-option [value]="300">5 min</nb-option>
+        </nb-select>
+      </div>
+
+      <div></div>
+    </nb-card-body>
+
+    <nb-card-footer>
+      <button nbButton (click)="ref.close()">Close Dialog</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

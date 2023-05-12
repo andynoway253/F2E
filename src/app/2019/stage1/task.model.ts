@@ -1,11 +1,20 @@
 export class Task {
-  constructor(title: string) {
+  constructor(
+    title: string,
+    originWorkTime?: number,
+    originBreakTime?: number
+  ) {
     this.title = title || ''; // 為避免傳入的值為 Falsy 值，稍作處理
     this.conduct = false;
     this.done = false;
     this.break = false;
     this.editMode = false;
-    this.remainingTime = 5;
+    this.remainingTime = originWorkTime || 0;
+
+    this.originWorkTime = originWorkTime || 0;
+    this.originBreakTime = originBreakTime || 0;
+
+    this.dashoffset = 1570;
   }
 
   private title = '';
@@ -13,7 +22,11 @@ export class Task {
   private done = false; // 任務是否為完成狀態
   private break = false; // 任務是否為休息狀態
   private editMode = false; //  是否處於編輯模式
-  private remainingTime = 5; //  任務剩餘時間
+  private remainingTime: number; //  任務剩餘時間
+  public originWorkTime: number; //  任務工作時間
+  public originBreakTime: number; //  任務休息時間
+
+  private dashoffset = 1570;
 
   /**
    * 取得此事項的進行狀態
@@ -74,15 +87,26 @@ export class Task {
   /**
    * 更新剩餘時間
    */
-  set time(remainingTime) {
+  set leftTime(remainingTime) {
     this.remainingTime = remainingTime--;
   }
 
   /**
    * 取得剩餘時間
    */
-  get time(): number {
+  get leftTime(): number {
     return this.remainingTime;
+  }
+
+  /**
+   * 更新
+   */
+  set test(dashoffset) {
+    this.dashoffset = dashoffset;
+  }
+
+  get test(): number {
+    return this.dashoffset;
   }
 
   /**

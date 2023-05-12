@@ -1,6 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { Task } from './task.model';
-import { NbTabComponent } from '@nebular/theme';
+import { NbDialogService, NbTabComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-pompdoro',
@@ -8,7 +14,7 @@ import { NbTabComponent } from '@nebular/theme';
   styleUrls: ['./pompdoro.component.scss'],
 })
 export class PompdoroComponent implements OnInit {
-  constructor() {}
+  constructor(private dialogService: NbDialogService) {}
 
   @ViewChild('editItem') editItem!: ElementRef;
 
@@ -30,6 +36,12 @@ export class PompdoroComponent implements OnInit {
 
   nowSec = '00'; //  秒
 
+  dashoffset = 0;
+
+  selectedWorkTime = 1500;
+
+  selectedBreakTime = 300;
+
   ngOnInit(): void {
     this.filterTasks();
   }
@@ -39,14 +51,14 @@ export class PompdoroComponent implements OnInit {
 
     this.taskObj = task;
 
-    this.textRenderer(task.time);
+    this.textRenderer(task.leftTime);
 
     this.cancalEditTask(task);
   }
 
   addTask() {
     if (this.newTaskName) {
-      this.taskList.push(new Task(this.newTaskName));
+      this.taskList.push(new Task(this.newTaskName, this.selectedWorkTime, this.selectedBreakTime));
       this.newTaskName = '';
 
       this.filterTasks();
@@ -105,11 +117,18 @@ export class PompdoroComponent implements OnInit {
     }
     this.start = 1;
     task.isStart = true;
+
+    const dashoffsetStep =
+      1570 / (task.breakStatus ? task.originBreakTime : task.originWorkTime);
     this.interval = setInterval(() => {
-      if (task.time > 0) {
-        task.time--;
-        this.textRenderer(task.time);
-      } else if (!task.time && !task.breakStatus) {
+      if (task.leftTime > 0) {
+        task.leftTime--;
+
+        task.test += -dashoffsetStep;
+        console.log(task.test);
+
+        this.textRenderer(task.leftTime);
+      } else if (!task.leftTime && !task.breakStatus) {
         this.timeBreak(task);
       } else {
         this.completedTask(task);
@@ -138,9 +157,9 @@ export class PompdoroComponent implements OnInit {
 
     task.toggleBreak();
 
-    task.time = 10;
+    task.leftTime = task.originBreakTime;
 
-    this.textRenderer(task.time);
+    this.textRenderer(task.leftTime);
 
     this.startTimer(task);
   }
@@ -165,5 +184,17 @@ export class PompdoroComponent implements OnInit {
     this.completedTasks = this.taskList.filter((task) => task.completed);
 
     this.incompleteTasks = this.taskList.filter((task) => !task.completed);
+  }
+
+  openSetting(dialog: TemplateRef<any>) {
+    this.dialogService.open(dialog, {
+      context: 'this is some additional data passed to dialog',
+    });
+  }
+
+  onSelectedChange(e: number, action: string) {
+    console.log(e);
+    if (e) {
+    }
   }
 }
