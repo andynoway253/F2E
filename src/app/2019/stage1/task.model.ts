@@ -1,9 +1,11 @@
 export class Task {
-  constructor(
-    title: string,
-    originWorkTime?: number,
-    originBreakTime?: number
-  ) {
+  constructor(config: {
+    title?: string;
+    originWorkTime?: number;
+    originBreakTime?: number;
+  }) {
+    const { title, originWorkTime, originBreakTime } = config;
+
     this.title = title || ''; // 為避免傳入的值為 Falsy 值，稍作處理
     this.conduct = false;
     this.done = false;
@@ -23,8 +25,8 @@ export class Task {
   private break = false; // 任務是否為休息狀態
   private editMode = false; //  是否處於編輯模式
   private remainingTime: number; //  任務剩餘時間
-  public originWorkTime: number; //  任務工作時間
-  public originBreakTime: number; //  任務休息時間
+  private originWorkTime: number; //  任務工作時間
+  private originBreakTime: number; //  任務休息時間
 
   private dashoffset = 1570;
 
@@ -96,6 +98,34 @@ export class Task {
    */
   get leftTime(): number {
     return this.remainingTime;
+  }
+
+  /**
+   * 工作時間
+   */
+  set workTime(time) {
+    this.originWorkTime = time;
+  }
+
+  /**
+   * 工作時間
+   */
+  get workTime(): number {
+    return this.originWorkTime;
+  }
+
+  /**
+   * 休息時間
+   */
+  set breakTime(time) {
+    this.originBreakTime = time;
+  }
+
+  /**
+   * 休息時間
+   */
+  get breakTime(): number {
+    return this.originBreakTime;
   }
 
   /**

@@ -58,7 +58,13 @@ export class PompdoroComponent implements OnInit {
 
   addTask() {
     if (this.newTaskName) {
-      this.taskList.push(new Task(this.newTaskName, this.selectedWorkTime, this.selectedBreakTime));
+      this.taskList.push(
+        new Task({
+          title: this.newTaskName,
+          originWorkTime: this.selectedWorkTime,
+          originBreakTime: this.selectedBreakTime,
+        })
+      );
       this.newTaskName = '';
 
       this.filterTasks();
@@ -90,7 +96,7 @@ export class PompdoroComponent implements OnInit {
     const index = this.taskList.indexOf(task);
     this.taskList.splice(index, 1);
 
-    this.taskObj = new Task('');
+    this.taskObj = new Task({});
 
     this.filterTasks();
   }
@@ -119,7 +125,7 @@ export class PompdoroComponent implements OnInit {
     task.isStart = true;
 
     const dashoffsetStep =
-      1570 / (task.breakStatus ? task.originBreakTime : task.originWorkTime);
+      1570 / (task.breakStatus ? task.breakTime : task.workTime);
     this.interval = setInterval(() => {
       if (task.leftTime > 0) {
         task.leftTime--;
@@ -157,7 +163,7 @@ export class PompdoroComponent implements OnInit {
 
     task.toggleBreak();
 
-    task.leftTime = task.originBreakTime;
+    task.leftTime = task.breakTime;
 
     this.textRenderer(task.leftTime);
 
