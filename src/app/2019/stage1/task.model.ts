@@ -1,31 +1,46 @@
 export class Task {
-  constructor(title: string) {
+  constructor(config: {
+    title?: string;
+    originWorkTime?: number;
+    originBreakTime?: number;
+  }) {
+    const { title, originWorkTime, originBreakTime } = config;
+
     this.title = title || ''; // 為避免傳入的值為 Falsy 值，稍作處理
     this.conduct = false;
     this.done = false;
     this.break = false;
     this.editMode = false;
-    this.remainingTime = 5;
+    this.remainingTime = originWorkTime || 0;
+
+    this.originWorkTime = originWorkTime || 0;
+    this.originBreakTime = originBreakTime || 0;
+
+    this.dashoffset = 1570;
   }
 
   private title = '';
-  private conduct = false; //  是否為進行或暫停狀態，true為進行、false為暫停
-  private done = false; // 是否為完成狀態
-  private break = false; // 是否為休息狀態
+  private conduct = false; //  任務是否為進行或暫停狀態，true為進行、false為暫停
+  private done = false; // 任務是否為完成狀態
+  private break = false; // 任務是否為休息狀態
   private editMode = false; //  是否處於編輯模式
-  private remainingTime = 5; //  剩餘時間
+  private remainingTime: number; //  任務剩餘時間
+  private originWorkTime: number; //  任務工作時間
+  private originBreakTime: number; //  任務休息時間
+
+  private dashoffset = 1570;
 
   /**
    * 取得此事項的進行狀態
    */
-  get start(): boolean {
+  get isStart(): boolean {
     return this.conduct;
   }
 
   /**
    * 設定此事項是否為進行狀態
    */
-  set start(bl: boolean) {
+  set isStart(bl: boolean) {
     this.conduct = bl;
   }
 
@@ -74,15 +89,54 @@ export class Task {
   /**
    * 更新剩餘時間
    */
-  set time(remainingTime) {
+  set leftTime(remainingTime) {
     this.remainingTime = remainingTime--;
   }
 
   /**
    * 取得剩餘時間
    */
-  get time(): number {
+  get leftTime(): number {
     return this.remainingTime;
+  }
+
+  /**
+   * 工作時間
+   */
+  set workTime(time) {
+    this.originWorkTime = time;
+  }
+
+  /**
+   * 工作時間
+   */
+  get workTime(): number {
+    return this.originWorkTime;
+  }
+
+  /**
+   * 休息時間
+   */
+  set breakTime(time) {
+    this.originBreakTime = time;
+  }
+
+  /**
+   * 休息時間
+   */
+  get breakTime(): number {
+    return this.originBreakTime;
+  }
+
+  /**
+   * 更新
+   */
+  set test(dashoffset) {
+    this.dashoffset = dashoffset;
+  }
+
+  get test(): number {
+    return this.dashoffset;
   }
 
   /**
@@ -96,8 +150,8 @@ export class Task {
    * 切換完成狀態
    */
   toggleCompletion(e: boolean): void {
-    this.done = true;
-    // this.start = false;
+    this.done = e;
+    this.isStart = false;
     // this.break = true;
   }
 }

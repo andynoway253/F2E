@@ -1,0 +1,30 @@
+.round{
+  width: 500px;
+  height: 500px;
+  background: red;
+  border-radius: 50%;
+  margin: 0 auto;
+  text-align: center;
+  animation: move 6s linear infinite;
+      display: flex;
+    justify-content: center;
+    align-items: center;    background-image: url('https://p6.qhimg.com/bdr/__85/t01855d063269cef1fe.jpg');
+        background-size: cover;
+}
+
+.center{
+  width: 50px;
+  height: 50px;
+  background: #FFF;
+  border-radius: 50%;
+  z-index: 999;
+}
+
+@keyframes move{
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}

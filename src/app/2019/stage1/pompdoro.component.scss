@@ -21,14 +21,14 @@
     }
 
     &.editing .edit {
-      width: 180px;
-      padding: 5px 10px 5px 15px;
+      width: 100%;
+      padding: 10px;
     }
   }
 }
 
 .circle {
-  position: relative;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,4 +51,12 @@
     color: #f2f0c9;
     font-size: 100px;
   }
+}
+
+svg {
+  transform: rotate(-90deg);
+}
+
+.inner {
+  position: absolute;
 }

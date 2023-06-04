@@ -1,5 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { Task } from './task.model';
+import { NbDialogService, NbTabComponent } from '@nebular/theme';
 
 @Component({
   selector: 'app-pompdoro',
@@ -7,7 +14,7 @@ import { Task } from './task.model';
   styleUrls: ['./pompdoro.component.scss'],
 })
 export class PompdoroComponent implements OnInit {
-  constructor() {}
+  constructor(private dialogService: NbDialogService) {}
 
   @ViewChild('editItem') editItem!: ElementRef;
 
@@ -15,9 +22,13 @@ export class PompdoroComponent implements OnInit {
 
   taskObj!: Task;
 
-  status = 0; // 0為初始、1為進行、2為暫停
-
   taskList: Task[] = [];
+
+  completedTasks: Task[] = [];
+
+  incompleteTasks: Task[] = [];
+
+  start = 0;
 
   newTaskName = ''; //  要添加的任務名稱
 
@@ -25,34 +36,49 @@ export class PompdoroComponent implements OnInit {
 
   nowSec = '00'; //  秒
 
-  ngOnInit(): void {}
+  dashoffset = 0;
+
+  selectedWorkTime = 1500;
+
+  selectedBreakTime = 300;
+
+  ngOnInit(): void {
+    this.filterTasks();
+  }
 
   getTask(task: Task) {
-    console.log(task);
-    if (this.status === 1) {
-      return;
-    }
+    if (this.start === 1) return;
 
     this.taskObj = task;
 
-    this.textRenderer(task.time);
+    this.textRenderer(task.leftTime);
 
     this.cancalEditTask(task);
   }
 
   addTask() {
     if (this.newTaskName) {
-      this.taskList.push(new Task(this.newTaskName));
+      this.taskList.push(
+        new Task({
+          title: this.newTaskName,
+          originWorkTime: this.selectedWorkTime,
+          originBreakTime: this.selectedBreakTime,
+        })
+      );
       this.newTaskName = '';
+
+      this.filterTasks();
     }
   }
 
   editTask(task: Task) {
-    //  如果已經完成不能被編輯
-    task.editable = task.completed || this.status === 1 ? false : true;
+    if (task.isStart) {
+      return;
+    }
+
+    task.editable = true;
 
     this.cancalEditTask(task);
-
     setTimeout(() => {
       this.editItem.nativeElement.focus();
     });
@@ -70,7 +96,9 @@ export class PompdoroComponent implements OnInit {
     const index = this.taskList.indexOf(task);
     this.taskList.splice(index, 1);
 
-    this.taskObj = new Task('');
+    this.taskObj = new Task({});
+
+    this.filterTasks();
   }
 
   //  在編輯其中一個項目時，如果單雙擊其他項目，都必須取消當前任務的編輯狀態
@@ -85,16 +113,28 @@ export class PompdoroComponent implements OnInit {
   completedTask(task: Task, e: boolean = true) {
     clearInterval(this.interval);
 
+    this.start = 0;
     task.toggleCompletion(e);
   }
 
   startTimer(task: Task) {
-    task.start = true;
+    if (!task) {
+      return;
+    }
+    this.start = 1;
+    task.isStart = true;
+
+    const dashoffsetStep =
+      1570 / (task.breakStatus ? task.breakTime : task.workTime);
     this.interval = setInterval(() => {
-      if (task.time > 0) {
-        task.time--;
-        this.textRenderer(task.time);
-      } else if (!task.time && !task.breakStatus) {
+      if (task.leftTime > 0) {
+        task.leftTime--;
+
+        task.test += -dashoffsetStep;
+        console.log(task.test);
+
+        this.textRenderer(task.leftTime);
+      } else if (!task.leftTime && !task.breakStatus) {
         this.timeBreak(task);
       } else {
         this.completedTask(task);
@@ -105,7 +145,9 @@ export class PompdoroComponent implements OnInit {
   pauseTimer(task: Task) {
     clearInterval(this.interval);
 
-    task.start = false;
+    this.start = 0;
+
+    task.isStart = false;
   }
 
   //  跳過
@@ -121,9 +163,9 @@ export class PompdoroComponent implements OnInit {
 
     task.toggleBreak();
 
-    task.time = 10;
+    task.leftTime = task.breakTime;
 
-    this.textRenderer(task.time);
+    this.textRenderer(task.leftTime);
 
     this.startTimer(task);
   }
@@ -134,5 +176,31 @@ export class PompdoroComponent implements OnInit {
 
     this.nowMin = min.toString().padStart(2, '0');
     this.nowSec = sec.toString().padStart(2, '0');
+  }
+
+  onChangeTab(e: NbTabComponent) {
+    if (e.tabTitle === '已完成') {
+      this.completedTasks = this.taskList.filter((task) => task.completed);
+    } else {
+      this.incompleteTasks = this.taskList.filter((task) => !task.completed);
+    }
+  }
+
+  filterTasks() {
+    this.completedTasks = this.taskList.filter((task) => task.completed);
+
+    this.incompleteTasks = this.taskList.filter((task) => !task.completed);
+  }
+
+  openSetting(dialog: TemplateRef<any>) {
+    this.dialogService.open(dialog, {
+      context: 'this is some additional data passed to dialog',
+    });
+  }
+
+  onSelectedChange(e: number, action: string) {
+    console.log(e);
+    if (e) {
+    }
   }
 }
