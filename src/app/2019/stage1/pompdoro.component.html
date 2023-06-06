@@ -1,6 +1,9 @@
 <div fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex="5" fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="end">
-    <button nbButton><nb-icon icon="bar-chart"></nb-icon>Report</button>
+    <button nbButton (click)="openReport()">
+      <nb-icon icon="bar-chart"></nb-icon>Report
+    </button>
+
     <button nbButton (click)="openSetting(dialog)">
       <nb-icon icon="settings-2"></nb-icon>Setting
     </button>
@@ -14,7 +17,7 @@
         r="260"
         fill="white"
         fill-opacity="0"
-        [attr.stroke]="taskObj?.breakStatus ? '#0b4c9d' : '#832143'"
+        [attr.stroke]="taskObj?.break ? '#0b4c9d' : '#832143'"
         stroke-width="3"
       ></circle>
     </svg>
@@ -24,18 +27,18 @@
         cx="260"
         cy="260"
         r="250"
-        [attr.stroke]="taskObj?.breakStatus ? '#0b4c9d' : '#832143'"
-        [attr.stroke-width]="taskObj?.isStart ? 18 : 0"
+        [attr.stroke]="taskObj?.break ? '#0b4c9d' : '#832143'"
+        [attr.stroke-width]="taskObj ? 18 : 0"
         [attr.stroke-dashoffset]="taskObj?.test"
         [attr.stroke-dasharray]="1570"
       ></circle>
     </svg>
 
     <div
-      [class]="taskObj?.breakStatus ? 'circle break' : 'circle'"
+      [class]="taskObj?.break ? 'circle break' : 'circle'"
       fxLayout="column"
     >
-      <p class="task">{{ taskObj?.itemName }}</p>
+      <p class="task">{{ taskObj?.title }}</p>
       <p class="time">{{ nowMin + ":" + nowSec }}</p>
 
       <div class="control">
@@ -44,13 +47,13 @@
             nbButton
             ghost
             size="giant"
-            [disabled]="taskObj?.completed"
+            [disabled]="taskObj?.done"
             (click)="
-              taskObj?.isStart ? pauseTimer(taskObj) : startTimer(taskObj)
+              taskObj?.conduct ? pauseTimer(taskObj) : startTimer(taskObj)
             "
           >
             <nb-icon
-              [icon]="taskObj?.isStart ? 'pause-circle-outline' : 'arrow-right'"
+              [icon]="taskObj?.conduct ? 'pause-circle-outline' : 'arrow-right'"
             ></nb-icon>
           </button>
 
@@ -58,7 +61,7 @@
             nbButton
             ghost
             size="giant"
-            [disabled]="taskObj?.completed"
+            [disabled]="taskObj?.done"
             (click)="skip(taskObj)"
           >
             <nb-icon icon="skip-forward-outline"></nb-icon>
@@ -108,11 +111,11 @@
           fxLayoutGap="8px"
           *ngFor="let task of tasks; let i = index"
           [class.completed]="task.completed"
-          [class.editing]="task.editing"
+          [class.editing]="task.editMode"
         >
           <nb-checkbox
             [checked]="task.completed"
-            [disabled]="task?.isStart"
+            [disabled]="task.conduct"
             (checkedChange)="completedTask(task, $event)"
           ></nb-checkbox>
 
@@ -125,11 +128,11 @@
             (click)="getTask(task)"
             (dblclick)="editTask(task)"
           >
-            <label> {{ task.itemName }}</label>
+            <label> {{ task.title }}</label>
             <div fxFlex fxLayoutAlign="end">
               <button
                 nbButton
-                [disabled]="task?.isStart"
+                [disabled]="task?.conduct"
                 (click)="removeTask(task)"
               >
                 <nb-icon icon="close-outline"></nb-icon>
@@ -138,10 +141,10 @@
           </div>
 
           <input
-            *ngIf="task.editing"
+            *ngIf="task.editMode"
             #editItem
             class="edit"
-            [value]="task.itemName"
+            [value]="task.title"
             (keyup.enter)="updateTask(task, editItem.value)"
             (keyup.esc)="updateTask(task, editItem.value)"
           />
@@ -152,17 +155,16 @@
 </div>
 
 <ng-template #dialog let-data let-ref="dialogRef">
-  <nb-card>
-    <nb-card-header>Setting</nb-card-header>
+  <nb-card accent="info">
+    <nb-card-header>
+      <font size="+2"><b>Setting</b></font>
+    </nb-card-header>
 
     <nb-card-body fxLayout="column" fxLayoutGap="8px">
+      <font size="+1"><b>Time</b></font>
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
         <span>Work Time</span>
-        <nb-select
-          placeholder="Select Work Time"
-          [(selected)]="selectedWorkTime"
-          (selectedChange)="onSelectedChange($event, 'Work')"
-        >
+        <nb-select [(selected)]="selectedWorkTime">
           <nb-option [value]="5">5 second</nb-option>
           <nb-option [value]="60">1 min</nb-option>
           <nb-option [value]="300">5 min</nb-option>
@@ -175,22 +177,42 @@
 
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
         <span>Break Time</span>
-        <nb-select
-          placeholder="Select Break Time"
-          [(selected)]="selectedBreakTime"
-          (selectedChange)="onSelectedChange($event, 'Break')"
-        >
+        <nb-select [(selected)]="selectedBreakTime">
           <nb-option [value]="10">10 second</nb-option>
           <nb-option [value]="60">1 min</nb-option>
           <nb-option [value]="300">5 min</nb-option>
         </nb-select>
       </div>
 
-      <div></div>
+      <font size="+1"><b>Music</b></font>
+      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+        <span>Work End Music</span>
+        <nb-select [(selected)]="selectedWorkFinishMusic">
+          <nb-option value="ring">ring</nb-option>
+          <nb-option value="dripping">dripping</nb-option>
+        </nb-select>
+      </div>
+
+      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="center center">
+        <span>Break End Music</span>
+        <nb-select [(selected)]="selectedBreakEndMusic">
+          <nb-option value="phoneRing">phoneRing</nb-option>
+          <nb-option value="piano">piano</nb-option>
+        </nb-select>
+      </div>
     </nb-card-body>
 
     <nb-card-footer>
-      <button nbButton (click)="ref.close()">Close Dialog</button>
+      <div fxLayoutAlign="end">
+        <button nbButton status="danger" size="small" (click)="ref.close()">
+          Close
+        </button>
+      </div>
     </nb-card-footer>
   </nb-card>
 </ng-template>
+
+<!-- 音樂播放 -->
+<audio #audioPlayer>
+  <source [src]="'assets/audio/' + audio + '.mp3'" type="audio/mpeg" />
+</audio>

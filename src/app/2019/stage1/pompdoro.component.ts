@@ -18,6 +18,9 @@ export class PompdoroComponent implements OnInit {
 
   @ViewChild('editItem') editItem!: ElementRef;
 
+  @ViewChild('audioPlayer')
+  audioPlayer!: ElementRef;
+
   interval: any;
 
   taskObj!: Task;
@@ -28,8 +31,6 @@ export class PompdoroComponent implements OnInit {
 
   incompleteTasks: Task[] = [];
 
-  start = 0;
-
   newTaskName = ''; //  要添加的任務名稱
 
   nowMin = '00'; //  分
@@ -38,20 +39,26 @@ export class PompdoroComponent implements OnInit {
 
   dashoffset = 0;
 
-  selectedWorkTime = 1500;
+  selectedWorkTime = 5; //  預設25分鐘
 
-  selectedBreakTime = 300;
+  selectedBreakTime = 10; //  預設5分鐘
+
+  selectedWorkFinishMusic = 'ring';
+
+  selectedBreakEndMusic = 'phoneRing';
+
+  audio = 'ring';
 
   ngOnInit(): void {
     this.filterTasks();
   }
 
   getTask(task: Task) {
-    if (this.start === 1) return;
+    if (task.conduct) return;
 
     this.taskObj = task;
 
-    this.textRenderer(task.leftTime);
+    this.textRenderer(task.remainingTime);
 
     this.cancalEditTask(task);
   }
@@ -63,6 +70,8 @@ export class PompdoroComponent implements OnInit {
           title: this.newTaskName,
           originWorkTime: this.selectedWorkTime,
           originBreakTime: this.selectedBreakTime,
+          workRing: this.selectedWorkFinishMusic,
+          breakRing: this.selectedBreakEndMusic,
         })
       );
       this.newTaskName = '';
@@ -72,11 +81,11 @@ export class PompdoroComponent implements OnInit {
   }
 
   editTask(task: Task) {
-    if (task.isStart) {
+    if (task.conduct) {
       return;
     }
 
-    task.editable = true;
+    task.editMode = true;
 
     this.cancalEditTask(task);
     setTimeout(() => {
@@ -85,9 +94,9 @@ export class PompdoroComponent implements OnInit {
   }
 
   updateTask(task: Task, newTitle: string) {
-    task.editable = false;
+    task.editMode = false;
 
-    task.itemName = newTitle;
+    task.title = newTitle;
   }
 
   removeTask(task: Task) {
@@ -105,7 +114,7 @@ export class PompdoroComponent implements OnInit {
   cancalEditTask(task: Task) {
     this.taskList.forEach((item) => {
       if (item !== task) {
-        item.editable = false;
+        item.editMode = false;
       }
     });
   }
@@ -113,29 +122,29 @@ export class PompdoroComponent implements OnInit {
   completedTask(task: Task, e: boolean = true) {
     clearInterval(this.interval);
 
-    this.start = 0;
     task.toggleCompletion(e);
+
+    //  休息結束，播放休息完成音樂
+    this.playMusic(task, 'break');
   }
 
   startTimer(task: Task) {
     if (!task) {
       return;
     }
-    this.start = 1;
-    task.isStart = true;
+    task.conduct = true;
 
     const dashoffsetStep =
-      1570 / (task.breakStatus ? task.breakTime : task.workTime);
+      1570 / (task.break ? task.originBreakTime : task.originWorkTime);
     this.interval = setInterval(() => {
-      if (task.leftTime > 0) {
-        task.leftTime--;
+      if (task.remainingTime > 0) {
+        task.remainingTime--;
 
         task.test += -dashoffsetStep;
-        console.log(task.test);
 
-        this.textRenderer(task.leftTime);
-      } else if (!task.leftTime && !task.breakStatus) {
-        this.timeBreak(task);
+        this.textRenderer(task.remainingTime);
+      } else if (!task.remainingTime && !task.break) {
+        this.takeBreak(task);
       } else {
         this.completedTask(task);
       }
@@ -145,9 +154,7 @@ export class PompdoroComponent implements OnInit {
   pauseTimer(task: Task) {
     clearInterval(this.interval);
 
-    this.start = 0;
-
-    task.isStart = false;
+    task.conduct = false;
   }
 
   //  跳過
@@ -158,16 +165,19 @@ export class PompdoroComponent implements OnInit {
   }
 
   //  休息
-  timeBreak(task: Task) {
+  takeBreak(task: Task) {
     clearInterval(this.interval);
 
     task.toggleBreak();
 
-    task.leftTime = task.breakTime;
+    task.remainingTime = task.originBreakTime;
 
-    this.textRenderer(task.leftTime);
+    this.textRenderer(task.remainingTime);
 
     this.startTimer(task);
+
+    //  工作完成，播放工作完成音樂
+    this.playMusic(task, 'work');
   }
 
   textRenderer(seconds: number) {
@@ -180,27 +190,32 @@ export class PompdoroComponent implements OnInit {
 
   onChangeTab(e: NbTabComponent) {
     if (e.tabTitle === '已完成') {
-      this.completedTasks = this.taskList.filter((task) => task.completed);
+      this.completedTasks = this.taskList.filter((task) => task.done);
     } else {
-      this.incompleteTasks = this.taskList.filter((task) => !task.completed);
+      this.incompleteTasks = this.taskList.filter((task) => !task.done);
     }
   }
 
   filterTasks() {
-    this.completedTasks = this.taskList.filter((task) => task.completed);
+    this.completedTasks = this.taskList.filter((task) => task.done);
 
-    this.incompleteTasks = this.taskList.filter((task) => !task.completed);
+    this.incompleteTasks = this.taskList.filter((task) => !task.done);
+  }
+
+  playMusic(task: Task, timing: string) {
+    timing === 'work'
+      ? (this.audio = task.workFinishMusic)
+      : (this.audio = task.breakEndMusic);
+
+    this.audioPlayer.nativeElement.load();
+    this.audioPlayer.nativeElement.play();
   }
 
   openSetting(dialog: TemplateRef<any>) {
-    this.dialogService.open(dialog, {
-      context: 'this is some additional data passed to dialog',
-    });
+    this.dialogService.open(dialog);
   }
 
-  onSelectedChange(e: number, action: string) {
-    console.log(e);
-    if (e) {
-    }
+  openReport() {
+    alert('沒做');
   }
 }
