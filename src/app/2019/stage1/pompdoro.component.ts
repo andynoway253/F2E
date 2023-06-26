@@ -9,7 +9,6 @@ import { Task } from './task.model';
 import { NbDialogService, NbTabComponent } from '@nebular/theme';
 
 @Component({
-  selector: 'app-pompdoro',
   templateUrl: './pompdoro.component.html',
   styleUrls: ['./pompdoro.component.scss'],
 })
@@ -37,7 +36,7 @@ export class PompdoroComponent implements OnInit {
 
   nowSec = '00'; //  秒
 
-  dashoffset = 0;
+  dashoffset = 1570;
 
   selectedWorkTime = 5; //  預設25分鐘
 
@@ -140,7 +139,7 @@ export class PompdoroComponent implements OnInit {
       if (task.remainingTime > 0) {
         task.remainingTime--;
 
-        task.test += -dashoffsetStep;
+        task.dashoffset += -dashoffsetStep;
 
         this.textRenderer(task.remainingTime);
       } else if (!task.remainingTime && !task.break) {
