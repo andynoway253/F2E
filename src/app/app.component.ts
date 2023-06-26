@@ -24,7 +24,7 @@ export class AppComponent {
         },
         {
           title: '第三關 - MP3 Player',
-          link:'/Pompdoro'
+          link:'/MP3Player'
         },
         {
           title: '第四關 - 線上支付',

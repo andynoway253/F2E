@@ -16,10 +16,10 @@ import {
   NbThemeModule,
 } from '@nebular/theme';
 import { PompdoroModule } from './2019/stage1/pompdoro.module';
-import { TestComponent } from './2019/stage2/test.component';
+import { MP3PlayerModule } from './2019/stage3/mp3player.module';
 
 @NgModule({
-  declarations: [AppComponent, TestComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -37,6 +37,7 @@ import { TestComponent } from './2019/stage2/test.component';
 
     TodoListModule,
     PompdoroModule,
+    MP3PlayerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
