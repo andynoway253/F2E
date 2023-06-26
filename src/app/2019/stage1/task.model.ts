@@ -45,7 +45,7 @@ export class Task {
 
   breakEndMusic: string;
 
-  private dashoffset = 1570;
+  dashoffset = 1570;
 
   // /**
   //  * 取得此事項的進行狀態
@@ -145,16 +145,16 @@ export class Task {
   //   return this.originBreakTime;
   // }
 
-  /**
-   * 更新
-   */
-  set test(dashoffset) {
-    this.dashoffset = dashoffset;
-  }
+  // /**
+  //  * 更新
+  //  */
+  // set test(dashoffset) {
+  //   this.dashoffset = dashoffset;
+  // }
 
-  get test(): number {
-    return this.dashoffset;
-  }
+  // get test(): number {
+  //   return this.dashoffset;
+  // }
 
   /**
    * 來回切換休息狀態
