@@ -1,0 +1,62 @@
+.list {
+  max-height: 500px;
+  border: 1px solid #8f9bb37a;
+  border-radius: 10px;
+  overflow: hidden;
+  li.editing {
+    border-bottom: none;
+    padding: 0;
+  }
+
+  nb-list-item {
+    padding: 5px 10px 5px 15px;
+    border-bottom: 1px solid #8f9bb37a;
+
+    &.completed .view {
+      text-decoration: line-through;
+    }
+
+    &.editing .view {
+      display: none !important;
+    }
+
+    &.editing .edit {
+      width: 100%;
+      padding: 10px;
+    }
+  }
+}
+
+.circle {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+  background-color: #832143;
+  border-radius: 50%;
+
+  &.break {
+    background-color: #0b4c9d;
+  }
+
+  .task {
+    color: #f2f0c9;
+    font-size: 80px;
+    margin: 0;
+  }
+
+  .time {
+    color: #f2f0c9;
+    font-size: 100px;
+  }
+}
+
+svg {
+  transform: rotate(-90deg);
+}
+
+.inner {
+  position: absolute;
+}
