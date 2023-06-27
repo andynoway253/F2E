@@ -1,9 +1,33 @@
+<div class="menu-open-button">
+  <button nbButton (click)="toggleMenu()">
+    <nb-icon icon="arrowhead-right-outline"> </nb-icon>
+  </button>
+</div>
+
 <nb-layout>
-  <nb-layout-column fxFlex="20">
+  <nb-layout-column
+    class="menu-container"
+    *ngIf="menuCollapsed"
+    [@menuAnimation]
+  >
+    <div class="menu-close-button">
+      <button nbButton (click)="toggleMenu()">
+        <nb-icon icon="arrowhead-left-outline"> </nb-icon>
+      </button>
+    </div>
+
+    <!-- <nb-menu
+      [items]="items"
+      [@menuAnimation]="menuCollapsed ? 'collapsed' : 'expanded'"
+      (@menuAnimation.start)="onAnimationStart($event)"
+      (@menuAnimation.done)="onAnimationDone($event)"
+    >
+    </nb-menu> -->
+
     <nb-menu [items]="items"> </nb-menu>
   </nb-layout-column>
 
-  <nb-layout-column >
-    <router-outlet ></router-outlet>
+  <nb-layout-column>
+    <router-outlet></router-outlet>
   </nb-layout-column>
 </nb-layout>

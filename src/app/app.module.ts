@@ -9,6 +9,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import {
   NbButtonModule,
   NbCardModule,
+  NbIconModule,
   NbLayoutModule,
   NbListModule,
   NbMenuModule,
@@ -31,6 +32,7 @@ import { MP3PlayerModule } from './2019/stage3/mp3player.module';
     NbLayoutModule,
     NbButtonModule,
     NbCardModule,
+    NbIconModule,
     NbListModule,
 
     FlexLayoutModule,
