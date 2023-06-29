@@ -1,14 +1,29 @@
+.menu-open-button {
+  position: absolute;
+  left: 0%;
+}
+
 .menu-container {
   position: relative;
   max-width: 250px;
 
-  .menu-open-button {
-    position: absolute;
-    left: 0%;
-  }
-
   .menu-close-button {
     position: absolute;
-    right: 0%;
+    right: -10%;
   }
+}
+
+.open {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+  max-width: 0px;
+}
+
+.left {
+  position: relative;
+  max-width: 300px;
+}
+
+.right {
+  max-width: 100%;
 }

@@ -1,33 +1,30 @@
-<div class="menu-open-button">
-  <button nbButton (click)="toggleMenu()">
-    <nb-icon icon="arrowhead-right-outline"> </nb-icon>
-  </button>
-</div>
-
 <nb-layout>
-  <nb-layout-column
-    class="menu-container"
-    *ngIf="menuCollapsed"
-    [@menuAnimation]
-  >
-    <div class="menu-close-button">
+  <nb-layout-column class="open" *ngIf="showOpenBtn">
+    <div class="menu-open-button">
       <button nbButton (click)="toggleMenu()">
-        <nb-icon icon="arrowhead-left-outline"> </nb-icon>
+        <nb-icon icon="arrowhead-right-outline"> </nb-icon>
       </button>
     </div>
-
-    <!-- <nb-menu
-      [items]="items"
-      [@menuAnimation]="menuCollapsed ? 'collapsed' : 'expanded'"
-      (@menuAnimation.start)="onAnimationStart($event)"
-      (@menuAnimation.done)="onAnimationDone($event)"
-    >
-    </nb-menu> -->
-
-    <nb-menu [items]="items"> </nb-menu>
   </nb-layout-column>
 
-  <nb-layout-column>
+  <nb-layout-column
+    class="left"
+    [@slideAnimation]="menuCollapsed ? 'collapsed' : 'expanded'"
+    (@slideAnimation.start)="onAnimationStart($event)"
+    (@slideAnimation.done)="onAnimationDone($event)"
+  >
+    <div class="menu-container">
+      <div class="menu-close-button">
+        <button nbButton (click)="toggleMenu()">
+          <nb-icon icon="arrowhead-left-outline"> </nb-icon>
+        </button>
+      </div>
+
+      <nb-menu class="menu" [items]="items"> </nb-menu>
+    </div>
+  </nb-layout-column>
+
+  <nb-layout-column class="right">
     <router-outlet></router-outlet>
   </nb-layout-column>
 </nb-layout>

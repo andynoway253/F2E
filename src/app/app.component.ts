@@ -14,12 +14,12 @@ import { Component } from '@angular/core';
 import { NbMenuItem, NbMenuService } from '@nebular/theme';
 
 const animationParams = {
-  menuWidth: '250px',
+  menuWidth: '300px',
   animationStyle: '500ms ease',
 };
 
 const SidebarOpenAnimation = animation([
-  style({ left: '-{{menuWidth}}' }),
+  style({ left: '-{{menuWidth}}', 'max-width': '{{menuWidth}}' }),
   query('.menu-item', [style({ transform: 'translateX(-{{menuWidth}})' })]),
   sequence([
     animate('200ms', style({ left: '0' })),
@@ -34,6 +34,7 @@ const SidebarOpenAnimation = animation([
 const SidebarCloseAnimation = animation([
   style({ left: '0' }),
   query('.menu-item', [style({ transform: 'none' })]),
+  query('.menu-close-button', [style({ transform: 'none' })]),
   sequence([
     query('.menu-item', [
       stagger(-50, [
@@ -43,7 +44,10 @@ const SidebarCloseAnimation = animation([
         ),
       ]),
     ]),
-    animate('200ms', style({ left: '-{{menuWidth}}' })),
+    query('.menu-close-button', [
+      animate('{{animationStyle}}', style({ transform: 'rotate(180deg)' })),
+    ]),
+    animate('200ms', style({ left: '-300px' })),
   ]),
 ]);
 
@@ -52,46 +56,33 @@ const SidebarCloseAnimation = animation([
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
-    trigger('menuAnimation', [
-      transition(':enter', [
+    trigger('slideAnimation', [
+      state('collapsed', style({ left: '-300px', 'max-width': '0px' })),
+      transition(
+        '* => expanded',
         useAnimation(SidebarOpenAnimation, {
           params: {
             ...animationParams,
           },
-        }),
-      ]),
-      transition(':leave', [
+        })
+      ),
+      transition(
+        '* => collapsed',
         useAnimation(SidebarCloseAnimation, {
           params: {
             ...animationParams,
           },
-        }),
-      ]),
-    ]),
-
-    trigger('iconAnimation', [
-      state(
-        'collapsed',
-        style({
-          transform: 'rotate(0deg)',
         })
       ),
-      state(
-        'expanded',
-        style({
-          transform: 'rotate(180deg)',
-        })
-      ),
-      transition('collapsed <=> expanded', animate('0.3s ease')),
     ]),
   ],
 })
 export class AppComponent {
   constructor(private menuService: NbMenuService) {}
 
-  menuCollapsed = true;
+  menuCollapsed = false;
 
-  btnDisabled = false;
+  showOpenBtn = false;
 
   items: NbMenuItem[] = [
     {
@@ -141,5 +132,17 @@ export class AppComponent {
 
   toggleMenu() {
     this.menuCollapsed = !this.menuCollapsed;
+  }
+
+  onAnimationStart(e: any) {
+    if (e.fromState === 'collapsed' && e.toState === 'expanded') {
+      this.showOpenBtn = false;
+    }
+  }
+
+  onAnimationDone(e: any) {
+    if (e.toState === 'collapsed') {
+      this.showOpenBtn = true;
+    }
   }
 }
