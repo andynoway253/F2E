@@ -14,11 +14,9 @@
     (@slideAnimation.done)="onAnimationDone($event)"
   >
     <div class="menu-container">
-      <div class="menu-close-button">
-        <button nbButton (click)="toggleMenu()">
-          <nb-icon icon="arrowhead-left-outline"> </nb-icon>
-        </button>
-      </div>
+      <button class="menu-close-button" nbButton (click)="toggleMenu()">
+        <nb-icon icon="arrowhead-left-outline"> </nb-icon>
+      </button>
 
       <nb-menu class="menu" [items]="items"> </nb-menu>
     </div>
