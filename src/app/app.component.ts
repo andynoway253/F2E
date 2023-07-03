@@ -15,7 +15,7 @@ import { NbMenuItem, NbMenuService } from '@nebular/theme';
 
 const animationParams = {
   menuWidth: '300px',
-  animationStyle: '500ms ease',
+  animationStyle: '500ms',
 };
 
 const SidebarOpenAnimation = animation([
@@ -45,9 +45,9 @@ const SidebarCloseAnimation = animation([
       ]),
     ]),
     query('.menu-close-button', [
-      animate('{{animationStyle}}', style({ transform: 'rotate(180deg)' })),
+      animate('200ms', style({ transform: 'rotate(180deg)' })),
     ]),
-    animate('200ms', style({ left: '-300px' })),
+    animate('150ms', style({ left: '-300px' })),
   ]),
 ]);
 
