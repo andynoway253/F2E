@@ -1,7 +1,17 @@
-@import 'themes';
+@import "themes";
 
-@import '~@nebular/theme/styles/globals';
+@import "~@nebular/theme/styles/globals";
 
 @include nb-install() {
   @include nb-theme-global();
-};
+}
+
+.nb-theme-default
+  nb-layout
+  .layout
+  .layout-container
+  .content
+  .columns
+  nb-layout-column {
+  padding: 0;
+}
