@@ -1,29 +1,15 @@
-// @keyframes slideAnimation {
-//   0% {
-//     transform: translateX(0%);
-//   }
-//   20% {
-//     transform: translateX(-10%);
-//   }
-//   40% {
-//     transform: translateX(-20%);
-//   }
-//   60% {
-//     transform: translateX(-30%);
-//   }
-//   80% {
-//     transform: translateX(-40%);
-//   }
-//   100% {
-//     transform: translateX(-50%);
-//   }
-// }
+.title {
+  color: white;
+  font-size: xx-large;
+  margin: 50px;
+
+}
 
 .rotation {
   display: flex;
   justify-content: center;
   width: 1510px;
-  margin: 10px auto;
+  margin: 50px auto;
   position: relative;
   overflow: hidden;
 
@@ -36,28 +22,37 @@
     left: calc(50% - 755px);
     z-index: 0;
 
-    // animation-name: slideAnimation;
-    // animation-duration: 15s;
-    // animation-timing-function: ease-in-out;
-    // animation-iteration-count: infinite;
-
     .unit {
-      width: 278px;
-      height: auto;
-      margin-right: 30px;
       position: relative;
-
-      &:nth-child(1) {
-        outline: 10px solid red;
-      }
+      width: 278px;
+      height: 100%;
+      margin-right: 30px;
     }
-
   }
 
-  // .player {
-  //   height: auto;
-  //   position: relative;
-  //   width: 303px;
-  //   z-index: 1;
-  // }
+  .player {
+    position: relative;
+    width: 303px;
+    z-index: 1;
+  }
+
+  .playing {
+    display: flex;
+    position: absolute;
+    top: 70px;
+    left: calc(50% - 755px);
+    width: 278px;
+    z-index: 2;
+
+    .song-group {
+      width: 278px;
+      margin-right: 30px;
+      opacity: 0;
+
+      &.active {
+        transition: opacity 2s linear 1s;
+        opacity: 1;
+      }
+    }
+  }
 }

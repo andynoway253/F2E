@@ -51,23 +51,63 @@ import { Component, OnInit } from '@angular/core';
       transition('state5 => initial', animate('0ms')),
       transition('* => *', animate('2000ms ease-out')),
     ]),
+    trigger('test', [
+      state(
+        'initial',
+        style({
+          transform: 'translateX(0px)',
+        })
+      ),
+      state(
+        'state1',
+        style({
+          transform: 'translateX(-308px)',
+        })
+      ),
+      state(
+        'state2',
+        style({
+          transform: 'translateX(-616px)',
+        })
+      ),
+      state(
+        'state3',
+        style({
+          transform: 'translateX(616px)',
+        })
+      ),
+      state(
+        'state4',
+        style({
+          transform: 'translateX(308px)',
+        })
+      ),
+      state(
+        'state5',
+        style({
+          transform: 'translateX(0px)',
+        })
+      ),
+      transition('* => *', animate('0ms')),
+    ]),
   ],
 })
 export class MP3PlayerComponent implements OnInit {
-  constructor() {}
-
   animationState: string = 'initial';
 
   intervalId: any;
-  intervalDuration: number = 1000; // 初始执行时间为 1 秒
+  intervalDuration = 3500;
 
   ngOnInit(): void {
-    // this.startInterval();
+    this.startInterval();
+  }
 
-    setInterval(() => {
+  startInterval() {
+    this.intervalId = setInterval(() => {
       switch (this.animationState) {
         case 'initial':
           this.animationState = 'state1';
+          this.changeIntervalDuration(3500);
           break;
         case 'state1':
           this.animationState = 'state2';
@@ -83,22 +123,19 @@ export class MP3PlayerComponent implements OnInit {
           break;
         case 'state5':
           this.animationState = 'initial';
-          break;
-        default:
+          this.changeIntervalDuration(0);
           break;
       }
-    }, 3500);
+    }, this.intervalDuration);
   }
 
-  // startInterval() {
-  //   this.intervalId = setInterval(() => {}, this.intervalDuration);
-  // }
+  changeIntervalDuration(newDuration: number): void {
+    clearInterval(this.intervalId); // 取消当前的定时器
 
-  // changeIntervalDuration(newDuration: number): void {
-  //   clearInterval(this.intervalId); // 取消当前的定时器
+    this.intervalDuration = newDuration; // 更新执行时间
 
-  //   this.intervalDuration = newDuration; // 更新执行时间
+    this.startInterval(); // 创建一个新的定时器
+  }
 
-  //   this.startInterval(); // 创建一个新的定时器
-  // }
+  test(e: any) {}
 }
