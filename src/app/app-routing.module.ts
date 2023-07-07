@@ -6,6 +6,8 @@ import { MP3PlayerComponent } from './2019/stage3/mp3player.component';
 const routes: Routes = [
   { path: 'Pompdoro', component: PompdoroComponent },
   { path: 'MP3Player', component: MP3PlayerComponent },
+
+  { path: '', redirectTo: '/Pompdoro', pathMatch: 'full' },
 ];
 
 @NgModule({
