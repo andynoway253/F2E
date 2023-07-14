@@ -1,8 +1,25 @@
+@keyframes move-slideshow {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes move-back {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 .title {
   color: white;
   font-size: xx-large;
   margin: 50px;
-
 }
 
 .rotation {
@@ -53,6 +70,34 @@
         transition: opacity 2s linear 1s;
         opacity: 1;
       }
+    }
+  }
+}
+
+.slideshow {
+  display: flex;
+  overflow: hidden;
+
+  .moving {
+    display: flex;
+    animation: move-slideshow 30s linear infinite;
+
+    .group {
+      width: 224px;
+      height: 224px;
+      margin-right: 20px;
+
+      img {
+        aspect-ratio: 1;
+        height: auto;
+        width: 100%;
+        border-radius: 8px;
+      }
+    }
+
+    &:hover {
+      transition: animation-duration 0s;
+      animation-duration: 45s;
     }
   }
 }
