@@ -51,7 +51,7 @@ import { Component, OnInit } from '@angular/core';
       transition('state5 => initial', animate('0ms')),
       transition('* => *', animate('2000ms ease-out')),
     ]),
-    trigger('test', [
+    trigger('animation', [
       state(
         'initial',
         style({
@@ -136,6 +136,4 @@ export class MP3PlayerComponent implements OnInit {
 
     this.startInterval(); // 创建一个新的定时器
   }
-
-  test(e: any) {}
 }
