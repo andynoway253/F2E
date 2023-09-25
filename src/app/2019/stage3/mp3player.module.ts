@@ -1,24 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FormsModule } from '@angular/forms';
-
-import { MP3PlayerComponent } from './mp3player.component';
-import { RouterModule } from '@angular/router';
-import { MP3PlayerRoutingModule } from './mp3player-routing.module';
 import { NbLayoutModule } from '@nebular/theme';
+import { IndexComponent } from './index/index.component';
+import { MP3PlayerRoutingModule } from './mp3player-routing.module';
+import { MP3PlayerComponent } from './mp3player.component';
+import { SongComponent } from './song/song.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
     FlexLayoutModule,
-    RouterModule,
-
     NbLayoutModule,
-
     MP3PlayerRoutingModule,
   ],
-  declarations: [MP3PlayerComponent],
+  declarations: [MP3PlayerComponent, IndexComponent, SongComponent],
 })
 export class MP3PlayerModule {}

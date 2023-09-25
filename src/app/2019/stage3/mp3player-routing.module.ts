@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { MP3PlayerComponent } from './mp3player.component';
+import { Routes, RouterModule } from '@angular/router';
 import { IndexComponent } from './index/index.component';
+import { MP3PlayerComponent } from './mp3player.component';
+import { SongComponent } from './song/song.component';
 
 const routes: Routes = [
   {
@@ -9,8 +10,12 @@ const routes: Routes = [
     component: MP3PlayerComponent,
     children: [
       {
-        path: '',
+        path: 'Index',
         component: IndexComponent,
+      },
+      {
+        path: 'Song',
+        component: SongComponent,
       },
     ],
   },
