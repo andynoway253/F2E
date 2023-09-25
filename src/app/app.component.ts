@@ -99,7 +99,7 @@ export class AppComponent {
         },
         {
           title: '第三關 - MP3 Player',
-          link: '/MP3Player',
+          link: '/MP3Player/Index',
         },
         {
           title: '第四關 - 線上支付',
