@@ -1,82 +1,30 @@
 <div fxFill fxLayout="column" style="background-color: black">
   <div class="rotation">
     <div class="bg-images" [@slideAnimation]="animationState">
-      <div class="unit">
-        <img src="assets/image/stage3/500x500.jpg" width="278" height="278" />
-      </div>
-      <div class="unit">
+      <div class="unit" *ngFor="let imagePath of imagePaths">
         <img
-          src="assets/image/stage3/500x500 (1).jpg"
+          [src]="imagePath"
           width="278"
           height="278"
-        />
-      </div>
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (2).jpg"
-          width="278"
-          height="278"
-        />
-      </div>
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (3).jpg"
-          width="278"
-          height="278"
-        />
-      </div>
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (4).jpg"
-          width="278"
-          height="278"
-        />
-      </div>
-
-      <div class="unit">
-        <img src="assets/image/stage3/500x500.jpg" width="278" height="278" />
-      </div>
-
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (1).jpg"
-          width="278"
-          height="278"
-        />
-      </div>
-
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (2).jpg"
-          width="278"
-          height="278"
-        />
-      </div>
-
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (3).jpg"
-          width="278"
-          height="278"
-        />
-      </div>
-
-      <div class="unit">
-        <img
-          src="assets/image/stage3/500x500 (4).jpg"
-          width="278"
-          height="278"
+          [routerLink]="['../Song']"
         />
       </div>
     </div>
+
     <img class="player" src="assets/image/stage3/mobile-player.png" />
+
     <div class="playing" [@test]="animationState">
       <div
         [class]="
           animationState === 'state3' ? 'song-group active' : 'song-group'
         "
       >
-        <img src="assets/image/stage3/500x500.jpg" width="278" height="278" />
+        <img
+          src="assets/image/stage3/500x500.jpg"
+          width="278"
+          height="278"
+          [routerLink]="['../Song']"
+        />
       </div>
       <div
         [class]="
@@ -87,6 +35,7 @@
           src="assets/image/stage3/500x500 (1).jpg"
           width="278"
           height="278"
+          [routerLink]="['../Song']"
         />
       </div>
       <div
@@ -100,6 +49,7 @@
           src="assets/image/stage3/500x500 (2).jpg"
           width="278"
           height="278"
+          [routerLink]="['../Song']"
         />
       </div>
       <div
@@ -111,6 +61,7 @@
           src="assets/image/stage3/500x500 (3).jpg"
           width="278"
           height="278"
+          [routerLink]="['../Song']"
         />
       </div>
       <div
@@ -122,6 +73,7 @@
           src="assets/image/stage3/500x500 (4).jpg"
           width="278"
           height="278"
+          [routerLink]="['../Song']"
         />
       </div>
     </div>

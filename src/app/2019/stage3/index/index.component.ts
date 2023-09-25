@@ -96,10 +96,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class IndexComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router) {}
 
-  animationState: string = 'initial';
+  animationState = 'initial';
 
   intervalId: any;
   intervalDuration = 3500;
+
+  imagePaths: string[] = [
+    'assets/image/stage3/500x500.jpg',
+    'assets/image/stage3/500x500 (1).jpg',
+    'assets/image/stage3/500x500 (2).jpg',
+    'assets/image/stage3/500x500 (3).jpg',
+    'assets/image/stage3/500x500 (4).jpg',
+    'assets/image/stage3/500x500.jpg',
+    'assets/image/stage3/500x500 (1).jpg',
+    'assets/image/stage3/500x500 (2).jpg',
+    'assets/image/stage3/500x500 (3).jpg',
+    'assets/image/stage3/500x500 (4).jpg',
+  ];
 
   ngOnInit(): void {
     this.startInterval();
@@ -139,4 +152,6 @@ export class IndexComponent implements OnInit {
 
     this.startInterval(); // 创建一个新的定时器
   }
+
+
 }
