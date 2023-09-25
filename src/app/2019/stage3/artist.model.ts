@@ -15,12 +15,14 @@ export class Artist {
 
     tracks: Array<song>; //  專輯曲目
 
-    description: string;  //  專輯介紹
+    description: string; //  專輯介紹
   }>;
 }
 
 interface song {
   name: string; //  曲名
+
+  singer: string; //  歌手
 
   lyrics: string[]; //  歌詞
 
