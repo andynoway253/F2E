@@ -15,5 +15,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MP3PlayerRoutingModule,
   ],
   declarations: [MP3PlayerComponent, IndexComponent, SongComponent],
+  exports: [MP3PlayerComponent],
 })
 export class MP3PlayerModule {}

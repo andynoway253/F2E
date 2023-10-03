@@ -8,16 +8,6 @@ const routes: Routes = [
   {
     path: 'MP3Player',
     component: MP3PlayerComponent,
-    children: [
-      {
-        path: 'Index',
-        component: IndexComponent,
-      },
-      {
-        path: 'Song',
-        component: SongComponent,
-      },
-    ],
   },
 ];
 

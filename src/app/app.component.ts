@@ -95,7 +95,6 @@ export class AppComponent {
         },
         {
           title: '第二關 - 新接龍',
-          link: '/test',
         },
         {
           title: '第三關 - MP3 Player',
