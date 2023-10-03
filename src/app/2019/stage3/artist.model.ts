@@ -32,6 +32,8 @@ interface song {
 
   album: string; //  收錄專輯
 
+  albumCover: string; //  專輯封面
+
   duration: string; //  時長
 
   hits: boolean; //  熱門
