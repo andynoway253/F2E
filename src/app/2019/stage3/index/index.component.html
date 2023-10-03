@@ -1,19 +1,19 @@
 <div fxFill fxLayout="column" style="background-color: black">
   <div class="rotation">
     <div class="bg-images" [@slideAnimation]="animationState">
-      <div class="unit" *ngFor="let imagePath of imagePaths">
+      <div class="unit" *ngFor="let image of imagePaths">
         <img
-          [src]="imagePath"
-          width="278"
-          height="278"
-          [routerLink]="['../Song']"
+          [src]="image"
+          [width]="imageWidth"
+          [height]="imageHeight"
+          (click)="click(image)"
         />
       </div>
     </div>
 
     <img class="player" src="assets/image/stage3/mobile-player.png" />
 
-    <div class="playing" [@test]="animationState">
+    <div class="playing" [@animation]="animationState">
       <div
         [class]="
           animationState === 'state3' ? 'song-group active' : 'song-group'
@@ -23,9 +23,10 @@
           src="assets/image/stage3/500x500.jpg"
           width="278"
           height="278"
-          [routerLink]="['../Song']"
+          (click)="click(imagePaths[0])"
         />
       </div>
+
       <div
         [class]="
           animationState === 'state4' ? 'song-group active' : 'song-group'
@@ -36,8 +37,10 @@
           width="278"
           height="278"
           [routerLink]="['../Song']"
+          (click)="click(imagePaths[1])"
         />
       </div>
+
       <div
         [class]="
           animationState === 'initial' || animationState === 'state5'
@@ -50,8 +53,10 @@
           width="278"
           height="278"
           [routerLink]="['../Song']"
+          (click)="click(imagePaths[2])"
         />
       </div>
+
       <div
         [class]="
           animationState === 'state1' ? 'song-group active' : 'song-group'
@@ -62,8 +67,10 @@
           width="278"
           height="278"
           [routerLink]="['../Song']"
+          (click)="click(imagePaths[3])"
         />
       </div>
+
       <div
         [class]="
           animationState === 'state2' ? 'song-group active' : 'song-group'
@@ -74,100 +81,19 @@
           width="278"
           height="278"
           [routerLink]="['../Song']"
+          (click)="click(imagePaths[4])"
         />
       </div>
     </div>
   </div>
 
-  <div class="slideshow" style="height: 1000px">
+  <div class="slideshow">
     <div class="moving">
-      <div class="group">
-        <img src="assets/image/stage3/300x300.jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (1).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (2).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (3).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (4).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (5).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (6).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (7).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (8).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (9).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
+      <div class="group" *ngFor="let image of smallImagePaths">
         <img
-          src="assets/image/stage3/300x300 (10).jpg"
-          width="99"
-          height="99"
-        />
-      </div>
-      <div class="group">
-        <img
-          src="assets/image/stage3/300x300 (11).jpg"
-          width="99"
-          height="99"
-        />
-      </div>
-
-      <div class="group">
-        <img src="assets/image/stage3/300x300.jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (1).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (2).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (3).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (4).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (5).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (6).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (7).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (8).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img src="assets/image/stage3/300x300 (9).jpg" width="99" height="99" />
-      </div>
-      <div class="group">
-        <img
-          src="assets/image/stage3/300x300 (10).jpg"
-          width="99"
-          height="99"
-        />
-      </div>
-      <div class="group">
-        <img
-          src="assets/image/stage3/300x300 (11).jpg"
-          width="99"
-          height="99"
+          [src]="image"
+          [width]="smallImageWidth"
+          [height]="smallImageHeight"
         />
       </div>
     </div>

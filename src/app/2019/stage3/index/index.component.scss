@@ -76,6 +76,7 @@
 
 .slideshow {
   display: flex;
+  width: 100%;
   overflow: hidden;
 
   .moving {
@@ -94,10 +95,8 @@
         border-radius: 8px;
       }
     }
-
     &:hover {
-      transition: animation-duration 0s;
-      animation-duration: 45s;
+      animation-play-state: paused;
     }
   }
 }

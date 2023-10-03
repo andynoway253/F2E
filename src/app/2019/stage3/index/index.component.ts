@@ -52,7 +52,7 @@ import { ActivatedRoute, Router } from '@angular/router';
       transition('state5 => initial', animate('0ms')),
       transition('* => *', animate('2000ms ease-out')),
     ]),
-    trigger('test', [
+    trigger('animation', [
       state(
         'initial',
         style({
@@ -99,49 +99,67 @@ export class IndexComponent implements OnInit {
   animationState = 'initial';
 
   intervalId: any;
+
   intervalDuration = 3500;
 
-  imagePaths: string[] = [
-    'assets/image/stage3/500x500.jpg',
-    'assets/image/stage3/500x500 (1).jpg',
-    'assets/image/stage3/500x500 (2).jpg',
-    'assets/image/stage3/500x500 (3).jpg',
-    'assets/image/stage3/500x500 (4).jpg',
-    'assets/image/stage3/500x500.jpg',
-    'assets/image/stage3/500x500 (1).jpg',
-    'assets/image/stage3/500x500 (2).jpg',
-    'assets/image/stage3/500x500 (3).jpg',
-    'assets/image/stage3/500x500 (4).jpg',
+  imageWidth = 278;
+
+  imageHeight = 278;
+
+  imagePaths = Array.from(
+    { length: 10 },
+    (_, index) =>
+      `assets/image/stage3/500x500${index % 5 > 0 ? ` (${index % 5})` : ''}.jpg`
+  );
+
+  smallImageWidth = 99;
+
+  smallImageHeight = 99;
+
+  smallImagePaths = Array.from(
+    { length: 24 },
+    (_, index) =>
+      `assets/image/stage3/300x300${
+        index % 12 > 0 ? ` (${index % 12})` : ''
+      }.jpg`
+  );
+
+  test = [
+    { url: 'assets/image/stage3/500x500.jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (1).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (2).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (3).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (4).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500.jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (1).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (2).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (3).jpg', singer: '' },
+    { url: 'assets/image/stage3/500x500 (4).jpg', singer: '' },
   ];
+
+  animationStates: string[] = [
+    'initial',
+    'state1',
+    'state2',
+    'state3',
+    'state4',
+    'state5',
+  ];
+
+  currentStateIndex: number = 0;
 
   ngOnInit(): void {
     this.startInterval();
   }
 
   startInterval() {
+    const DURATION = 3500;
+
     this.intervalId = setInterval(() => {
-      switch (this.animationState) {
-        case 'initial':
-          this.animationState = 'state1';
-          this.changeIntervalDuration(3500);
-          break;
-        case 'state1':
-          this.animationState = 'state2';
-          break;
-        case 'state2':
-          this.animationState = 'state3';
-          break;
-        case 'state3':
-          this.animationState = 'state4';
-          break;
-        case 'state4':
-          this.animationState = 'state5';
-          break;
-        case 'state5':
-          this.animationState = 'initial';
-          this.changeIntervalDuration(0);
-          break;
-      }
+      this.currentStateIndex =
+        (this.currentStateIndex + 1) % this.animationStates.length;
+      this.animationState = this.animationStates[this.currentStateIndex];
+      this.changeIntervalDuration(this.currentStateIndex === 0 ? 0 : DURATION);
     }, this.intervalDuration);
   }
 
@@ -153,5 +171,7 @@ export class IndexComponent implements OnInit {
     this.startInterval(); // 创建一个新的定时器
   }
 
-
+  click(e: any) {
+    console.log(e);
+  }
 }
