@@ -11,7 +11,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
   imports: [
     CommonModule,
     FlexLayoutModule,
+
     NbLayoutModule,
+
     MP3PlayerRoutingModule,
   ],
   declarations: [MP3PlayerComponent, IndexComponent, SongComponent],
