@@ -18,6 +18,8 @@ import {
 } from '@nebular/theme';
 import { PompdoroModule } from './2019/stage1/pompdoro.module';
 import { MP3PlayerModule } from './2019/stage3/mp3player.module';
+import { PaymentComponent } from './2019/stage4/payment.component';
+import { PaymentModule } from './2019/stage4/payment.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,6 +42,7 @@ import { MP3PlayerModule } from './2019/stage3/mp3player.module';
     TodoListModule,
     PompdoroModule,
     MP3PlayerModule,
+    PaymentModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

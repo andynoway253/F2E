@@ -4,6 +4,7 @@ import { PompdoroComponent } from './2019/stage1/pompdoro.component';
 import { MP3PlayerComponent } from './2019/stage3/mp3player.component';
 import { IndexComponent } from './2019/stage3/index/index.component';
 import { SongComponent } from './2019/stage3/song/song.component';
+import { PaymentComponent } from './2019/stage4/payment.component';
 
 const routes: Routes = [
   { path: 'Pompdoro', component: PompdoroComponent },
@@ -25,6 +26,10 @@ const routes: Routes = [
         component: SongComponent,
       },
     ],
+  },
+  {
+    path: 'Payment',
+    component: PaymentComponent,
   },
 
   { path: '', redirectTo: '/Pompdoro', pathMatch: 'full' },

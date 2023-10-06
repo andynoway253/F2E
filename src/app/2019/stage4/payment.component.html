@@ -1,0 +1,70 @@
+<div class="main" fxLayout="row" fxLayoutGap="12px">
+  <div class="orderInfo">
+    <p class="info_head">訂單資訊</p>
+
+    <span class="info_sub">商品名稱 :</span>
+    <p>Iphone XR手機殼 x1</p>
+
+    <span class="info_sub">訂單編號 :</span>
+    <p>17485739</p>
+
+    <span class="info_sub">訂單金額 :</span>
+    <p>NT$ 600</p>
+  </div>
+
+  <div class="step">
+    <nb-stepper #stepper orientation="horizontal" disableStepNavigation>
+      <nb-step label="選擇付款方式" [stepControl]="nameForm">
+        <form #nameForm="ngForm"></form>
+        <div class="title">
+          <div class="line"></div>
+          <p>STEP1. 選擇付款方式</p>
+        </div>
+
+        <div class="cards" fxLayout="row wrap" fxLayoutAlign="center center">
+          <div
+            nbTooltip="頁面將跳轉至對應之金融機構頁面進行後續交易"
+            *ngFor="let card of cards"
+            [class]="isActive(card.name) ? 'card active' : 'card'"
+            (click)="setActive(card.name)"
+          >
+            <div class="cardImg">
+              <img [src]="card.image" width="110" height="110" />
+            </div>
+            <span class="cardText">{{ card.name }}</span>
+          </div>
+        </div>
+
+        <div fxLayoutAlign="end">
+          <button class="nextBtn" nbButton nbStepperNext>下一步</button>
+        </div>
+      </nb-step>
+
+      <nb-step label="填寫付款資訊">
+        <div class="title">
+          <div class="line"></div>
+          <p>STEP2. 填寫付款資訊</p>
+        </div>
+
+        <div fxLayoutAlign="space-between">
+          <button nbButton class="prevBtn" nbStepperPrevious>上一步</button>
+
+          <button nbButton class="nextBtn" nbStepperNext>下一步</button>
+        </div>
+      </nb-step>
+
+      <nb-step label="付款成功">
+        <div class="title">
+          <div class="line"></div>
+          <p>您的訂單已完成付款</p>
+        </div>
+
+        <div fxLayoutAlign="end">
+          <button nbButton class="nextBtn" (click)="stepper.reset()">
+            返回商店
+          </button>
+        </div>
+      </nb-step>
+    </nb-stepper>
+  </div>
+</div>

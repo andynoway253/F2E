@@ -1,0 +1,83 @@
+.main {
+  max-width: 900px;
+  margin: 100px auto;
+
+  .orderInfo {
+    min-width: 250px;
+    background-color: #f3f3f3;
+
+    .info_head {
+      color: #000;
+      letter-spacing: 1.88px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .info_sub {
+      color: #5e5e5e;
+      letter-spacing: 1.67px;
+      line-height: 24px;
+    }
+  }
+
+  .step {
+    width: 650px;
+    text-align: center;
+
+    .header {
+      height: 200px;
+    }
+
+    .title {
+      position: relative;
+      display: inline-block;
+      margin-top: 38px;
+      margin-bottom: 89px;
+
+      .line {
+        position: absolute;
+        width: 120%;
+        height: 17px;
+        background-color: #defff2;
+        left: 50%;
+        bottom: 20%;
+        transform: translateX(-50%);
+      }
+
+      p {
+        position: relative;
+        font-size: x-large;
+      }
+    }
+
+    .cards {
+      .card {
+        width: 180px;
+        height: 180px;
+        flex: 0 0 30%;
+        border-radius: 5px;
+        background-color: #f7f7f7;
+        margin: 8px;
+        padding: 1.5rem 2rem;
+        cursor: pointer;
+
+        &.active {
+          background-color: #36b996;
+          color: #ffffff;
+        }
+      }
+    }
+
+    .nextBtn {
+      background-color: #36b996;
+      border-color: #36b996;
+      color: #fff;
+    }
+
+    .prevBtn {
+      background-color: #d5f5e9;
+      border-color: #d5f5e9;
+      color: #5e5e5e;
+    }
+  }
+}
