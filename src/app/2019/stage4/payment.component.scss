@@ -2,6 +2,10 @@
   max-width: 900px;
   margin: 100px auto;
 
+  .ng-invalid {
+    border-color: red;
+  }
+
   .orderInfo {
     min-width: 250px;
     background-color: #f3f3f3;
@@ -68,10 +72,36 @@
       }
     }
 
+    .form {
+      .creditCardNumber {
+        width: 80px;
+      }
+
+      .visa-logo {
+        fill: #ff0000;
+      }
+    }
+
+    .finish {
+      margin: auto;
+      background-color: #b5ffe4;
+      border-radius: 50%;
+    }
+
+    .checkText {
+      color: #969696;
+    }
+
     .nextBtn {
       background-color: #36b996;
       border-color: #36b996;
       color: #fff;
+
+      &.btn-disabled {
+        background-color: #dddddd;
+        border-color: #dddddd;
+        color: #000;
+      }
     }
 
     .prevBtn {
