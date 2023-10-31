@@ -102,7 +102,7 @@ export class AppComponent {
         },
         {
           title: '第四關 - 線上支付',
-          link: 'Payment',
+          link: '/Payment',
         },
         {
           title: '第五關 - 90 秒挑戰遊戲',
