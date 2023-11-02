@@ -2,8 +2,8 @@
   max-width: 900px;
   margin: 100px auto;
 
-  .ng-invalid {
-    border-color: red;
+  .ng-invalid.ng-touched {
+    border-color: red !important;
   }
 
   .orderInfo {
@@ -75,10 +75,6 @@
     .form {
       .creditCardNumber {
         width: 80px;
-      }
-
-      .visa-logo {
-        fill: #ff0000;
       }
     }
 

@@ -13,9 +13,8 @@
   </div>
 
   <div class="step">
-    <nb-stepper #stepper orientation="horizontal" disableStepNavigation>
-      <nb-step label="選擇付款方式" [stepControl]="nameForm">
-        <form #nameForm="ngForm"></form>
+    <nb-stepper #stepper disableStepNavigation>
+      <nb-step label="選擇付款方式">
         <div class="title">
           <div class="line"></div>
           <p>STEP1. 選擇付款方式</p>
@@ -36,7 +35,7 @@
         </div>
 
         <div fxLayoutAlign="end">
-          <button class="nextBtn" nbButton (click)="checkPayType()">
+          <button nbButton class="nextBtn" (click)="checkPayType()">
             下一步
           </button>
         </div>
@@ -48,187 +47,23 @@
           <p>STEP2. 填寫付款資訊</p>
         </div>
 
-        <form
-          class="form"
-          [formGroup]="cardForm"
-          fxLayout="column"
-          fxLayoutGap="8px"
-          class="form"
-        >
-          <nb-radio-group
-            status="success"
-            fxLayout="row"
-            formControlName="radio"
-          >
-            <nb-radio value="full">一次付款</nb-radio>
-            <nb-radio value="installment">分期付款</nb-radio>
-          </nb-radio-group>
+        <card-form
+          *ngIf="activeOption === '信用卡/金融卡' || activeOption === '銀聯卡'"
+          (prev)="prevStep()"
+          (next)="nextStep($event)"
+        ></card-form>
 
-          <div fxLayout="column" fxLayoutGap="8px">
-            <div
-              fxLayout="row"
-              fxLayoutGap="4px"
-              fxLayoutAlign="start center"
-              formGroupName="cardNumber"
-            >
-              <span>信用卡號：</span>
-              <input
-                nbInput
-                numbersOnly
-                status="success"
-                class="creditCardNumber"
-                formControlName="number1"
-                maxlength="4"
-              />
-              <span>-</span>
-              <input
-                nbInput
-                numbersOnly
-                status="success"
-                class="creditCardNumber"
-                formControlName="number2"
-                maxlength="4"
-              />
-              <span>-</span>
-              <input
-                nbInput
-                numbersOnly
-                status="success"
-                class="creditCardNumber"
-                formControlName="number3"
-                maxlength="4"
-              />
-              <span>-</span>
-              <input
-                nbInput
-                numbersOnly
-                status="success"
-                class="creditCardNumber"
-                formControlName="number4"
-                maxlength="4"
-              />
+        <shop-form
+          *ngIf="activeOption === '超商付款'"
+          (prev)="prevStep()"
+          (next)="nextStep($event)"
+        ></shop-form>
 
-              <object
-                width="45"
-                height="45"
-                [data]="visaUrl | sanitizeUrl"
-                type="image/svg+xml"
-              ></object>
-
-              <object
-                width="45"
-                height="45"
-                [data]="masterCardUrl | sanitizeUrl"
-                type="image/svg+xml"
-              ></object>
-
-              <object
-                width="45"
-                height="45"
-                [data]="jcbUrl | sanitizeUrl"
-                type="image/svg+xml"
-              ></object>
-            </div>
-
-            <div
-              *ngIf="cardForm.get('cardNumber')?.errors?.identityRevealed"
-              class="text-danger"
-              fxLayoutAlign="start"
-            >
-              請填寫完整信用卡號
-            </div>
-          </div>
-
-          <div fxLayout="row" fxLayoutGap="4px" fxLayoutAlign="start center">
-            <span>有效年月：</span>
-
-            <nb-select
-              status="success"
-              class="expiry-month"
-              formControlName="month"
-              placeholder="請選擇月"
-            >
-              <nb-option
-                *ngFor="let month of months"
-                [value]="month === 0 ? null : month"
-              >
-                <span>{{ month === 0 ? "---" : month }}</span>
-              </nb-option>
-            </nb-select>
-
-            <span>/</span>
-
-            <nb-select
-              status="success"
-              class="expiry-year"
-              formControlName="year"
-              placeholder="請選擇年"
-            >
-              <nb-option [value]="null">
-                <span>---</span>
-              </nb-option>
-
-              <nb-option
-                *ngFor="let year of years"
-                [value]="year === 0 ? null : year"
-              >
-                <span>{{ year === 0 ? "---" : year }}</span>
-              </nb-option>
-            </nb-select>
-          </div>
-
-          <div fxLayout="row" fxLayoutGap="4px" fxLayoutAlign="start center">
-            <span>背後末三碼：</span>
-            <input
-              nbInput
-              status="success"
-              class="cvc"
-              formControlName="cvc"
-              maxlength="3"
-            />
-          </div>
-
-          <div fxLayout="row" fxLayoutGap="4px" fxLayoutAlign="start center">
-            <span>填寫付款人信箱：</span>
-            <input nbInput status="success" formControlName="email" />
-
-            <div *ngIf="cardForm.get('email')?.invalid" class="text-danger">
-              Email 格式錯誤
-            </div>
-          </div>
-
-          <div fxLayout="column" fxLayoutGap="4px" fxLayoutAlign="start start">
-            <nb-checkbox
-              status="success"
-              (checkedChange)="toggle($event)"
-              formControlName="check"
-            >
-              <span [class]="checked ? 'text-success' : ''">
-                請再次確認「訂單資訊」與「付款資訊
-              </span>
-              <br />
-              <span [class]="checked ? 'text-success' : ''">
-                付款完成後將發送通知信至您的 E-mail 信箱
-              </span>
-            </nb-checkbox>
-
-            <span status="basic">第三方支付金流平台服務條款</span>
-          </div>
-
-          <div fxLayoutAlign="space-between">
-            <button nbButton nbStepperPrevious class="prevBtn">上一步</button>
-
-            <button
-              nbButton
-              nbStepperNext
-              class="nextBtn"
-              type="submit"
-              [disabled]="cardForm.invalid"
-            >
-              下一步
-            </button>
-          </div>
-        </form>
+        <atm-form
+          *ngIf="activeOption === 'Web ATM' || activeOption === 'ATM 轉帳'"
+          (prev)="prevStep()"
+          (next)="nextStep($event)"
+        ></atm-form>
       </nb-step>
 
       <nb-step label="付款成功">
