@@ -2,9 +2,7 @@
   max-width: 900px;
   margin: 100px auto;
 
-  .ng-invalid.ng-touched {
-    border-color: red !important;
-  }
+
 
   .orderInfo {
     min-width: 250px;
@@ -69,12 +67,6 @@
           background-color: #36b996;
           color: #ffffff;
         }
-      }
-    }
-
-    .form {
-      .creditCardNumber {
-        width: 80px;
       }
     }
 
