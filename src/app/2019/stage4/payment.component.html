@@ -49,19 +49,19 @@
 
         <card-form
           *ngIf="activeOption === '信用卡/金融卡' || activeOption === '銀聯卡'"
-          (prev)="prevStep()"
+          (prev)="prevStep($event)"
           (next)="nextStep($event)"
         ></card-form>
 
         <shop-form
           *ngIf="activeOption === '超商付款'"
-          (prev)="prevStep()"
+          (prev)="prevStep($event)"
           (next)="nextStep($event)"
         ></shop-form>
 
         <atm-form
           *ngIf="activeOption === 'Web ATM' || activeOption === 'ATM 轉帳'"
-          (prev)="prevStep()"
+          (prev)="prevStep($event)"
           (next)="nextStep($event)"
         ></atm-form>
       </nb-step>

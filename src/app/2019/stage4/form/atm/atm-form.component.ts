@@ -4,13 +4,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'atm-form',
   templateUrl: './atm-form.component.html',
+  styleUrls: ['./atm-form.component.scss'],
 })
 export class ATMFormComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   @Output() next = new EventEmitter<FormGroup>();
 
-  @Output() prev = new EventEmitter<any>();
+  @Output() prev = new EventEmitter<FormGroup>();
 
   ATMForm: FormGroup = this.fb.group({
     bank: ['', [Validators.required]],
@@ -33,7 +34,7 @@ export class ATMFormComponent implements OnInit {
   }
 
   prevStep() {
-    this.prev.emit();
+    this.prev.emit(this.ATMForm);
   }
 
   nextStep() {

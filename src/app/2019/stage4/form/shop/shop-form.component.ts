@@ -4,13 +4,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'shop-form',
   templateUrl: './shop-form.component.html',
+  styleUrls: ['./shop-form.component.scss'],
 })
 export class ShopFormComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   @Output() next = new EventEmitter<FormGroup>();
 
-  @Output() prev = new EventEmitter<any>();
+  @Output() prev = new EventEmitter<FormGroup>();
 
   shopForm: FormGroup = this.fb.group({
     shop: ['', [Validators.required]],
@@ -30,7 +31,7 @@ export class ShopFormComponent implements OnInit {
   }
 
   prevStep() {
-    this.prev.emit();
+    this.prev.emit(this.shopForm);
   }
 
   nextStep() {

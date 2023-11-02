@@ -36,35 +36,10 @@ export class PaymentComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
-    // this.cardNumber?.get('number1')?.valueChanges.subscribe({
-    //   next: (res) => {
-    //     if (this.cardNumber?.get('number1')?.valid) {
-    //       const first = res.charAt(0);
-    //       //  JCB
-    //       this.jcbUrl =
-    //         first === '3'
-    //           ? 'assets/image/stage4/jcb2.svg'
-    //           : 'assets/image/stage4/jcb.svg';
-    //       //  Visa
-    //       this.visaUrl =
-    //         first === '4'
-    //           ? 'assets/image/stage4/visa2.svg'
-    //           : 'assets/image/stage4/visa.svg';
-    //       //  萬事達卡
-    //       this.masterCardUrl =
-    //         first === '5'
-    //           ? 'assets/image/stage4/mastercard2.svg'
-    //           : 'assets/image/stage4/mastercard.svg';
-    //     }
-    //   },
-    // });
-  }
+  ngOnInit(): void {}
 
   setActive(option: string) {
     this.activeOption = option;
-
-    // this.currentForm = this.cards.find((card) => card.name === option).form;
   }
 
   isActive(option: string) {
@@ -83,20 +58,21 @@ export class PaymentComponent implements OnInit {
   }
 
   nextStep(form: FormGroup) {
-    this.stepper.next();
+    form.valid && this.stepper.next();
 
-    this.stepChange();
+    this.stepChange(form);
   }
 
-  prevStep() {
+  prevStep(form: FormGroup) {
     this.stepper.previous();
 
-    this.stepChange();
+    this.stepChange(form);
   }
 
-  stepChange() {
-    // this.currentForm.reset();
-    // this.currentForm.markAsPristine();
+  stepChange(form: FormGroup) {
+    form.reset();
+
+    form.markAsPristine();
   }
 }
 
