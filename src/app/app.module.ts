@@ -20,6 +20,7 @@ import { PompdoroModule } from './2019/stage1/pompdoro.module';
 import { MP3PlayerModule } from './2019/stage3/mp3player.module';
 import { PaymentComponent } from './2019/stage4/payment.component';
 import { PaymentModule } from './2019/stage4/payment.module';
+import { MaskMapModule } from './2019/stage10/mask-map.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +44,7 @@ import { PaymentModule } from './2019/stage4/payment.module';
     PompdoroModule,
     MP3PlayerModule,
     PaymentModule,
+    MaskMapModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
