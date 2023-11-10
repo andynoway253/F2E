@@ -4,6 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false,
     "strict": true,
@@ -16,6 +17,7 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "strictNullChecks": false,
+    "resolveJsonModule": true,
     "target": "es2017",
     "module": "es2020",
     "lib": ["es2018", "dom"]
