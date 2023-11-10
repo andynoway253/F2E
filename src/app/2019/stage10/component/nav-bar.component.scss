@@ -1,0 +1,28 @@
+nb-list.list nb-list-item {
+  padding: 0rem;
+}
+
+.search {
+  padding: 25px 20px 20px;
+  .select {
+    min-width: 100%;
+    margin: 15px 0;
+  }
+}
+
+.list {
+  background-color: aliceblue;
+  .listItem {
+    padding: 20px;
+    border: 1px solid #e2e2e2;
+    cursor: pointer;
+
+    .store-info .icon {
+      margin-right: 10px;
+    }
+
+    &:hover {
+      background-color: #e8edff;
+    }
+  }
+}

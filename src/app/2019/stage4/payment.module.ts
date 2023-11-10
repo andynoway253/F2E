@@ -12,16 +12,16 @@ import {
   NbTooltipModule,
   NbToastrModule,
 } from '@nebular/theme';
+import { SanitizeUrlPipe } from '../shared/pipe/sanitize-url';
+import { ATMFormComponent } from './component/atm/atm-form.component';
+import { CardFormComponent } from './component/card/card-form.component';
+import { ShopFormComponent } from './component/shop/shop-form.component';
 import { MoveFocusToNextDirective } from './directive/move-focus-to-next.directive';
 import { NumberDirective } from './directive/numbers-only.directive';
-import { ATMFormComponent } from './form/atm/atm-form.component';
 import {
   PaymentComponent,
   FormErrorDisplayComponent,
 } from './payment.component';
-import { SanitizeUrlPipe } from './pipe/sanitize-url';
-import { ShopFormComponent } from './form/shop/shop-form.component';
-import { CardFormComponent } from './form/card/card-form.component';
 
 @NgModule({
   imports: [
@@ -61,7 +61,6 @@ import { CardFormComponent } from './form/card/card-form.component';
 
     NumberDirective,
     MoveFocusToNextDirective,
-    SanitizeUrlPipe,
   ],
 })
 export class PaymentModule {}

@@ -1,0 +1,66 @@
+<div fxFlex fxLayout="column">
+  <div fxFlex="20" fxLayout="column" class="search">
+    <nb-select
+      class="select"
+      placeholder="請選擇城市"
+      [(selected)]="selectCity"
+      (selectedChange)="onSelectedChange($event, 'city')"
+    >
+      <nb-option *ngFor="let city of cityList" [value]="city">
+        <span>{{ city }}</span>
+      </nb-option>
+    </nb-select>
+
+    <nb-select
+      class="select"
+      placeholder="請選擇區域"
+      [(selected)]="selectArea"
+      (selectedChange)="onSelectedChange($event, 'area')"
+    >
+      <nb-option *ngFor="let area of areaList" [value]="area">
+        <span>{{ area }}</span>
+      </nb-option>
+    </nb-select>
+
+    <span>能取得口罩的藥局有： {{ clinicList.length }} 家</span>
+  </div>
+
+  <nb-list fxFlex class="list">
+    <nb-list-item *ngFor="let clinic of clinicList" (click)="itemClicked(clinic)">
+      <div fxFlex class="listItem">
+        <div class="store-name">{{ clinic.properties.name }}</div>
+        <div class="store-info">
+          <img class="icon" src="assets/image/stage10/marker.svg" />
+          <a
+            [href]="
+              'https://www.google.com.tw/maps/search/' +
+              clinic.properties.address
+            "
+            target="_blank"
+            >{{ clinic.properties.address }}</a
+          >
+        </div>
+        <div class="store-info">
+          <img class="icon" src="assets/image/stage10/phone.svg" />
+          {{ clinic.properties.phone }}
+        </div>
+        <div class="mask-status">
+          <div
+            [class]="
+              maskStatus(clinic.properties.mask_adult) + ' popup mask-item'
+            "
+          >
+            大人: {{ clinic.properties.mask_adult }}
+          </div>
+          <div
+            [class]="
+              maskStatus(clinic.properties.mask_child) + ' popup mask-item'
+            "
+          >
+            小孩: {{ clinic.properties.mask_child }}
+          </div>
+        </div>
+      </div>
+    </nb-list-item>
+  </nb-list>
+</div>

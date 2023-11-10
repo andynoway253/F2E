@@ -1,2 +1,9 @@
-<div id="map"></div>
+<div fxLayout="row">
+  <nav-bar
+    fxFlex="20"
+    [clinicList]="clinicList"
+    (newCoordinate)="getNewCenter($event)"
+  ></nav-bar>
 
+  <div fxFlex id="map"></div>
+</div>
