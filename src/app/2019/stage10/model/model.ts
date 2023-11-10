@@ -1,8 +1,5 @@
 export interface markers {
-  geometry: {
-    coordinates: Array<number>;
-    type: string;
-  };
+  geometry: geometry;
   properties: property;
   openPopup: any;
 }
@@ -23,4 +20,9 @@ export interface property {
   town: string;
   updated: string;
   website: string;
+}
+
+interface geometry {
+  coordinates: Array<number>;
+  type: string;
 }

@@ -62,7 +62,7 @@ export class MaskMapComponent implements OnInit {
             const lon = geometry.coordinates[0]; //  緯度
             const lat = geometry.coordinates[1]; //  經度
 
-            //  幫資料都加上 openPopup function 這樣在點擊左邊list item時
+            //  幫資料都加上 openPopup function 這樣在點擊左邊list item 時就可以直接打開popup
             this.allClinic[i].openPopup = () =>
               L.marker([lat, lon], { icon })
                 .addTo(this.map)
