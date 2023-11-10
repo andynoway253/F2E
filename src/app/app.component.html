@@ -1,5 +1,9 @@
 <nb-layout>
-  <nb-layout-column class="open" *ngIf="showOpenBtn">
+  <nb-layout-column
+    class="open"
+    [style]="showOpenBtn ? 'z-index: 9999' : ''"
+    *ngIf="showOpenBtn"
+  >
     <div class="menu-open-button">
       <button nbButton (click)="toggleMenu()">
         <nb-icon icon="arrowhead-right-outline"> </nb-icon>
