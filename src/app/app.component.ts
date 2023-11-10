@@ -1,3 +1,4 @@
+import { AppService } from './app.service';
 import {
   trigger,
   state,
@@ -78,7 +79,10 @@ const SidebarCloseAnimation = animation([
   ],
 })
 export class AppComponent {
-  constructor(private menuService: NbMenuService) {}
+  constructor(
+    private appService: AppService,
+    private menuService: NbMenuService
+  ) {}
 
   menuCollapsed = false;
 
@@ -138,12 +142,16 @@ export class AppComponent {
   onAnimationStart(e: any) {
     if (e.fromState === 'collapsed' && e.toState === 'expanded') {
       this.showOpenBtn = false;
+
+      this.appService.resize$.next();
     }
   }
 
   onAnimationDone(e: any) {
     if (e.toState === 'collapsed') {
       this.showOpenBtn = true;
+
+      this.appService.resize$.next();
     }
   }
 }
