@@ -22,6 +22,7 @@ import {
   PaymentComponent,
   FormErrorDisplayComponent,
 } from './payment.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -38,6 +39,8 @@ import {
     NbStepperModule,
     NbTooltipModule,
     NbToastrModule.forRoot(),
+
+    RouterModule.forChild([{ path: '', component: PaymentComponent }]),
   ],
   declarations: [
     PaymentComponent,
@@ -51,16 +54,6 @@ import {
     MoveFocusToNextDirective,
     SanitizeUrlPipe,
   ],
-  exports: [
-    PaymentComponent,
-    FormErrorDisplayComponent,
-
-    ATMFormComponent,
-    CardFormComponent,
-    ShopFormComponent,
-
-    NumberDirective,
-    MoveFocusToNextDirective,
-  ],
+  exports: [PaymentComponent],
 })
 export class PaymentModule {}
