@@ -8,7 +8,11 @@ import { PaymentComponent } from './2019/stage4/payment.component';
 import { MaskMapComponent } from './2019/stage10/mask-map.component';
 
 const routes: Routes = [
-  { path: 'Pompdoro', component: PompdoroComponent },
+  {
+    path: 'Pompdoro',
+    loadChildren: () =>
+      import('./2019/stage1/pompdoro.module').then((m) => m.PompdoroModule),
+  },
   {
     path: 'MP3Player',
     component: MP3PlayerComponent,
