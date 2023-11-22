@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "~13.4.0",
     "@angular/router": "~13.4.0",
     "@nebular/eva-icons": "9.0.0",
-    "@nebular/theme": "^9.1.0-rc.7",
+    "@nebular/theme": "^9.0.0",
     "@types/leaflet.markercluster": "^1.5.3",
     "eva-icons": "^1.1.2",
     "leaflet": "^1.9.4",
