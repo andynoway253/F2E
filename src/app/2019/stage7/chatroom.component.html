@@ -1,0 +1,10 @@
+<div fxFill fxLayout="column" fxLayoutGap="8px">
+  <div class="content" fxLayout="column" fxLayoutGap="8px">
+    <span *ngFor="let message of messages"> {{ message }} </span>
+  </div>
+
+  <div fxLayoutGap="4px" fxLayoutALign="end end">
+    <input [(ngModel)]="sendMsg" />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>

@@ -115,7 +115,8 @@ export class AppComponent {
           title: '第六關 - 旅館預約服務(沒做)',
         },
         {
-          title: '第七關 - 匿名聊天室(沒做)',
+          title: '第七關 - 匿名聊天室(施工中)',
+          link: '/Chatroom',
         },
         {
           title: '第八關 - 雲端硬碟(沒做)',

@@ -12,9 +12,11 @@ import {
   NbThemeModule,
 } from '@nebular/theme';
 import { PompdoroModule } from './2019/stage1/pompdoro.module';
+import { MaskMapModule } from './2019/stage10/mask-map.module';
 import { MP3PlayerModule } from './2019/stage3/mp3player.module';
 import { PaymentModule } from './2019/stage4/payment.module';
-import { MaskMapModule } from './2019/stage10/mask-map.module';
+import { ChatroomModule } from './2019/stage7/chatroom.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +24,7 @@ import { MaskMapModule } from './2019/stage10/mask-map.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     NbThemeModule.forRoot(),
     NbMenuModule.forRoot(),
@@ -32,6 +35,7 @@ import { MaskMapModule } from './2019/stage10/mask-map.module';
     PompdoroModule,
     MP3PlayerModule,
     PaymentModule,
+    ChatroomModule,
     MaskMapModule,
   ],
   providers: [],

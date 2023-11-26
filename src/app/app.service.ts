@@ -5,9 +5,9 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class AppService {
-  resize$ = new Subject<boolean>();
+  resize$ = new Subject<void>();
 
-  resizeMap(): Observable<boolean> {
+  resizeMap(): Observable<void> {
     return this.resize$.asObservable();
   }
 }

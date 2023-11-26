@@ -18,6 +18,11 @@ const routes: Routes = [
       import('./2019/stage4/payment.module').then((m) => m.PaymentModule),
   },
   {
+    path: 'Chatroom',
+    loadChildren: () =>
+      import('./2019/stage7/chatroom.module').then((m) => m.ChatroomModule),
+  },
+  {
     path: 'MaskMap',
     loadChildren: () =>
       import('./2019/stage10/mask-map.module').then((m) => m.MaskMapModule),
