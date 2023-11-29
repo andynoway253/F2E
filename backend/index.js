@@ -6,7 +6,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://2019-f2e.vercel.app",
+    origin: ["http://localhost:4200", "https://2019-f2e.vercel.app"],
     methods: ["GET", "POST"],
     credentials: true,
     connectionStateRecovery: {},
