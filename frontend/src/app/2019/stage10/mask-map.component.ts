@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject, from } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { AppService } from './../../app.service';
+import { AppService } from '../../app.service';
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
 import { markers, property } from './model/model';

@@ -9,6 +9,7 @@ const io = new Server(server, {
     origin: "http://localhost:4200",
     methods: ["GET", "POST"],
     credentials: true,
+    connectionStateRecovery: {},
   },
 });
 
