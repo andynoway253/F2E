@@ -1,10 +1,17 @@
 <div fxFill fxLayout="column" fxLayoutGap="8px">
-  <div class="content" fxLayout="column" fxLayoutGap="8px">
-    <span *ngFor="let message of messages"> {{ message }} </span>
-  </div>
+  <div fxFlex class="background" fxLayout="column" fxLayoutGap="8px">
+    <div #content class="content" fxLayout="column" fxLayoutGap="8px">
+      <span #message *ngFor="let message of messages"> {{ message }} </span>
+    </div>
 
-  <div fxLayoutGap="4px" fxLayoutALign="end end">
-    <input [(ngModel)]="sendMsg" />
-    <button (click)="sendMessage()">Send</button>
+    <div class="input" fxLayout="row" fxLayoutGap="4px">
+      <input
+        nbInput
+        [fullWidth]="true"
+        [(ngModel)]="sendMsg"
+        (keyup.enter)="sendMessage()"
+      />
+      <button nbButton (click)="sendMessage()">Send</button>
+    </div>
   </div>
 </div>

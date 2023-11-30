@@ -5,12 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ChatroomComponent } from './chatroom.component';
 import { ChatService } from './chatroom.service';
+import { NbButtonModule, NbInputModule } from '@nebular/theme';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     FlexLayoutModule,
+
+    NbButtonModule,
+    NbInputModule,
 
     RouterModule.forChild([{ path: '', component: ChatroomComponent }]),
   ],

@@ -1,5 +1,13 @@
+import {
+  Component,
+  OnInit,
+  ViewChildren,
+  QueryList,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { ChatService } from './chatroom.service';
-import { Component, OnInit } from '@angular/core';
 
 @Component({
   templateUrl: './chatroom.component.html',
@@ -7,6 +15,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatroomComponent implements OnInit {
   constructor(private chatService: ChatService) {}
+
+  @ViewChildren('message') message: QueryList<any>;
+
+  @ViewChild('content') content: ElementRef;
+
+  destory$ = new Subject();
 
   sendMsg: string;
 
@@ -16,13 +30,38 @@ export class ChatroomComponent implements OnInit {
     this.chatService.getMessages().subscribe({
       next: (data: { user: string; text: string }) => {
         this.messages.push(data.text);
+      },
+    });
+  }
 
+  ngOnDestroy(): void {
+    this.destory$.next(true);
+    this.destory$.complete();
+  }
+
+  ngAfterViewInit() {
+    this.scrollToBottom();
+
+    this.message.changes.pipe(takeUntil(this.destory$)).subscribe({
+      next: () => {
+        this.scrollToBottom();
       },
     });
   }
 
   sendMessage() {
+    if (!this.sendMsg) {
+      return;
+    }
+
     this.chatService.sendMessage(this.sendMsg);
     this.sendMsg = '';
+  }
+
+  scrollToBottom() {
+    this.content.nativeElement.scrollTo({
+      top: this.content.nativeElement.scrollHeight,
+      behavior: 'smooth',
+    });
   }
 }
