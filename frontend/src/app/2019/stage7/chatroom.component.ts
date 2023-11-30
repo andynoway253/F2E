@@ -26,12 +26,26 @@ export class ChatroomComponent implements OnInit {
 
   messages: string[] = [];
 
+  online: number;
+
   ngOnInit(): void {
-    this.chatService.getMessages().subscribe({
-      next: (data: { user: string; text: string }) => {
-        this.messages.push(data.text);
-      },
-    });
+    this.chatService
+      .getUser()
+      .pipe(takeUntil(this.destory$))
+      .subscribe({
+        next: (data: any) => {
+          console.log(data);
+        },
+      });
+
+    this.chatService
+      .getMessages()
+      .pipe(takeUntil(this.destory$))
+      .subscribe({
+        next: (data: { user: string; text: string }) => {
+          this.messages.push(data.text);
+        },
+      });
   }
 
   ngOnDestroy(): void {

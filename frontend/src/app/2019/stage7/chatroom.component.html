@@ -1,5 +1,9 @@
 <div fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex class="background" fxLayout="column" fxLayoutGap="8px">
+    <div class="online">
+      <span>線上人數：{{ online }}</span>
+    </div>
+
     <div #content class="content" fxLayout="column" fxLayoutGap="8px">
       <span #message *ngFor="let message of messages"> {{ message }} </span>
     </div>
