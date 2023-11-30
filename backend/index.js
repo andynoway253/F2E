@@ -13,8 +13,22 @@ const io = new Server(server, {
   },
 });
 
+const onlineUsers = [];
+
 io.on("connection", (socket) => {
   console.log("a user connected");
+
+  // add new user
+  socket.on("new-user-add", (newUserId) => {
+    console.log(newUserId);
+    if (!onlineUsers.some((user) => user.userId === newUserId)) {
+      // if user is not added before
+      onlineUsers.push({ userId: newUserId, socketId: socket.id });
+      console.log("new user is here!", onlineUsers);
+    }
+    // send all active users to new user
+    io.emit("get-users", onlineUsers);
+  });
 
   socket.on("add-message", (message) => {
     console.log("add message");
