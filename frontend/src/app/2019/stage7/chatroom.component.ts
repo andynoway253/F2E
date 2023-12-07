@@ -22,7 +22,9 @@ export class ChatroomComponent implements OnInit {
 
   destory$ = new Subject();
 
-  sendMsg: string;
+  nickName = '';
+
+  sendMsg = '';
 
   messages: string[] = [];
 
@@ -54,8 +56,6 @@ export class ChatroomComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom();
-
     this.message.changes.pipe(takeUntil(this.destory$)).subscribe({
       next: () => {
         this.scrollToBottom();
@@ -78,4 +78,6 @@ export class ChatroomComponent implements OnInit {
       behavior: 'smooth',
     });
   }
+
+  cofirm() {}
 }

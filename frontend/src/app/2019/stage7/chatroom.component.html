@@ -18,4 +18,22 @@
       <button nbButton (click)="sendMessage()">Send</button>
     </div>
   </div>
+
+  <ng-template #dialog let-data let-ref="dialogRef">
+    <nb-card accent="info">
+      <nb-card-header>
+        <font size="+2"><b>請輸入暱稱</b></font>
+      </nb-card-header>
+
+      <nb-card-body fxLayout="column" fxLayoutGap="8px">
+        <input
+          nbInput
+          [fullWidth]="true"
+          [(ngModel)]="nickName"
+          (keyup.enter)="cofirm()"
+        />
+        <button nbButton (click)="cofirm()">確認</button>
+      </nb-card-body>
+    </nb-card>
+  </ng-template>
 </div>

@@ -7,6 +7,8 @@ import { io } from 'socket.io-client';
 })
 export class ChatService {
   private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
+
+  // private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
   private socket = io(this.apiUrl, { withCredentials: true });
 
   sendMessage(message: string) {
@@ -27,7 +29,7 @@ export class ChatService {
 
   getUser(): Observable<any> {
     return new Observable((obs) => {
-      this.socket.on('new-user-add', (data: any) => {
+      this.socket.on('connectedUsersCount', (data: any) => {
         obs.next(data);
       });
 
