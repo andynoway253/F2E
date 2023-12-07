@@ -13,13 +13,10 @@ const io = new Server(server, {
   },
 });
 
-const onlineUsers = [];
-
 io.on("connection", (socket) => {
   console.log("a user connected");
 
-  const connectedUsersCount = Object.keys(io.sockets.sockets).length;
-  io.emit("connectedUsersCount", connectedUsersCount);
+  io.emit("connectedUsersCount", io.engine.clientsCount);
 
   socket.on("add-message", (message) => {
     console.log("add message");
@@ -29,8 +26,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
-    const oneUserLeft = connectedUsersCount - 1;
-    io.emit("connectedUsersCount", oneUserLeft);
+    io.emit("connectedUsersCount", io.engine.clientsCount);
   });
 });
 
