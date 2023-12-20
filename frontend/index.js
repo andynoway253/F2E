@@ -34,14 +34,14 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
-
     users.splice(
       users.findIndex((item) => item === userName),
       1
     );
 
-    io.emit("connectedUsersCount", users.length);
+    io.emit("message", { type: "leave", text: userName + "離開聊天" });
 
+    io.emit("connectedUsersCount", users.length);
   });
 
   socket.on("login", (data) => {
@@ -63,19 +63,6 @@ io.on("connection", (socket) => {
       /*發送 登入失敗 事件*/
       socket.emit("loginFail", "");
     }
-  });
-
-  socket.on("logout", () => {
-    console.log("logout");
-
-    users.splice(
-      users.findIndex((item) => item === userName),
-      1
-    );
-
-    io.emit("message", { type: "leave", text: userName + "離開聊天" });
-
-    io.emit("connectedUsersCount", users.length);
   });
 
   socket.on("sendMessage", (message) => {

@@ -85,6 +85,7 @@ export class ChatroomComponent implements OnInit {
         },
       });
 
+    //  切換左側項目時會執行destory
     this.destory$.subscribe({
       next: () => {
         this.chatService.liveChatRoom();

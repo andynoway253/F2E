@@ -39,6 +39,8 @@ io.on("connection", (socket) => {
       1
     );
 
+    io.emit("message", { type: "leave", text: userName + "離開聊天" });
+
     io.emit("connectedUsersCount", users.length);
   });
 
@@ -63,19 +65,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("logout", () => {
-    console.log("logout");
-
-    users.splice(
-      users.findIndex((item) => item === userName),
-      1
-    );
-
-    io.emit("message", { type: "leave", text: userName + "離開聊天" });
-
-    io.emit("connectedUsersCount", users.length);
-  });
-
   socket.on("sendMessage", (message) => {
     io.emit("message", {
       type: "message",
@@ -87,3 +76,4 @@ io.on("connection", (socket) => {
 server.listen(3000, () => {
   console.log("server running at https://f2e.onrender.com");
 });
+
