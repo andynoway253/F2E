@@ -17,18 +17,20 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 
   io.emit("connectedUsersCount", io.engine.clientsCount);
-
-  socket.on("add-message", (message) => {
-    console.log("add message");
-    io.emit("message", { type: "new-message", text: message });
-  });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-
-    io.emit("connectedUsersCount", io.engine.clientsCount);
-  });
 });
+
+
+socket.on("disconnect", () => {
+  console.log("user disconnected");
+
+  io.emit("connectedUsersCount", io.engine.clientsCount);
+});
+
+socket.on("add-message", (message) => {
+  console.log("add message");
+  io.emit("message", { type: "new-message", text: message });
+});
+
 
 server.listen(3000, () => {
   console.log("server running at https://f2e.onrender.com");
