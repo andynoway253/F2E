@@ -104,7 +104,9 @@ export class PompdoroComponent implements OnInit {
     const index = this.taskList.indexOf(task);
     this.taskList.splice(index, 1);
 
-    this.taskObj = new Task({});
+    this.taskObj = null;
+
+    this.textRenderer(0);
 
     this.filterTasks();
   }
@@ -123,7 +125,7 @@ export class PompdoroComponent implements OnInit {
 
     task.toggleCompletion(e);
 
-    //  休息結束，播放休息完成音樂
+    //  休息結束，播放休息結束音樂
     this.playMusic(task, 'break');
   }
 
