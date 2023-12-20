@@ -5,8 +5,10 @@ import {
   QueryList,
   ViewChild,
   ElementRef,
+  TemplateRef,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { NbDialogRef, NbDialogService } from '@nebular/theme';
+import { Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ChatService } from './chatroom.service';
 
 @Component({
@@ -14,29 +16,43 @@ import { ChatService } from './chatroom.service';
   styleUrls: ['./chatroom.component.scss'],
 })
 export class ChatroomComponent implements OnInit {
-  constructor(private chatService: ChatService) {}
+  constructor(
+    private dialogService: NbDialogService,
+
+    private chatService: ChatService
+  ) {}
 
   @ViewChildren('message') message: QueryList<any>;
+
+  @ViewChild('dialog') dialog: TemplateRef<any>;
 
   @ViewChild('content') content: ElementRef;
 
   destory$ = new Subject();
 
+  startChat$ = new Subject<boolean>();
+
+  dialogRef: NbDialogRef<any>;
+
   nickName = '';
 
   sendMsg = '';
 
-  messages: string[] = [];
+  messages: any[] = [];
 
   online: number;
 
+  login = false;
+
   ngOnInit(): void {
+    this.chatService.checkConnectStatus();
+
     this.chatService
-      .getUser()
+      .getOnlineUser()
       .pipe(takeUntil(this.destory$))
       .subscribe({
         next: (data: number) => {
-          this.online = data
+          this.online = data;
         },
       });
 
@@ -44,18 +60,52 @@ export class ChatroomComponent implements OnInit {
       .getMessages()
       .pipe(takeUntil(this.destory$))
       .subscribe({
-        next: (data: { user: string; text: string }) => {
-          this.messages.push(data.text);
+        next: (data: { type: string; text: string }) => {
+          this.messages.push(data);
         },
       });
+
+    this.startChat$
+      .pipe(
+        filter((boolean) => boolean),
+        switchMap((res) => {
+          console.log(res);
+          return this.chatService.joinChatRoom(this.nickName);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (res) {
+            this.dialogRef.close();
+
+            this.login = res;
+          } else {
+            alert('名稱重複');
+          }
+        },
+      });
+
+    this.destory$.subscribe({
+      next: () => {
+        this.chatService.liveChatRoom();
+      },
+    });
   }
 
   ngOnDestroy(): void {
     this.destory$.next(true);
     this.destory$.complete();
+
+    this.dialogRef.close();
   }
 
   ngAfterViewInit() {
+    this.dialogRef = this.dialogService.open(this.dialog, {
+      closeOnBackdropClick: false,
+      closeOnEsc: false,
+      hasBackdrop: false,
+    });
+
     this.message.changes.pipe(takeUntil(this.destory$)).subscribe({
       next: () => {
         this.scrollToBottom();
@@ -68,7 +118,10 @@ export class ChatroomComponent implements OnInit {
       return;
     }
 
-    this.chatService.sendMessage(this.sendMsg);
+    this.chatService.sendMessage({
+      userName: this.nickName,
+      text: this.sendMsg,
+    });
     this.sendMsg = '';
   }
 
@@ -79,5 +132,11 @@ export class ChatroomComponent implements OnInit {
     });
   }
 
-  cofirm() {}
+  startChat() {
+    if (!this.nickName.trim()) {
+      return;
+    }
+
+    this.startChat$.next(true);
+  }
 }

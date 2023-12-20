@@ -15,6 +15,15 @@
     height: 100%;
     max-height: calc(100% - 50px);
     overflow: auto;
+
+    .notMessage {
+      display: flex;
+      justify-content: center;
+      font: {
+        size: large;
+        style: oblique;
+      }
+    }
   }
 
   .input {

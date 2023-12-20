@@ -5,17 +5,22 @@
     </div>
 
     <div #content class="content" fxLayout="column" fxLayoutGap="8px">
-      <span #message *ngFor="let message of messages"> {{ message }} </span>
+      <div #message *ngFor="let message of messages">
+        <span [class]="message.type !== 'message' ? 'notMessage' : 'messgae'">
+          {{ message.text }}
+        </span>
+      </div>
     </div>
 
     <div class="input" fxLayout="row" fxLayoutGap="4px">
       <input
         nbInput
         [fullWidth]="true"
+        [disabled]="!login"
         [(ngModel)]="sendMsg"
         (keyup.enter)="sendMessage()"
       />
-      <button nbButton (click)="sendMessage()">Send</button>
+      <button nbButton (click)="sendMessage()" [disabled]="!login">Send</button>
     </div>
   </div>
 
@@ -30,9 +35,11 @@
           nbInput
           [fullWidth]="true"
           [(ngModel)]="nickName"
-          (keyup.enter)="cofirm()"
+          (keyup.enter)="startChat()"
         />
-        <button nbButton (click)="cofirm()">確認</button>
+        <button nbButton status="primary" (click)="startChat()">
+          開始聊天
+        </button>
       </nb-card-body>
     </nb-card>
   </ng-template>
