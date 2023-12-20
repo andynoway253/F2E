@@ -29,6 +29,7 @@ export class ChatService {
 
   getUser(): Observable<number> {
     return new Observable((obs) => {
+      this.socket.connect();
       this.socket.on('connectedUsersCount', (data: number) => {
         obs.next(data);
       });
