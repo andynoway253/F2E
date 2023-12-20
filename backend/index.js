@@ -34,12 +34,12 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
-    console.log(userName);
-
     users.splice(
       users.findIndex((item) => item === userName),
       1
     );
+
+    io.emit("connectedUsersCount", users.length);
   });
 
   socket.on("login", (data) => {
