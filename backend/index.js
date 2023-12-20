@@ -13,24 +13,22 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on("connection", () => {
   console.log("a user connected");
 
   io.emit("connectedUsersCount", io.engine.clientsCount);
 });
 
-
-socket.on("disconnect", () => {
+io.on("disconnect", () => {
   console.log("user disconnected");
 
   io.emit("connectedUsersCount", io.engine.clientsCount);
 });
 
-socket.on("add-message", (message) => {
+io.on("add-message", (message) => {
   console.log("add message");
   io.emit("message", { type: "new-message", text: message });
 });
-
 
 server.listen(3000, () => {
   console.log("server running at https://f2e.onrender.com");
