@@ -35,8 +35,8 @@ export class ChatroomComponent implements OnInit {
       .getUser()
       .pipe(takeUntil(this.destory$))
       .subscribe({
-        next: (data: any) => {
-          console.log(data);
+        next: (data: number) => {
+          this.online = data
         },
       });
 

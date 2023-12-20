@@ -27,15 +27,11 @@ export class ChatService {
     });
   }
 
-  getUser(): Observable<any> {
+  getUser(): Observable<number> {
     return new Observable((obs) => {
-      this.socket.on('connectedUsersCount', (data: any) => {
+      this.socket.on('connectedUsersCount', (data: number) => {
         obs.next(data);
       });
-
-      return () => {
-        this.socket.disconnect();
-      };
     });
   }
 }
