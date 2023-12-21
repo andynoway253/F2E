@@ -39,7 +39,11 @@ io.on("connection", (socket) => {
       1
     );
 
-    io.emit("message", { type: "leave", text: userName + "離開聊天" });
+    io.emit("message", {
+      type: "leave",
+      userName: userName,
+      text: "離開聊天",
+    });
 
     io.emit("connectedUsersCount", users.length);
   });
@@ -56,7 +60,11 @@ io.on("connection", (socket) => {
       socket.emit("loginSuccess", data);
 
       /*向所有連接的用戶廣播事件*/
-      io.emit("message", { type: "join", text: data.userName + "加入聊天" });
+      io.emit("message", {
+        type: "join",
+        userName: data.userName,
+        text: "加入聊天",
+      });
 
       io.emit("connectedUsersCount", users.length);
     } else {
@@ -68,7 +76,8 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (message) => {
     io.emit("message", {
       type: "message",
-      text: message.userName + "說: " + message.text,
+      userName: message.userName,
+      text: message.text,
     });
   });
 });
@@ -76,4 +85,3 @@ io.on("connection", (socket) => {
 server.listen(3000, () => {
   console.log("server running at https://f2e.onrender.com");
 });
-

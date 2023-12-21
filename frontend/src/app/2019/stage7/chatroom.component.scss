@@ -3,12 +3,14 @@
   width: 100%;
   height: 100%;
   padding: 40px;
-  background-color: pink;
+  background-color: #f4f4f4;
   overflow: hidden;
 
   .online {
     display: flex;
     justify-content: end;
+    color: #494949;
+    font-weight: 600;
   }
 
   .content {
@@ -16,7 +18,41 @@
     max-height: calc(100% - 50px);
     overflow: auto;
 
-    .notMessage {
+    .name {
+      margin-bottom: 20px;
+      font: {
+        size: x-small;
+        family: fantasy;
+      }
+    }
+
+    .left .text {
+      background: #979ae5;
+      color: white;
+      border-radius: 0px 15px 15px 15px;
+      padding: 15px;
+      font: {
+        size: 15px;
+        weight: 400;
+      }
+    }
+
+    .right {
+      text-align: end;
+      .text {
+        background: white;
+        color: #413177;
+        border-radius: 15px 0px 15px 15px;
+        padding: 15px;
+        margin: 20px 0px;
+        font: {
+          size: 15px;
+          weight: 400;
+        }
+      }
+    }
+
+    .notify {
       display: flex;
       justify-content: center;
       font: {

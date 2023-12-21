@@ -60,7 +60,7 @@ export class ChatroomComponent implements OnInit {
       .getMessages()
       .pipe(takeUntil(this.destory$))
       .subscribe({
-        next: (data: { type: string; text: string }) => {
+        next: (data: { type: string; text: string; userName: string }) => {
           this.messages.push(data);
         },
       });

@@ -6,9 +6,32 @@
 
     <div #content class="content" fxLayout="column" fxLayoutGap="8px">
       <div #message *ngFor="let message of messages">
-        <span [class]="message.type !== 'message' ? 'notMessage' : 'messgae'">
-          {{ message.text }}
-        </span>
+        <ng-container
+          *ngIf="message.type === 'message'; then text; else notify"
+        ></ng-container>
+
+        <ng-template #text>
+          <div
+            fxLayout="column"
+            [class]="message.userName === this.nickName ? ' right' : ' left'"
+          >
+            <span class="name">
+              {{ message.userName }}
+            </span>
+
+            <div>
+              <span class="text">
+                {{ message.text }}
+              </span>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #notify>
+          <span class="notify">
+            {{ message.userName + " " + message.text }}
+          </span>
+        </ng-template>
       </div>
     </div>
 
