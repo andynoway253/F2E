@@ -4,7 +4,7 @@
       <span>線上人數：{{ online }}</span>
     </div>
 
-    <div #content class="content" fxLayout="column" fxLayoutGap="8px">
+    <div #content class="content" fxLayout="column" fxLayoutGap="24px">
       <div #message *ngFor="let message of messages">
         <ng-container
           *ngIf="message.type === 'message'; then text; else notify"
