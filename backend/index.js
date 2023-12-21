@@ -34,6 +34,10 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
+    if (!userName) {
+      return;
+    }
+
     users.splice(
       users.findIndex((item) => item === userName),
       1

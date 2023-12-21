@@ -45,20 +45,29 @@ export class ChatroomComponent implements OnInit {
   login = false;
 
   ngOnInit(): void {
-    this.chatService.checkConnectStatus();
 
-    this.chatService
-      .getOnlineUser()
-      .pipe(takeUntil(this.destory$))
+    this.startChat$
+      .pipe(
+        filter((boolean) => boolean),
+        switchMap(() => {
+          return this.chatService.getOnlineUser();
+        }),
+        takeUntil(this.destory$)
+      )
       .subscribe({
         next: (data: number) => {
           this.online = data;
         },
       });
 
-    this.chatService
-      .getMessages()
-      .pipe(takeUntil(this.destory$))
+    this.startChat$
+      .pipe(
+        filter((boolean) => boolean),
+        switchMap(() => {
+          return this.chatService.getMessages();
+        }),
+        takeUntil(this.destory$)
+      )
       .subscribe({
         next: (data: { type: string; text: string; userName: string }) => {
           this.messages.push(data);
@@ -139,5 +148,9 @@ export class ChatroomComponent implements OnInit {
     }
 
     this.startChat$.next(true);
+
+
+    this.chatService.checkConnectStatus();
+
   }
 }
