@@ -78,7 +78,6 @@ export class ChatroomComponent implements OnInit {
       .pipe(
         filter((boolean) => boolean),
         switchMap((res) => {
-          console.log(res);
           return this.chatService.joinChatRoom(this.nickName);
         })
       )

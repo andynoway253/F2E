@@ -27,6 +27,5 @@ import {
   ],
   declarations: [ChatroomComponent],
   exports: [ChatroomComponent],
-  providers: [ChatService],
 })
 export class ChatroomModule {}
