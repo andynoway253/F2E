@@ -1,0 +1,19 @@
+// .card {
+//   width: 112.8px;
+//   height: 165.6px;
+// }
+
+
+:host {
+  display: block;
+}
+.card {
+  width: 112.8px;
+  height: 165.6px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  & > img {
+    width: 100%;
+    height: 100%;
+  }
+}

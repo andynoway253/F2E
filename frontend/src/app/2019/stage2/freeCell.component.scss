@@ -1,0 +1,157 @@
+.game-container {
+  background-color: #b0b5cb;
+  font-family: fantasy;
+  user-select: none;
+
+  .leftMenuShadow {
+    filter: drop-shadow(15px 0px 10px rgba(50, 50, 0, 0.5));
+    > .leftMenu {
+      width: 300px;
+      height: 100vh;
+      background-color: #5a6289;
+      clip-path: polygon(0 0, 100% 0, 55% 100%, 0% 100%);
+
+      > .title {
+        display: flex;
+        justify-content: center;
+        color: white;
+        font-size: 3rem;
+        padding: 50px;
+      }
+    }
+  }
+
+  .game-board {
+    margin: auto;
+
+    .area {
+      position: relative;
+      width: 112.8px;
+      height: 165.6px;
+      margin-right: 28px;
+      padding: 0.25rem;
+      border: 3px solid #6a5a89;
+      border-radius: 10px;
+
+      .inner {
+        position: absolute;
+        width: 98.8px;
+        height: 151.6px;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: calc(100% - 0.5rem);
+        height: calc(100% - 0.5rem);
+        border: 1.5px solid #967ec5;
+        border-radius: 2px;
+      }
+
+      &.kTkNno {
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #545b61;
+
+        &:after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        &.kTkNno_C {
+          &:after {
+            content: "♣️";
+          }
+        }
+        &.kTkNno_D {
+          &:after {
+            content: "♦️";
+          }
+        }
+        &.kTkNno_H {
+          &:after {
+            content: "♥️";
+          }
+        }
+        &.kTkNno_S {
+          &:after {
+            content: "♠️";
+          }
+        }
+      }
+    }
+
+    .line {
+      position: relative;
+
+      width: 112.8px;
+      margin-top: 20px;
+      margin-right: 28px;
+
+      .warpper {
+        position: absolute;
+        left: 0;
+      }
+    }
+  }
+
+  .column-cells {
+    display: flex;
+    padding-top: 30px;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+
+  .column-cell {
+    display: block;
+  }
+
+  .column-cell::before {
+    display: block;
+    content: "";
+    width: 112.8px;
+    height: 165.6px;
+  }
+
+  .cell.column-cell {
+    background-color: transparent;
+  }
+
+  .card {
+    width: 112.8px;
+    height: 165.6px;
+  }
+
+  .card-wrapper {
+    position: absolute;
+    left: 0;
+  }
+
+  .cards-drag-preview {
+    app-card {
+      position: absolute;
+      transform: translate(-112.8px / 2, -12.5px);
+    }
+  }
+
+  .cdk-drag-placeholder {
+    opacity: 0 !important;
+  }
+
+  .cell {
+    border-radius: 5px;
+    background-color: #eee;
+    position: relative;
+    width: 112.8px;
+    min-height: 165.6px;
+
+    app-card {
+      img {
+        -webkit-user-drag: none;
+      }
+    }
+  }
+}

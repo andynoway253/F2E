@@ -1,0 +1,160 @@
+<div class="game-container" fxFill fxLayout="row">
+  <div class="leftMenuShadow">
+    <div class="leftMenu">
+      <div class="title"><span>Free Cell</span></div>
+    </div>
+  </div>
+
+  <div class="game-board" fxLayout="column">
+    <div class="top" fxLayout="row"></div>
+
+    <!-- 空白框和本位框 -->
+    <!-- <div class="middle" fxLayout="row">
+      <div fxLayout="row">
+        <div
+          *ngFor="let storage of tempStorages; let i = index"
+          class="area knrPQR"
+          (drop)="dropEmpty($event, i)"
+          (dragover)="allowDrop($event)"
+        >
+          <img
+            *ngIf="tempStorages[i][0]"
+            class="inner"
+            [src]="'assets/image/stage2/' + tempStorages[i][0] + '.png'"
+            [draggable]="true"
+            (dragstart)="drag(tempStorages[i][0])"
+          />
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div
+          *ngFor="let storage of originStorages; let i = index"
+          class="area kTkNno kTkNno_{{ getSuitByIndex(i) }}"
+          (drop)="dropOrigin($event, getSuitByIndex(i))"
+          (dragover)="allowDrop($event)"
+        ></div>
+      </div>
+    </div> -->
+    <div class="middle" fxLayout="row">
+      <div fxLayout="row">
+        <div
+          *ngFor="let storage of tempStorages; let i = index"
+          class="area knrPQR"
+        >
+          <img
+            *ngIf="tempStorages[i][0]"
+            class="inner"
+            [src]="'assets/image/stage2/' + tempStorages[i][0] + '.png'"
+          />
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div
+          *ngFor="let storage of originStorages; let i = index"
+          class="area kTkNno kTkNno_{{ getSuitByIndex(i) }}"
+        ></div>
+      </div>
+    </div>
+
+    <!--  -->
+    <!-- <div fxLayout="row">
+      <div
+        *ngFor="let line of cards; let i = index"
+        fxLayout="column"
+        class="line"
+        (drop)="drop($event, i)"
+        (dragover)="allowDrop($event)"
+      >
+        <img
+          *ngFor="let card of line; let z = index"
+          [style.zIndex]="z"
+          [src]="'assets/image/stage2/' + card + '.png'"
+          class="card"
+          [draggable]="true"
+          (dragstart)="drag(card, z, i)"
+        />
+      </div>
+    </div> -->
+
+    <!-- <div fxLayout="row">
+      <div
+        *ngFor="let line of cards; let i = index"
+        cdkDropList
+        cdkDropListSortingDisabled
+        class="line"
+        [cdkDropListData]="line"
+        (cdkDropListDropped)="onLineDropped($event, i)"
+      >
+        <div
+          *ngFor="let card of line; let j = index"
+          class="warpper"
+          [style.top]="j * 30 + 'px'"
+          cdkDrag
+          [cdkDragDisabled]="false"
+          [cdkDragData]="{
+            line: line,
+            selectCard: card,
+            selectIndex: j,
+            selectLineIndex: i
+          }"
+          (cdkDragStarted)="onDragStart($event)"
+          (cdkDragEnded)="onDragEnd($event)"
+        >
+          <app-card [cardName]="card"></app-card>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="column-cells">
+      <div
+        class="cell column-cell"
+        *ngFor="let cell of columnCells"
+        [style.padding-top]="cell.cards.length * 20 + 'px'"
+        cdkDropList
+        cdkDropListSortingDisabled
+        [cdkDropListData]="cell"
+        (cdkDropListDropped)="onCellDropped($event)"
+      >
+        <div
+          class="card-wrapper"
+          *ngFor="let card of cell.cards; index as i"
+          [style.top]="i * 25 + 'px'"
+          cdkDrag
+          [cdkDragDisabled]="!cell.canMove(card)"
+          [cdkDragData]="{ card: card, cell: cell }"
+          (cdkDragStarted)="onDragStart($event)"
+          (cdkDragEnded)="onDragEnd($event)"
+          [style.opacity]="
+            cell.dragIndex === -1 ? 1 : i >= cell.dragIndex ? 0 : 1
+          "
+        >
+          <app-card [card]="card"></app-card>
+          <ng-template cdkDragPreview cdkDragPlaceholder>
+            <div class="cards-drag-preview">
+              <ng-container *ngFor="let card of cell.cards; index as j">
+                <app-card
+                  [card]="card"
+                  *ngIf="i <= j"
+                  [style.margin-top]="(j - i) * 25 + 'px'"
+                ></app-card>
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="score-board">
+
+   <span>Score: 0</span>
+  </div>
+
+  <div class="buttons">
+    <button id="reset-button">重新洗牌</button>
+    <button id="hint-button">提示</button>
+    <button id="main-menu-button">主選單</button>
+  </div> -->
+</div>
