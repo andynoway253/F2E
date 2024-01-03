@@ -8,6 +8,11 @@ const routes: Routes = [
       import('./2019/stage1/pompdoro.module').then((m) => m.PompdoroModule),
   },
   {
+    path: 'FreeCell',
+    loadChildren: () =>
+      import('./2019/stage2/freeCell.module').then((m) => m.FreeCellModule),
+  },
+  {
     path: 'MP3Player',
     loadChildren: () =>
       import('./2019/stage3/mp3player.module').then((m) => m.MP3PlayerModule),

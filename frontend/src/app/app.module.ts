@@ -17,6 +17,7 @@ import { MP3PlayerModule } from './2019/stage3/mp3player.module';
 import { PaymentModule } from './2019/stage4/payment.module';
 import { ChatroomModule } from './2019/stage7/chatroom.module';
 import { HttpClientModule } from '@angular/common/http';
+import { FreeCellModule } from './2019/stage2/freeCell.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,6 +34,7 @@ import { HttpClientModule } from '@angular/common/http';
     NbIconModule,
 
     PompdoroModule,
+    FreeCellModule,
     MP3PlayerModule,
     PaymentModule,
     ChatroomModule,

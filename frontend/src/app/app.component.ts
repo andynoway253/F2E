@@ -99,6 +99,7 @@ export class AppComponent {
         },
         {
           title: '第二關 - 新接龍(沒做)',
+          link: '/FreeCell',
         },
         {
           title: '第三關 - MP3 Player',
