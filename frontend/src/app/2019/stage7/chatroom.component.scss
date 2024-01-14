@@ -64,9 +64,20 @@
     }
   }
 
+  nb-tab {
+    height: calc(100% - 40px);
+  }
+
   .input {
     position: absolute;
     bottom: 20px;
     width: calc(100% - 80px);
   }
+}
+
+
+
+.onlineList {
+  width: 300px;
+  height: 500px;
 }

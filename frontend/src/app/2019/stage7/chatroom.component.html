@@ -1,69 +1,140 @@
-<div fxFill fxLayout="column" fxLayoutGap="8px">
+<div *ngIf="join$ | async" fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex class="background" fxLayout="column" fxLayoutGap="8px">
     <div class="online">
-      <span>線上人數：{{ online }}</span>
+      <span style="cursor: pointer" (click)="openOnlineListDialog()"
+        >線上人數：{{ online }}</span
+      >
     </div>
 
-    <div #content class="content" fxLayout="column" fxLayoutGap="24px">
-      <div #message *ngFor="let message of messages">
-        <ng-container
-          *ngIf="message.type === 'message'; then text; else notify"
-        ></ng-container>
+    <nb-tabset fxFill (changeTab)="onChangeTab($event)">
+      <nb-tab *ngFor="let room of roomList" [tabTitle]="room">
+        <div #content class="content" fxLayout="column" fxLayoutGap="24px">
+          <ng-container
+            *ngIf="room === '大廳'; then public; else private"
+          ></ng-container>
 
-        <ng-template #text>
-          <div
-            fxLayout="column"
-            [class]="message.userName === this.nickName ? ' right' : ' left'"
-          >
-            <span class="name">
-              {{ message.userName }}
-            </span>
+          <ng-template #public>
+            <div #publicContent *ngFor="let publicMessage of publicMessages">
+              <ng-container
+                *ngIf="publicMessage.type === 'message'; then text; else notify"
+              ></ng-container>
 
-            <div>
-              <span class="text">
-                {{ message.text }}
-              </span>
+              <ng-template #text>
+                <div
+                  fxLayout="column"
+                  [class]="
+                    publicMessage.userName === this.user.userName
+                      ? ' right'
+                      : ' left'
+                  "
+                >
+                  <span class="name">
+                    {{ publicMessage.userName }}
+                  </span>
+
+                  <div>
+                    <span class="text">
+                      {{ publicMessage.text }}
+                    </span>
+                  </div>
+                </div>
+              </ng-template>
+
+              <ng-template #notify>
+                <span class="notify">
+                  {{ publicMessage.userName + " " + publicMessage.text }}
+                </span>
+              </ng-template>
             </div>
-          </div>
-        </ng-template>
+          </ng-template>
 
-        <ng-template #notify>
-          <span class="notify">
-            {{ message.userName + " " + message.text }}
-          </span>
-        </ng-template>
-      </div>
-    </div>
+          <ng-template #private> 這是私療</ng-template>
+        </div>
+      </nb-tab>
+    </nb-tabset>
 
     <div class="input" fxLayout="row" fxLayoutGap="4px">
       <input
         nbInput
         [fullWidth]="true"
-        [disabled]="!login"
         [(ngModel)]="sendMsg"
         (keyup.enter)="sendMessage()"
       />
-      <button nbButton (click)="sendMessage()" [disabled]="!login">Send</button>
+      <button nbButton (click)="sendMessage()">Send</button>
     </div>
   </div>
-
-  <ng-template #dialog let-data let-ref="dialogRef">
-    <nb-card accent="info">
-      <nb-card-header>
-        <font size="+2"><b>請輸入暱稱</b></font>
-      </nb-card-header>
-
-      <nb-card-body fxLayout="column" fxLayoutGap="8px">
-        <input
-          nbInput
-          [fullWidth]="true"
-          [(ngModel)]="nickName"
-          (keyup.enter)="startChat()"
-        />
-        <button nbButton status="primary" (click)="startChat()">
-          開始聊天
-        </button>
-      </nb-card-body>
-    </nb-card>
-  </ng-template>
 </div>
+
+<ng-template #inputNameDialog let-data let-ref="dialogRef">
+  <nb-card accent="info">
+    <nb-card-header>
+      <font size="+2"><b>請輸入暱稱</b></font>
+    </nb-card-header>
+
+    <nb-card-body fxLayout="column" fxLayoutGap="8px">
+      <input
+        nbInput
+        [fullWidth]="true"
+        [(ngModel)]="user.userName"
+        (keyup.enter)="startChat()"
+      />
+      <button nbButton status="primary" (click)="startChat()">開始聊天</button>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #onlineDialog let-data let-ref="dialogRef">
+  <nb-card accent="info">
+    <nb-card-header>
+      <font size="+2"><b>在線人員</b></font>
+    </nb-card-header>
+
+    <nb-card-body fxLayoutGap="8px">
+      <nb-list class="onlineList">
+        <nb-list-item *ngFor="let onlineUser of onlineList">
+          <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span>{{ onlineUser.userName }} {{ onlineUser.userId }}</span>
+            <button
+              nbButton
+              status="info"
+              size="small"
+              [disabled]="user.userName === onlineUser.userName"
+              (click)="privateMessage(onlineUser)"
+            >
+              私訊
+            </button>
+          </div>
+        </nb-list-item>
+      </nb-list>
+      <button nbButton status="danger" (click)="closeOnlineListDialog()">
+        關閉
+      </button>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #notifyDialog let-data let-ref="dialogRef">
+  <nb-card accent="info">
+    <nb-card-header>
+      <font size="+2"><b>聊天確認</b></font>
+    </nb-card-header>
+
+    <nb-card-body fxLayout="column" fxLayoutGap="8px">
+      <div>{{ notify.userName }} 發送聊天邀請，是否接受?</div>
+
+      <div>
+        <button
+          nbButton
+          status="primary"
+          (click)="acceptPrivateMessage(notify)"
+        >
+          接受
+        </button>
+
+        <button nbButton status="danger" (click)="rejectPrivateMessage(notify)">
+          拒絕
+        </button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
