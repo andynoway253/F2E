@@ -1,15 +1,15 @@
 <div *ngIf="join$ | async" fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex class="background" fxLayout="column" fxLayoutGap="8px">
     <div class="online">
-      <span style="cursor: pointer" (click)="openOnlineListDialog()"
-        >線上人數：{{ online }}</span
-      >
+      <span style="cursor: pointer" (click)="openOnlineListDialog()">
+        線上人數：{{ online }}
+      </span>
     </div>
 
     <nb-tabset fxFill (changeTab)="onChangeTab($event)">
       <nb-tab *ngFor="let room of roomList" [tabTitle]="room.roomName">
         <div #content class="content" fxLayout="column" fxLayoutGap="24px">
-          <div #publicContent *ngFor="let message of messages[currectRoomId]">
+          <div #messageContent *ngFor="let message of messages[currectRoomId]">
             <ng-container
               *ngIf="message.type === 'message'; then text; else notify"
             ></ng-container>

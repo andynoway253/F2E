@@ -24,7 +24,7 @@ export class ChatroomComponent implements OnInit {
   ) {}
 
   //  做滾動用
-  @ViewChildren('publicContent') publicContent: QueryList<any>;
+  @ViewChildren('messageContent') messageContent: QueryList<any>;
 
   @ViewChild('content') content: ElementRef;
 
@@ -95,7 +95,7 @@ export class ChatroomComponent implements OnInit {
       hasBackdrop: false,
     });
 
-    this.publicContent.changes.pipe(takeUntil(this.destory$)).subscribe({
+    this.messageContent.changes.pipe(takeUntil(this.destory$)).subscribe({
       next: () => {
         this.scrollToBottom();
       },
@@ -120,7 +120,11 @@ export class ChatroomComponent implements OnInit {
   invitePrivateMessage(onlineUser: { userId: string; userName: string }) {
     const roomId = this.user.userId + '@' + onlineUser.userId;
 
-    this.roomList.push({ roomId, roomName: onlineUser.userName });
+    const includes = this.roomList.some(
+      (room) => room.roomName === onlineUser.userName
+    );
+
+    !includes && this.roomList.push({ roomId, roomName: onlineUser.userName });
   }
 
   startChat() {
