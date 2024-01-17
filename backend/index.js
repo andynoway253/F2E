@@ -39,50 +39,92 @@ io.on("connection", (socket) => {
     }
 
     users.splice(
-      users.findIndex((item) => item === userName),
+      users.findIndex((item) => item.userName === userName),
       1
     );
 
-    io.emit("message", {
+    socket.broadcast.emit("message", {
       type: "leave",
       userName: userName,
       text: "離開聊天",
     });
 
-    io.emit("connectedUsersCount", users.length);
+    io.emit("getOnlineInfo", {
+      userCount: users.length,
+      userList: users,
+    });
   });
 
   socket.on("login", (data) => {
-    isNewPerson = users.findIndex((item) => item === data.userName);
+    userName = data.userName;
+    isNewPerson = users.findIndex((item) => item === userName);
 
     if (isNewPerson === -1) {
-      userName = data.userName;
-
-      users.push(data.userName);
+      users.push({ userId: socket.id, userName });
 
       /*發送 登入成功 事件*/
-      socket.emit("loginSuccess", data);
+      socket.emit("loginSuccess");
 
-      /*向所有連接的用戶廣播事件*/
-      io.emit("message", {
+      // 只發事件給自己
+      socket.emit("message", {
         type: "join",
-        userName: data.userName,
+        userName: "",
+        text: "歡迎加入！可以開始聊天了",
+      });
+
+      /*向除了自己之外的，所有連接的用戶廣播事件*/
+      socket.broadcast.emit("message", {
+        type: "join",
+        userName,
         text: "加入聊天",
       });
 
-      io.emit("connectedUsersCount", users.length);
+      io.emit("getOnlineInfo", {
+        userCount: users.length,
+        userList: users,
+      });
     } else {
       /*發送 登入失敗 事件*/
-      socket.emit("loginFail", "");
+      socket.emit("loginFail");
     }
   });
 
   socket.on("sendMessage", (message) => {
-    io.emit("message", {
+    const { roomId, receiverId, userId, userName, text } = message;
+
+    if (receiverId) {
+
+      if (socket.rooms.has(roomId)) {
+        io.to(roomId).emit("message", {
+          type: "message",
+          userName,
+          text,
+        });
+      } else {
+        socket
+          .to(receiverId)
+          .emit("getNotify", { receiverId, userId, userName, text });
+      }
+      return;
+    }
+
+    io.to(roomId).emit("message", {
       type: "message",
-      userName: message.userName,
-      text: message.text,
+      userName,
+      text,
     });
+  });
+
+  socket.on("acceptPrivateMessage", (params) => {
+    /* 回傳房間id，通知邀請者加入 */
+    const roomId = params.roomId;
+    socket
+      .to(roomId.split("@")[0])
+      .emit("getResponseForPrivateMessage", { accept: true, roomId });
+  });
+
+  socket.on("joinRoom", (params) => {
+    socket.join(params.roomId);
   });
 });
 
