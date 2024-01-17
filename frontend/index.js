@@ -23,11 +23,7 @@ const io = new Server(server, {
 
 const users = [];
 
-const public_io = io.of("public");
-
-const private_io = io.of("private");
-
-public_io.on("connection", (socket) => {
+io.on("connection", (socket) => {
   console.log("user connected");
 
   /*是否為新用戶*/
@@ -53,7 +49,7 @@ public_io.on("connection", (socket) => {
       text: "離開聊天",
     });
 
-    public_io.emit("getOnlineInfo", {
+    io.emit("getOnlineInfo", {
       userCount: users.length,
       userList: users,
     });
@@ -83,7 +79,7 @@ public_io.on("connection", (socket) => {
         text: "加入聊天",
       });
 
-      public_io.emit("getOnlineInfo", {
+      io.emit("getOnlineInfo", {
         userCount: users.length,
         userList: users,
       });
@@ -94,49 +90,45 @@ public_io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (message) => {
-    const { receiverId, userId, userName, userConnect, text } = message;
+    const { roomId, receiverId, userId, userName, text } = message;
 
     if (receiverId) {
-      // public_io.to(userId + "@" + receiverId).emit("message", {
-      //   type: "message",
-      //   userName,
-      //   text,
-      // });
+      //  如果連線已經在該房間裡，表示已經有聊過天，不須再發送聊天邀請通知
 
-      //  在 userConnect，找到相同 receiverId，表示已經有聊過天，不須再發送聊天邀請通知
-      if (userConnect.some((id) => id === receiverId)) {
-        socket.to(receiverId).emit("message", {
+      if (socket.rooms.has(roomId)) {
+        io.to(roomId).emit("message", {
           type: "message",
           userName,
           text,
         });
       } else {
-        socket.to(receiverId).emit("getNotify", message);
+        socket
+          .to(receiverId)
+          .emit("getNotify", { receiverId, userId, userName, text });
       }
       return;
     }
 
-    public_io.emit("message", {
+    io.to(roomId).emit("message", {
       type: "message",
       userName,
       text,
     });
   });
 
-  socket.on("acceptPrivateMessage", (bothId) => {
+  socket.on("acceptPrivateMessage", (params) => {
+    /* 回傳房間id，通知邀請者加入 */
+
+    const roomId = params.roomId;
     socket
-      .to(bothId.userId)
-      .emit("getResponseForPrivateMessage", { receiverId: bothId.receiverId });
+      .to(roomId.split("@")[0])
+      .emit("getResponseForPrivateMessage", { accept: true, roomId });
   });
 
-  // socket.on("createRoom", (roomId) => {
-  //   socket.join(roomId);
-  // });
-
-  // socket.on("join", () => {});
+  socket.on("joinRoom", (params) => {
+    socket.join(params.roomId);
+  });
 });
-
-private_io.on("connection", (socket) => {});
 
 server.listen(3000, () => {
   console.log("server running at https://f2e.onrender.com");

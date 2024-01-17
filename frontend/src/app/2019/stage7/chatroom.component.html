@@ -7,48 +7,38 @@
     </div>
 
     <nb-tabset fxFill (changeTab)="onChangeTab($event)">
-      <nb-tab *ngFor="let room of roomList" [tabTitle]="room">
+      <nb-tab *ngFor="let room of roomList" [tabTitle]="room.roomName">
         <div #content class="content" fxLayout="column" fxLayoutGap="24px">
-          <ng-container
-            *ngIf="room === '大廳'; then public; else private"
-          ></ng-container>
+          <div #publicContent *ngFor="let message of messages[currectRoomId]">
+            <ng-container
+              *ngIf="message.type === 'message'; then text; else notify"
+            ></ng-container>
 
-          <ng-template #public>
-            <div #publicContent *ngFor="let publicMessage of publicMessages">
-              <ng-container
-                *ngIf="publicMessage.type === 'message'; then text; else notify"
-              ></ng-container>
-
-              <ng-template #text>
-                <div
-                  fxLayout="column"
-                  [class]="
-                    publicMessage.userName === this.user.userName
-                      ? ' right'
-                      : ' left'
-                  "
-                >
-                  <span class="name">
-                    {{ publicMessage.userName }}
-                  </span>
-
-                  <div>
-                    <span class="text">
-                      {{ publicMessage.text }}
-                    </span>
-                  </div>
-                </div>
-              </ng-template>
-
-              <ng-template #notify>
-                <span class="notify">
-                  {{ publicMessage.userName + " " + publicMessage.text }}
+            <ng-template #text>
+              <div
+                fxLayout="column"
+                [class]="
+                  message.userName === this.user.userName ? ' right' : ' left'
+                "
+              >
+                <span class="name">
+                  {{ message.userName }}
                 </span>
-              </ng-template>
-            </div>
-          </ng-template>
 
-          <ng-template #private> 這是私療</ng-template>
+                <div>
+                  <span class="text">
+                    {{ message.text }}
+                  </span>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template #notify>
+              <span class="notify">
+                {{ message.userName + " " + message.text }}
+              </span>
+            </ng-template>
+          </div>
         </div>
       </nb-tab>
     </nb-tabset>
@@ -99,7 +89,7 @@
               status="info"
               size="small"
               [disabled]="user.userName === onlineUser.userName"
-              (click)="privateMessage(onlineUser)"
+              (click)="invitePrivateMessage(onlineUser)"
             >
               私訊
             </button>
@@ -122,7 +112,7 @@
     <nb-card-body fxLayout="column" fxLayoutGap="8px">
       <div>{{ notify.userName }} 發送聊天邀請，是否接受?</div>
 
-      <div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
         <button
           nbButton
           status="primary"

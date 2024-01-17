@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
-import { user } from './model/user.model';
+import { user } from './model/chatroom.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,14 +9,14 @@ import { user } from './model/user.model';
 export class ChatService {
   // private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
 
-  private apiUrl = 'http://localhost:3000/public'; // 你的Node.js服务器地址
+  private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
   private socket = io(this.apiUrl, { withCredentials: true });
 
   sendMessage(message: {
+    roomId: string;
     receiverId: string;
     userId: string;
     userName: string;
-    userConnect: string[];
     text: string;
   }) {
     this.socket.emit('sendMessage', message);
@@ -24,9 +24,12 @@ export class ChatService {
 
   getMessages(): Observable<{ type: string; text: string; userName: string }> {
     return new Observable((obs) => {
-      this.socket.on('message', (data: any) => {
-        obs.next(data);
-      });
+      this.socket.on(
+        'message',
+        (data: { type: string; text: string; userName: string }) => {
+          obs.next(data);
+        }
+      );
     });
   }
 
@@ -48,17 +51,19 @@ export class ChatService {
   }
 
   getResponseForPrivateMessage(): Observable<{
-    receiverId: string;
+    accept: boolean;
+    roomId?: string;
   }> {
     return new Observable((obs) => {
       this.socket.on(
         'getResponseForPrivateMessage',
-        (data: { receiverId: string }) => {
+        (data: { accept: boolean; roomId?: string }) => {
           obs.next(data);
         }
       );
     });
   }
+
   getNotify(): Observable<{
     receiverId: string;
     userId: string;
@@ -74,14 +79,15 @@ export class ChatService {
           userName: string;
           text: string;
         }) => {
+          console.log(data);
           obs.next(data);
         }
       );
     });
   }
 
-  acceptPrivateMessage(bothId: { userId: string; receiverId: string }) {
-    this.socket.emit('acceptPrivateMessage', bothId);
+  acceptPrivateMessage(params: { roomId: string }) {
+    this.socket.emit('acceptPrivateMessage', params);
   }
 
   joinLobby(nickName: string): Observable<boolean> {
@@ -110,7 +116,7 @@ export class ChatService {
     this.socket.disconnect();
   }
 
-  // createRoom(roomId: { id: string }) {
-  //   this.publicSocket.emit('createRoom', { roomId });
-  // }
+  joinRoom(params: { roomId: string }) {
+    this.socket.emit('joinRoom', params);
+  }
 }

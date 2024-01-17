@@ -10,14 +10,7 @@ import {
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ChatService } from './chatroom.service';
-import { user } from './model/user.model';
-
-interface notify {
-  receiverId: string;
-  userId: string;
-  userName: string;
-  text: string;
-}
+import { notify, user } from './model/chatroom.model';
 
 @Component({
   templateUrl: './chatroom.component.html',
@@ -57,17 +50,25 @@ export class ChatroomComponent implements OnInit {
 
   user: user;
 
+  currectRoomId = 'lobby';
+
   receiverId = '';
 
   sendMsg = '';
 
-  roomList: string[] = ['大廳'];
+  roomList: Array<{ roomId: string; roomName: string }> = [
+    { roomId: 'lobby', roomName: '大廳' },
+  ];
 
   onlineList: Array<{ userId: string; userName: string }> = [];
 
-  publicMessages: any[] = [];
-
-  privateMessages: any[] = [];
+  messages: {
+    [key: string]: Array<{
+      type: string;
+      text: string;
+      userName: string;
+    }>;
+  } = { lobby: [] };
 
   online: number;
 
@@ -75,7 +76,6 @@ export class ChatroomComponent implements OnInit {
     this.user = {
       userId: '',
       userName: '',
-      userConnect: [],
     };
 
     this.initialObservableListener();
@@ -109,25 +109,25 @@ export class ChatroomComponent implements OnInit {
 
     this.chatService.sendMessage({
       ...this.user,
+      roomId: this.currectRoomId,
       receiverId: this.receiverId,
       text: this.sendMsg,
     });
     this.sendMsg = '';
   }
 
-  //  私聊
-  privateMessage(user: { userId: string; userName: string }) {
-    this.roomList.push(user.userName);
+  //  發送私聊邀請
+  invitePrivateMessage(onlineUser: { userId: string; userName: string }) {
+    const roomId = this.user.userId + '@' + onlineUser.userId;
 
-    //  後端創建房間，房間名為，自己的id + 對方的id
-    // this.chatService.createRoom({ id: this.myselfId + '@' + user.userId });
+    this.roomList.push({ roomId, roomName: onlineUser.userName });
   }
 
   startChat() {
     if (!this.user.userName.trim()) {
       return;
     }
-    console.log(this.user);
+
     this.startChat$.next(true);
 
     this.chatService.checkConnectStatus();
@@ -136,12 +136,18 @@ export class ChatroomComponent implements OnInit {
   onChangeTab(e: any) {
     if (e.tabTitle === '大廳') {
       this.receiverId = null;
+
+      this.currectRoomId = 'lobby';
       return;
     }
 
     this.receiverId = this.onlineList.filter(
       (item) => item.userName === e.tabTitle
     )[0].userId;
+
+    this.currectRoomId = this.roomList.filter(
+      (room) => room.roomName === e.tabTitle
+    )[0].roomId;
   }
 
   //  當對方拒絕私聊時，跳出提示訊息
@@ -153,17 +159,22 @@ export class ChatroomComponent implements OnInit {
   }
 
   acceptPrivateMessage(e: notify) {
-    this.roomList.push(e.userName);
-
     this.notifyDialogRef.close();
 
-    //  被邀請者把邀請者的id記錄下來
-    this.user.userConnect.push(e.userId);
+    const roomId = e.userId + '@' + e.receiverId;
 
-    //  通知邀請者記錄被邀請者的id
+    this.roomList.push({ roomId, roomName: e.userName });
+
+    this.messages[roomId] = [];
+
+    /* 接受邀請後，被邀請者加入房間 */
+    this.chatService.joinRoom({
+      roomId,
+    });
+
+    //  通知邀請者加入房間
     this.chatService.acceptPrivateMessage({
-      userId: e.userId,
-      receiverId: e.receiverId,
+      roomId,
     });
   }
 
@@ -215,6 +226,7 @@ export class ChatroomComponent implements OnInit {
         },
       });
 
+    //  取得通知和聊天訊息
     startChat$
       .pipe(
         switchMap(() => {
@@ -224,7 +236,7 @@ export class ChatroomComponent implements OnInit {
       )
       .subscribe({
         next: (data: { type: string; text: string; userName: string }) => {
-          this.publicMessages.push(data);
+          this.messages[this.currectRoomId].push(data);
         },
       });
 
@@ -275,8 +287,12 @@ export class ChatroomComponent implements OnInit {
         takeUntil(this.destory$)
       )
       .subscribe({
-        next: (res: { receiverId: string }) => {
-          this.user.userConnect.push(res.receiverId);
+        next: (res: { accept: boolean; roomId?: string }) => {
+          if (res.accept) {
+            this.chatService.joinRoom({ roomId: res.roomId });
+
+            this.messages[res.roomId] = [];
+          }
         },
       });
 
