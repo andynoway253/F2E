@@ -7,9 +7,9 @@ import { user } from './model/chatroom.model';
   providedIn: 'root',
 })
 export class ChatService {
-  private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
+  // private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
 
-  // private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
+  private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
   private socket = io(this.apiUrl, { withCredentials: true });
 
   sendMessage(message: {
@@ -22,11 +22,21 @@ export class ChatService {
     this.socket.emit('sendMessage', message);
   }
 
-  getMessages(): Observable<{ type: string; text: string; userName: string }> {
+  getMessages(): Observable<{
+    roomId: string;
+    type: string;
+    text: string;
+    userName: string;
+  }> {
     return new Observable((obs) => {
       this.socket.on(
         'message',
-        (data: { type: string; text: string; userName: string }) => {
+        (data: {
+          roomId: string;
+          type: string;
+          text: string;
+          userName: string;
+        }) => {
           obs.next(data);
         }
       );

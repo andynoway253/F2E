@@ -76,6 +76,7 @@ export class ChatroomComponent implements OnInit {
     this.user = {
       userId: '',
       userName: '',
+      userConnect: [],
     };
 
     this.initialObservableListener();
@@ -239,8 +240,13 @@ export class ChatroomComponent implements OnInit {
         takeUntil(this.destory$)
       )
       .subscribe({
-        next: (data: { type: string; text: string; userName: string }) => {
-          this.messages[this.currectRoomId].push(data);
+        next: (data: {
+          roomId: string;
+          type: string;
+          text: string;
+          userName: string;
+        }) => {
+          this.messages[data.roomId].push(data);
         },
       });
 

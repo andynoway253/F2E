@@ -43,11 +43,15 @@ io.on("connection", (socket) => {
       1
     );
 
+    /* 大廳離開提示 */
     socket.broadcast.emit("message", {
+      roomId: "lobby",
       type: "leave",
       userName: userName,
       text: "離開聊天",
     });
+
+    /* 房間離開提示 */
 
     io.emit("getOnlineInfo", {
       userCount: users.length,
@@ -67,6 +71,7 @@ io.on("connection", (socket) => {
 
       // 只發事件給自己
       socket.emit("message", {
+        roomId: "lobby",
         type: "join",
         userName: "",
         text: "歡迎加入！可以開始聊天了",
@@ -74,6 +79,7 @@ io.on("connection", (socket) => {
 
       /*向除了自己之外的，所有連接的用戶廣播事件*/
       socket.broadcast.emit("message", {
+        roomId: "lobby",
         type: "join",
         userName,
         text: "加入聊天",
@@ -97,6 +103,7 @@ io.on("connection", (socket) => {
 
       if (socket.rooms.has(roomId)) {
         io.to(roomId).emit("message", {
+          roomId,
           type: "message",
           userName,
           text,
@@ -109,7 +116,8 @@ io.on("connection", (socket) => {
       return;
     }
 
-    io.to(roomId).emit("message", {
+    io.emit("message", {
+      roomId,
       type: "message",
       userName,
       text,
