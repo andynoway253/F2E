@@ -62,42 +62,20 @@ export class ChatService {
 
   getResponseForPrivateMessage(): Observable<{
     accept: boolean;
-    roomId?: string;
+    roomId: string;
   }> {
     return new Observable((obs) => {
       this.socket.on(
         'getResponseForPrivateMessage',
-        (data: { accept: boolean; roomId?: string }) => {
+        (data: { accept: boolean; roomId: string }) => {
           obs.next(data);
         }
       );
     });
   }
 
-  getNotify(): Observable<{
-    receiverId: string;
-    userId: string;
-    userName: string;
-    text: string;
-  }> {
-    return new Observable((obs) => {
-      this.socket.on(
-        'getNotify',
-        (data: {
-          receiverId: string;
-          userId: string;
-          userName: string;
-          text: string;
-        }) => {
-          console.log(data);
-          obs.next(data);
-        }
-      );
-    });
-  }
-
-  acceptPrivateMessage(params: { roomId: string }) {
-    this.socket.emit('acceptPrivateMessage', params);
+  sendResponseForPrivateMessage(params: { roomId: string; accept: boolean }) {
+    this.socket.emit('sendResponseForPrivateMessage', params);
   }
 
   joinLobby(nickName: string): Observable<boolean> {

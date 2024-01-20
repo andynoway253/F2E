@@ -62,6 +62,19 @@
         style: oblique;
       }
     }
+
+    .invite {
+      width: 250px;
+      background: #e5e5e5;
+      border: 1px solid #d4d4d4;
+      border-radius: 5px;
+      margin-top: 20px;
+
+      span {
+        font-size: larger;
+        padding: 10px;
+      }
+    }
   }
 
   nb-tab {
@@ -74,8 +87,6 @@
     width: calc(100% - 80px);
   }
 }
-
-
 
 .onlineList {
   width: 300px;

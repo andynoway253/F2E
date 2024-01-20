@@ -10,7 +10,7 @@ import {
 import { NbDialogRef, NbDialogService } from '@nebular/theme';
 import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
 import { ChatService } from './chatroom.service';
-import { notify, user } from './model/chatroom.model';
+import { messages, user } from './model/chatroom.model';
 
 @Component({
   templateUrl: './chatroom.component.html',
@@ -32,8 +32,6 @@ export class ChatroomComponent implements OnInit {
 
   @ViewChild('onlineDialog') onlineDialog: TemplateRef<any>;
 
-  @ViewChild('notifyDialog') notifyDialog: TemplateRef<any>;
-
   destory$ = new Subject();
 
   startChat$ = new Subject<boolean>();
@@ -44,11 +42,11 @@ export class ChatroomComponent implements OnInit {
 
   onlineDialogRef: NbDialogRef<any>;
 
-  notifyDialogRef: NbDialogRef<any>;
-
-  notify: notify;
-
   user: user;
+
+  messages: messages = { lobby: [] };
+
+  accept: 'accept' | 'reject' | '' = '';
 
   currectRoomId = 'lobby';
 
@@ -61,14 +59,6 @@ export class ChatroomComponent implements OnInit {
   ];
 
   onlineList: Array<{ userId: string; userName: string }> = [];
-
-  messages: {
-    [key: string]: Array<{
-      type: string;
-      text: string;
-      userName: string;
-    }>;
-  } = { lobby: [] };
 
   online: number;
 
@@ -87,6 +77,7 @@ export class ChatroomComponent implements OnInit {
     this.destory$.complete();
 
     this.inputNameDialogRef.close();
+    this.onlineDialogRef.close();
   }
 
   ngAfterViewInit() {
@@ -119,13 +110,14 @@ export class ChatroomComponent implements OnInit {
 
   //  發送私聊邀請
   invitePrivateMessage(onlineUser: { userId: string; userName: string }) {
-    const roomId = this.user.userId + '@' + onlineUser.userId;
+    if (!this.includeRoom(onlineUser.userName)) {
+      const roomId = this.user.userId + '@' + onlineUser.userId;
 
-    const includes = this.roomList.some(
-      (room) => room.roomName === onlineUser.userName
-    );
+      this.roomList.push({ roomId, roomName: onlineUser.userName });
 
-    !includes && this.roomList.push({ roomId, roomName: onlineUser.userName });
+      //  建立該房間的聊天陣列
+      this.messages[roomId] = [];
+    }
   }
 
   startChat() {
@@ -155,38 +147,22 @@ export class ChatroomComponent implements OnInit {
     )[0].roomId;
   }
 
-  //  當對方拒絕私聊時，跳出提示訊息
-  alertRejectMessage() {}
+  sendResponseForPrivateMessage(e: { roomId: string }, accept: boolean) {
+    console.log(e);
+    this.accept = accept ? 'accept' : 'reject';
 
-  //  當有人傳送私聊訊息，彈出確認聊天框
-  openNotifyDialog() {
-    this.notifyDialogRef = this.dialogService.open(this.notifyDialog);
-  }
+    if (accept) {
+      /* 接受邀請後，「被邀請者」加入房間 */
+      this.chatService.joinRoom({
+        roomId: e.roomId,
+      });
+    }
 
-  acceptPrivateMessage(e: notify) {
-    this.notifyDialogRef.close();
-
-    const roomId = e.userId + '@' + e.receiverId;
-
-    this.roomList.push({ roomId, roomName: e.userName });
-
-    this.messages[roomId] = [];
-
-    /* 接受邀請後，被邀請者加入房間 */
-    this.chatService.joinRoom({
-      roomId,
+    //  通知「邀請者」結果，接受或拒絕
+    this.chatService.sendResponseForPrivateMessage({
+      roomId: e.roomId,
+      accept,
     });
-
-    //  通知邀請者加入房間
-    this.chatService.acceptPrivateMessage({
-      roomId,
-    });
-  }
-
-  rejectPrivateMessage(e: notify) {
-    this.notifyDialogRef.close();
-
-    //  拒絕事件
   }
 
   openOnlineListDialog() {
@@ -198,14 +174,14 @@ export class ChatroomComponent implements OnInit {
   }
 
   //  滾動到最下方
-  scrollToBottom() {
+  private scrollToBottom() {
     this.content.nativeElement.scrollTo({
       top: this.content.nativeElement.scrollHeight,
       behavior: 'smooth',
     });
   }
 
-  initialObservableListener() {
+  private initialObservableListener() {
     const startChat$ = this.startChat$.pipe(filter((boolean) => boolean));
 
     //  取得線上人數及線上清單
@@ -240,13 +216,21 @@ export class ChatroomComponent implements OnInit {
         takeUntil(this.destory$)
       )
       .subscribe({
-        next: (data: {
+        next: (res: {
           roomId: string;
           type: string;
           text: string;
           userName: string;
         }) => {
-          this.messages[data.roomId].push(data);
+          console.log(res);
+          //  「被邀請者」收到invite後，頁籤上會直接多出「邀請者」姓名的頁籤
+          if (!this.includeRoom(res.userName) && res.type === 'invite') {
+            this.roomList.push({ roomId: res.roomId, roomName: res.userName });
+
+            this.messages[res.roomId] = [];
+          }
+
+          this.messages[res.roomId].push(res);
         },
       });
 
@@ -272,36 +256,15 @@ export class ChatroomComponent implements OnInit {
     startChat$
       .pipe(
         switchMap(() => {
-          return this.chatService.getNotify();
-        }),
-        takeUntil(this.destory$)
-      )
-      .subscribe({
-        next: (res: {
-          receiverId: string;
-          userId: string;
-          userName: string;
-          text: string;
-        }) => {
-          this.notify = res;
-
-          this.openNotifyDialog();
-        },
-      });
-
-    startChat$
-      .pipe(
-        switchMap(() => {
           return this.chatService.getResponseForPrivateMessage();
         }),
         takeUntil(this.destory$)
       )
       .subscribe({
-        next: (res: { accept: boolean; roomId?: string }) => {
+        next: (res: { accept: boolean; roomId: string }) => {
+          console.log(res);
           if (res.accept) {
             this.chatService.joinRoom({ roomId: res.roomId });
-
-            this.messages[res.roomId] = [];
           }
         },
       });
@@ -312,5 +275,9 @@ export class ChatroomComponent implements OnInit {
         this.chatService.liveLobby();
       },
     });
+  }
+
+  private includeRoom(userName: string) {
+    return this.roomList.some((room) => room.roomName === userName);
   }
 }
