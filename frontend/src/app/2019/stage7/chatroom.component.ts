@@ -147,9 +147,12 @@ export class ChatroomComponent implements OnInit {
     )[0].roomId;
   }
 
-  sendResponseForPrivateMessage(e: { roomId: string }, accept: boolean) {
+  sendResponseForPrivateMessage(
+    e: { roomId: string; accept?: string },
+    accept: boolean
+  ) {
     console.log(e);
-    this.accept = accept ? 'accept' : 'reject';
+    e.accept = accept ? 'accept' : 'reject';
 
     if (accept) {
       /* 接受邀請後，「被邀請者」加入房間 */
@@ -158,9 +161,10 @@ export class ChatroomComponent implements OnInit {
       });
     }
 
-    //  通知「邀請者」結果，接受或拒絕
+    //  通知「邀請者」結果，接受或拒絕。傳 receiverName 是為了告訴 「邀請者」是誰答應或拒絕
     this.chatService.sendResponseForPrivateMessage({
       roomId: e.roomId,
+      receiverName: this.user.userName,
       accept,
     });
   }

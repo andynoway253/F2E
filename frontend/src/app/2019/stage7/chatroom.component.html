@@ -39,17 +39,18 @@
 
             <ng-container *ngIf="message.type === 'invite'">
               <div fxLayout="column" class="invite">
-                <span *ngIf="accept === ''">
+                <span *ngIf="message.accept === ''">
                   {{ message.userName }} 發送聊天邀請，是否接受?
                 </span>
 
-                <span *ngIf="accept === 'accept'"
-                  >已接受邀請，可以開始聊天囉!</span
-                >
-                <span *ngIf="accept === 'reject'">已拒絕邀請!</span>
+                <span *ngIf="message.accept === 'accept'">
+                  已接受邀請，可以開始聊天囉!
+                </span>
+
+                <span *ngIf="message.accept === 'reject'">已拒絕邀請!</span>
 
                 <div
-                  *ngIf="accept === ''"
+                  *ngIf="message.accept === ''"
                   fxLayout="row"
                   fxLayoutAlign="space-around"
                 >

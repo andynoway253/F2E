@@ -10,12 +10,6 @@ export interface messages {
     type: string;
     text: string;
     userName: string;
+    accept?: string;
   }>;
-}
-
-export interface notify {
-  receiverId: string;
-  userId: string;
-  userName: string;
-  text: string;
 }

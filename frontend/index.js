@@ -113,6 +113,7 @@ io.on("connection", (socket) => {
           type: "invite",
           userName,
           text,
+          accept: "",
         });
 
         socket.emit("message", {
@@ -134,18 +135,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendResponseForPrivateMessage", (params) => {
-    /* 回傳房間id，通知邀請者加入 */
+    /* 回傳房間id，通知「邀請者」加入 */
 
-    const { roomId, accept } = params;
+    const { roomId, receiverName, accept } = params;
     const userId = roomId.split("@")[0];
 
     socket.to(userId).emit("getResponseForPrivateMessage", { accept, roomId });
 
-    // 只發事件給自己
-    socket.emit("message", {
+    socket.to(userId).emit("message", {
       roomId,
       type: "notify",
-      userName: "",
+      userName: receiverName,
       text: accept ? "答應了你的邀請" : "拒絕了你的邀請",
     });
   });

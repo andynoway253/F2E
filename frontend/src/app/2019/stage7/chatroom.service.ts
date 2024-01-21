@@ -74,7 +74,11 @@ export class ChatService {
     });
   }
 
-  sendResponseForPrivateMessage(params: { roomId: string; accept: boolean }) {
+  sendResponseForPrivateMessage(params: {
+    roomId: string;
+    receiverName: string;
+    accept: boolean;
+  }) {
     this.socket.emit('sendResponseForPrivateMessage', params);
   }
 
