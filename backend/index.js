@@ -43,11 +43,15 @@ io.on("connection", (socket) => {
       1
     );
 
+    /* 大廳離開提示 */
     socket.broadcast.emit("message", {
+      roomId: "lobby",
       type: "leave",
       userName: userName,
       text: "離開聊天",
     });
+
+    /* 房間離開提示 */
 
     io.emit("getOnlineInfo", {
       userCount: users.length,
@@ -67,14 +71,16 @@ io.on("connection", (socket) => {
 
       // 只發事件給自己
       socket.emit("message", {
-        type: "join",
+        roomId: "lobby",
+        type: "notify",
         userName: "",
         text: "歡迎加入！可以開始聊天了",
       });
 
       /*向除了自己之外的，所有連接的用戶廣播事件*/
       socket.broadcast.emit("message", {
-        type: "join",
+        roomId: "lobby",
+        type: "notify",
         userName,
         text: "加入聊天",
       });
@@ -93,34 +99,55 @@ io.on("connection", (socket) => {
     const { roomId, receiverId, userId, userName, text } = message;
 
     if (receiverId) {
-
+      //  如果連線已經在該房間裡，表示已經有聊過天，不須再發送聊天邀請通知
       if (socket.rooms.has(roomId)) {
         io.to(roomId).emit("message", {
+          roomId,
           type: "message",
           userName,
           text,
         });
       } else {
-        socket
-          .to(receiverId)
-          .emit("getNotify", { receiverId, userId, userName, text });
+        socket.to(receiverId).emit("message", {
+          roomId: userId + "@" + receiverId,
+          type: "invite",
+          userName,
+          text,
+          accept: "",
+        });
+
+        socket.emit("message", {
+          roomId: userId + "@" + receiverId,
+          type: "message",
+          userName,
+          text,
+        });
       }
       return;
     }
 
-    io.to(roomId).emit("message", {
+    io.emit("message", {
+      roomId,
       type: "message",
       userName,
       text,
     });
   });
 
-  socket.on("acceptPrivateMessage", (params) => {
-    /* 回傳房間id，通知邀請者加入 */
-    const roomId = params.roomId;
-    socket
-      .to(roomId.split("@")[0])
-      .emit("getResponseForPrivateMessage", { accept: true, roomId });
+  socket.on("sendResponseForPrivateMessage", (params) => {
+    /* 回傳房間id，通知「邀請者」加入 */
+
+    const { roomId, receiverName, accept } = params;
+    const userId = roomId.split("@")[0];
+
+    socket.to(userId).emit("getResponseForPrivateMessage", { accept, roomId });
+
+    socket.to(userId).emit("message", {
+      roomId,
+      type: "notify",
+      userName: receiverName,
+      text: accept ? "答應了你的邀請" : "拒絕了你的邀請",
+    });
   });
 
   socket.on("joinRoom", (params) => {
