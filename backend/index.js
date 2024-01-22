@@ -2,9 +2,9 @@ import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 
-// socket.emit — 用於發送事件
-
 // socket.on — 用於監聽事件
+
+// socket.emit — 用於發送事件
 
 // io.sockets.emit — Server對所有連接的Client發送事件
 
@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
 
   socket.on("login", (data) => {
     userName = data.userName;
-    isNewPerson = users.findIndex((item) => item === userName);
+    isNewPerson = users.findIndex((item) => item.userName === userName);
 
     if (isNewPerson === -1) {
       users.push({ userId: socket.id, userName });
@@ -96,10 +96,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (message) => {
-    const { roomId, receiverId, userId, userName, text } = message;
+    const { roomId, userName, text } = message;
 
+    const receiverId = roomId.split("@")[1];
     if (receiverId) {
-      //  如果連線已經在該房間裡，表示已經有聊過天，不須再發送聊天邀請通知
+      //  如果連線已經在該房間裡，不須再發送聊天邀請通知
       if (socket.rooms.has(roomId)) {
         io.to(roomId).emit("message", {
           roomId,
@@ -109,7 +110,7 @@ io.on("connection", (socket) => {
         });
       } else {
         socket.to(receiverId).emit("message", {
-          roomId: userId + "@" + receiverId,
+          roomId,
           type: "invite",
           userName,
           text,
@@ -117,7 +118,7 @@ io.on("connection", (socket) => {
         });
 
         socket.emit("message", {
-          roomId: userId + "@" + receiverId,
+          roomId,
           type: "message",
           userName,
           text,
