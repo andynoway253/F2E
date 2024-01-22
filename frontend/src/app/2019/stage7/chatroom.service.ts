@@ -14,7 +14,6 @@ export class ChatService {
 
   sendMessage(message: {
     roomId: string;
-    receiverId: string;
     userId: string;
     userName: string;
     text: string;

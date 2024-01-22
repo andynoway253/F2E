@@ -12,6 +12,7 @@ import {
   NbInputModule,
   NbListModule,
   NbTabsetModule,
+  NbToastrModule,
 } from '@nebular/theme';
 
 @NgModule({
@@ -26,6 +27,7 @@ import {
     NbListModule,
     NbTabsetModule,
     NbDialogModule.forChild(),
+    NbToastrModule,
 
     RouterModule.forChild([{ path: '', component: ChatroomComponent }]),
   ],

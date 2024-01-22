@@ -7,7 +7,14 @@
     </div>
 
     <nb-tabset fxFill (changeTab)="onChangeTab($event)">
-      <nb-tab *ngFor="let room of roomList" [tabTitle]="room.roomName">
+      <nb-tab
+        *ngFor="let room of roomList"
+        [tabTitle]="room.roomName"
+        [badgeDot]="
+          room.connectStatus === 'invite' && currectRoomId !== room.roomId
+        "
+        badgeStatus="danger"
+      >
         <div #content class="content" fxLayout="column" fxLayoutGap="24px">
           <div #messageContent *ngFor="let message of messages[currectRoomId]">
             <ng-container
