@@ -33,7 +33,7 @@ export class ChatroomComponent implements OnInit {
   //  做滾動用
   @ViewChildren('messageContent') messageContent: QueryList<any>;
 
-  @ViewChild('content') content: ElementRef;
+  @ViewChildren('content') content: QueryList<ElementRef>;
 
   @ViewChild('inputNameDialog') inputNameDialog: TemplateRef<any>;
 
@@ -54,6 +54,8 @@ export class ChatroomComponent implements OnInit {
   messages: messages = { lobby: [] };
 
   currectRoomId = 'lobby';
+
+  currectTabIndex = 0;
 
   sendMsg = '';
 
@@ -164,6 +166,10 @@ export class ChatroomComponent implements OnInit {
   }
 
   onChangeTab(e: any) {
+    this.currectTabIndex = this.roomList.findIndex(
+      (room) => room.roomName === e.tabTitle
+    );
+
     if (e.tabTitle === '大廳') {
       this.currectRoomId = 'lobby';
       return;
@@ -211,8 +217,12 @@ export class ChatroomComponent implements OnInit {
 
   //  滾動到最下方
   private scrollToBottom() {
-    this.content.nativeElement.scrollTo({
-      top: this.content.nativeElement.scrollHeight,
+    const nativeElement = this.content.filter(
+      (_, index) => index === this.currectTabIndex
+    )[0].nativeElement;
+
+    nativeElement.scrollTo({
+      top: nativeElement.scrollHeight,
       behavior: 'smooth',
     });
   }
