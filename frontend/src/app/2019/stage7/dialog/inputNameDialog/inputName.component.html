@@ -1,0 +1,16 @@
+<nb-card accent="info">
+  <nb-card-header>
+    <font size="+2"><b>請輸入暱稱</b></font>
+  </nb-card-header>
+
+  <nb-card-body fxLayout="column" fxLayoutGap="8px">
+    <input
+      nbInput
+      autofocus
+      [fullWidth]="true"
+      [(ngModel)]="userName"
+      (keyup.enter)="startChat()"
+    />
+    <button nbButton status="primary" (click)="startChat()">開始聊天</button>
+  </nb-card-body>
+</nb-card>

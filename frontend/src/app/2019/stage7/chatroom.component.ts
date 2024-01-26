@@ -11,11 +11,22 @@ import {
   NbDialogRef,
   NbDialogService,
   NbGlobalPhysicalPosition,
+  NbTabComponent,
+  NbTabsetComponent,
   NbToastrService,
 } from '@nebular/theme';
-import { BehaviorSubject, Subject, filter, switchMap, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  filter,
+  of,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { ChatService } from './chatroom.service';
 import { messages, user } from './model/chatroom.model';
+import { InputNameComponent } from './dialog/inputNameDialog/inputName.component';
 
 @Component({
   templateUrl: './chatroom.component.html',
@@ -35,70 +46,71 @@ export class ChatroomComponent implements OnInit {
 
   @ViewChildren('content') content: QueryList<ElementRef>;
 
-  @ViewChild('inputNameDialog') inputNameDialog: TemplateRef<any>;
+  @ViewChildren('tabset') tabsetEl: QueryList<NbTabsetComponent>;
+
+  @ViewChildren('tab') tab: QueryList<NbTabsetComponent>;
 
   @ViewChild('onlineDialog') onlineDialog: TemplateRef<any>;
 
+  @ViewChild('leaveConfrimDialog') leaveConfrimDialog: TemplateRef<any>;
+
   destory$ = new Subject();
 
-  startChat$ = new Subject<boolean>();
-
   join$ = new BehaviorSubject<boolean>(false);
+
+  changeTab$ = new BehaviorSubject<boolean>(false);
 
   inputNameDialogRef: NbDialogRef<any>;
 
   onlineDialogRef: NbDialogRef<any>;
 
+  leaveConfrimDialogRef: NbDialogRef<any>;
+
   user: user;
 
   messages: messages = { lobby: [] };
+
+  showLeaveBtn = false;
+
+  sendMsg = '';
 
   currectRoomId = 'lobby';
 
   currectTabIndex = 0;
 
-  sendMsg = '';
+  online = 0;
+
+  onlineList: Array<{ userId: string; userName: string }> = [];
 
   roomList: Array<{
     roomId: string;
     roomName: string;
-    connectStatus: 'connect' | 'invite' | '';
+    connectStatus: 'connect' | 'invite' | 'leave' | '';
   }> = [{ roomId: 'lobby', roomName: '大廳', connectStatus: 'connect' }];
-
-  onlineList: Array<{ userId: string; userName: string }> = [];
-
-  online: number;
 
   ngOnInit(): void {
     this.user = {
       userId: '',
       userName: '',
-      userConnect: [],
     };
 
     this.initialObservableListener();
   }
 
-  ngOnDestroy(): void {
-    this.destory$.next(true);
-    this.destory$.complete();
-
-    this.inputNameDialogRef.close();
-    this.onlineDialogRef.close();
-  }
-
   ngAfterViewInit() {
-    this.inputNameDialogRef = this.dialogService.open(this.inputNameDialog, {
-      closeOnBackdropClick: false,
-      closeOnEsc: false,
-      hasBackdrop: false,
-    });
-
     this.messageContent.changes.pipe(takeUntil(this.destory$)).subscribe({
       next: () => {
         this.scrollToBottom();
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destory$.next(true);
+
+    this.destory$.complete();
+
+    this.inputNameDialogRef.close();
   }
 
   sendMessage() {
@@ -110,11 +122,9 @@ export class ChatroomComponent implements OnInit {
       (room) => room.roomId === this.currectRoomId
     )[0];
 
-    if (room.connectStatus === '') {
-      room.connectStatus = 'invite';
-    } else if (room.connectStatus === 'invite') {
-      const physicalPositions = NbGlobalPhysicalPosition;
+    const physicalPositions = NbGlobalPhysicalPosition;
 
+    if (room.connectStatus === 'invite') {
       if (this.user.userId === room.roomId.split('@')[0]) {
         this.toastrService.show('等待對方回應', '請稍等', {
           position: physicalPositions.TOP_RIGHT,
@@ -129,6 +139,17 @@ export class ChatroomComponent implements OnInit {
         });
       }
       return;
+    } else if (room.connectStatus === 'leave') {
+      this.toastrService.show(
+        '對方已離開，按右下離開可以關閉頁籤',
+        '(〒︿〒)',
+        {
+          position: physicalPositions.TOP_RIGHT,
+          status: 'danger',
+        }
+      );
+
+      return;
     }
 
     this.chatService.sendMessage({
@@ -139,45 +160,75 @@ export class ChatroomComponent implements OnInit {
     this.sendMsg = '';
   }
 
+  //  離開私聊
+  leaveRoom() {
+    this.leaveConfrimDialogRef.close(true);
+  }
+
+  //  不離開私聊
+  stay() {
+    this.leaveConfrimDialogRef.close(false);
+  }
+
+  //  離開私聊前的確認
+  checkLeaveRoom() {
+    const test = this.roomList[this.currectTabIndex];
+
+    if (['invite', 'connect'].includes(test.connectStatus)) {
+      this.leaveConfrimDialogRef = this.dialogService.open(
+        this.leaveConfrimDialog
+      );
+
+      this.leaveConfrimDialogRef.onClose.subscribe({
+        next: (res: boolean) => {
+          if (res) {
+            this.chatService.liveRoom();
+
+            this.deleteRoomList(this.currectTabIndex);
+          }
+        },
+      });
+    }
+  }
+
   //  發送私聊邀請
   invitePrivateMessage(onlineUser: { userId: string; userName: string }) {
-    if (!this.includeRoom(onlineUser.userName)) {
-      const roomId = this.user.userId + '@' + onlineUser.userId;
+    const { userId, userName } = onlineUser;
+    if (!this.includeRoom(userName)) {
+      const roomId = this.user.userId + '@' + userId;
 
       this.roomList.push({
         roomId,
-        roomName: onlineUser.userName,
-        connectStatus: '',
+        roomName: userName,
+        connectStatus: 'invite',
       });
+
+      this.chatService.sendInvitePrivateMessage({
+        roomId,
+        receiverName: userName,
+      });
+
+      this.closeOnlineListDialog();
 
       //  建立該房間的聊天陣列
       this.messages[roomId] = [];
+
+      this.changeTab$.next(true);
     }
   }
 
-  startChat() {
-    if (!this.user.userName.trim()) {
-      return;
-    }
-
-    this.startChat$.next(true);
-
-    this.chatService.checkConnectStatus();
-  }
-
-  onChangeTab(e: any) {
+  onChangeTab(e: NbTabComponent) {
     this.currectTabIndex = this.roomList.findIndex(
       (room) => room.roomName === e.tabTitle
     );
 
-    if (e.tabTitle === '大廳') {
-      this.currectRoomId = 'lobby';
-      return;
-    }
+    this.currectRoomId =
+      e.tabTitle === '大廳'
+        ? 'lobby'
+        : this.roomList.filter((room) => room.roomName === e.tabTitle)[0]
+            .roomId;
 
-    this.currectRoomId = this.roomList.filter(
-      (room) => room.roomName === e.tabTitle
-    )[0].roomId;
+    this.showLeaveBtn = e.tabTitle !== '大廳';
   }
 
   sendResponseForPrivateMessage(
@@ -215,20 +266,22 @@ export class ChatroomComponent implements OnInit {
     this.onlineDialogRef.close();
   }
 
-  //  滾動到最下方
-  private scrollToBottom() {
-    const nativeElement = this.content.filter(
-      (_, index) => index === this.currectTabIndex
-    )[0].nativeElement;
-
-    nativeElement.scrollTo({
-      top: nativeElement.scrollHeight,
-      behavior: 'smooth',
-    });
-  }
-
   private initialObservableListener() {
-    const startChat$ = this.startChat$.pipe(filter((boolean) => boolean));
+    this.inputNameDialogRef = this.dialogService.open(InputNameComponent, {
+      closeOnBackdropClick: false,
+      closeOnEsc: false,
+      hasBackdrop: false,
+    });
+
+    const startChat$ = this.inputNameDialogRef.onClose.pipe(
+      tap((userName: string) => {
+        this.user.userName = userName;
+
+        this.join$.next(true);
+
+        this.chatService.checkConnectStatus();
+      })
+    );
 
     //  取得線上人數及線上清單
     startChat$
@@ -277,6 +330,8 @@ export class ChatroomComponent implements OnInit {
             });
 
             this.messages[res.roomId] = [];
+
+            this.changeTab$.next(false);
           }
 
           this.messages[res.roomId].push(res);
@@ -292,11 +347,7 @@ export class ChatroomComponent implements OnInit {
       )
       .subscribe({
         next: (res: boolean) => {
-          if (res) {
-            this.join$.next(res);
-
-            this.inputNameDialogRef.close();
-          } else {
+          if (!res) {
             const physicalPositions = NbGlobalPhysicalPosition;
 
             this.toastrService.show('名稱重複', '╮(╯_╰)╭', {
@@ -332,6 +383,22 @@ export class ChatroomComponent implements OnInit {
         },
       });
 
+    startChat$
+      .pipe(
+        switchMap(() => this.tab.changes),
+        filter(() => this.changeTab$.getValue())
+      )
+      .subscribe({
+        next: (res: { toArray: () => NbTabComponent[] }) => {
+          //  發請私聊請求的人才需要在按下私聊按鈕時切換頁
+          setTimeout(() => {
+            this.tabsetEl.first.selectTab(
+              res.toArray()[res.toArray().length - 1]
+            );
+          });
+        },
+      });
+
     //  切換左側項目時會執行destory
     this.destory$.subscribe({
       next: () => {
@@ -340,7 +407,23 @@ export class ChatroomComponent implements OnInit {
     });
   }
 
+  //  滾動到最下方
+  private scrollToBottom() {
+    const nativeElement = this.content.filter(
+      (_, index) => index === this.currectTabIndex
+    )[0].nativeElement;
+
+    nativeElement.scrollTo({
+      top: nativeElement.scrollHeight,
+      behavior: 'smooth',
+    });
+  }
+
   private includeRoom(userName: string) {
     return this.roomList.some((room) => room.roomName === userName);
+  }
+
+  private deleteRoomList(deleteIndex: any) {
+    this.roomList.splice(deleteIndex, 1);
   }
 }

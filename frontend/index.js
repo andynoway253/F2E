@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
     /* 大廳離開提示 */
     socket.broadcast.emit("message", {
       roomId: "lobby",
-      type: "leave",
+      type: "notify",
       userName: userName,
       text: "離開聊天",
     });
@@ -108,21 +108,6 @@ io.on("connection", (socket) => {
           userName,
           text,
         });
-      } else {
-        socket.to(receiverId).emit("message", {
-          roomId,
-          type: "invite",
-          userName,
-          text,
-          accept: "",
-        });
-
-        socket.emit("message", {
-          roomId,
-          type: "message",
-          userName,
-          text,
-        });
       }
       return;
     }
@@ -148,6 +133,26 @@ io.on("connection", (socket) => {
       type: "notify",
       userName: receiverName,
       text: accept ? "答應了你的邀請" : "拒絕了你的邀請",
+    });
+  });
+
+  socket.on("sendInvitePrivateMessage", (params) => {
+    const { roomId, receiverName } = params;
+    const userId = roomId.split("@")[0];
+    const receiverId = roomId.split("@")[1];
+
+    socket.to(receiverId).emit("message", {
+      roomId,
+      type: "invite",
+      userName,
+      accept: "",
+    });
+
+    socket.emit("message", {
+      roomId,
+      type: "notify",
+      userName: "",
+      text: `向 ${receiverName} 發出邀請，請等候對方回應`,
     });
   });
 

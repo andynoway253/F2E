@@ -7,9 +7,9 @@ import { user } from './model/chatroom.model';
   providedIn: 'root',
 })
 export class ChatService {
-  private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
+  // private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
 
-  // private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
+  private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
   private socket = io(this.apiUrl, { withCredentials: true });
 
   sendMessage(message: {
@@ -81,6 +81,10 @@ export class ChatService {
     this.socket.emit('sendResponseForPrivateMessage', params);
   }
 
+  sendInvitePrivateMessage(params: { roomId: string; receiverName: string }) {
+    this.socket.emit('sendInvitePrivateMessage', params);
+  }
+
   joinLobby(nickName: string): Observable<boolean> {
     this.socket.emit('login', { userName: nickName });
 
@@ -110,4 +114,6 @@ export class ChatService {
   joinRoom(params: { roomId: string }) {
     this.socket.emit('joinRoom', params);
   }
+
+  liveRoom() {}
 }

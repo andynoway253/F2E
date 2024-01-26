@@ -4,16 +4,18 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ChatroomComponent } from './chatroom.component';
-import { ChatService } from './chatroom.service';
 import {
   NbButtonModule,
   NbCardModule,
   NbDialogModule,
+  NbDialogRef,
+  NbIconModule,
   NbInputModule,
   NbListModule,
   NbTabsetModule,
   NbToastrModule,
 } from '@nebular/theme';
+import { InputNameComponent } from './dialog/inputNameDialog/inputName.component';
 
 @NgModule({
   imports: [
@@ -23,15 +25,16 @@ import {
 
     NbButtonModule,
     NbCardModule,
+    NbIconModule,
     NbInputModule,
     NbListModule,
     NbTabsetModule,
-    NbDialogModule.forChild(),
+    NbDialogModule.forRoot(),
     NbToastrModule,
 
     RouterModule.forChild([{ path: '', component: ChatroomComponent }]),
   ],
-  declarations: [ChatroomComponent],
+  declarations: [ChatroomComponent, InputNameComponent],
   exports: [ChatroomComponent],
 })
 export class ChatroomModule {}

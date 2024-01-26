@@ -6,8 +6,9 @@
       </span>
     </div>
 
-    <nb-tabset fxFill (changeTab)="onChangeTab($event)">
+    <nb-tabset #tabset fxFill (changeTab)="onChangeTab($event)">
       <nb-tab
+        #tab
         *ngFor="let room of roomList"
         [tabTitle]="room.roomName"
         [badgeDot]="
@@ -17,9 +18,7 @@
       >
         <div #content class="content" fxLayout="column" fxLayoutGap="24px">
           <div #messageContent *ngFor="let message of messages[currectRoomId]">
-            <ng-container
-              *ngIf="message.type === 'message' || message.type === 'invite'"
-            >
+            <ng-container *ngIf="message.type === 'message'">
               <div
                 fxLayout="column"
                 [class]="
@@ -87,32 +86,23 @@
     <div class="input" fxLayout="row" fxLayoutGap="4px">
       <input
         nbInput
+        autofocus
         [fullWidth]="true"
         [(ngModel)]="sendMsg"
         (keyup.enter)="sendMessage()"
       />
-      <button nbButton (click)="sendMessage()">Send</button>
+      <button nbButton status="primary" (click)="sendMessage()">Send</button>
+      <button
+        *ngIf="showLeaveBtn"
+        nbButton
+        status="danger"
+        (click)="checkLeaveRoom()"
+      >
+        離開
+      </button>
     </div>
   </div>
 </div>
-
-<ng-template #inputNameDialog let-data let-ref="dialogRef">
-  <nb-card accent="info">
-    <nb-card-header>
-      <font size="+2"><b>請輸入暱稱</b></font>
-    </nb-card-header>
-
-    <nb-card-body fxLayout="column" fxLayoutGap="8px">
-      <input
-        nbInput
-        [fullWidth]="true"
-        [(ngModel)]="user.userName"
-        (keyup.enter)="startChat()"
-      />
-      <button nbButton status="primary" (click)="startChat()">開始聊天</button>
-    </nb-card-body>
-  </nb-card>
-</ng-template>
 
 <ng-template #onlineDialog let-data let-ref="dialogRef">
   <nb-card accent="info">
@@ -140,6 +130,19 @@
       <button nbButton status="danger" (click)="closeOnlineListDialog()">
         關閉
       </button>
+    </nb-card-body>
+  </nb-card>
+</ng-template>
+
+<ng-template #leaveConfrimDialog let-data let-ref="dialogRef">
+  <nb-card accent="info">
+    <nb-card-header>
+      <font size="+2"><b>確定要離開嗎?</b></font>
+    </nb-card-header>
+
+    <nb-card-body fxLayout="row" fxLayoutGap="8px">
+      <button nbButton status="danger" (click)="leaveRoom()">離開</button>
+      <button nbButton (click)="stay()">我想想</button>
     </nb-card-body>
   </nb-card>
 </ng-template>
