@@ -1,9 +1,11 @@
 <div *ngIf="join$ | async" fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex class="background" fxLayout="column" fxLayoutGap="8px">
     <div class="online">
-      <span style="cursor: pointer" (click)="openOnlineListDialog()">
-        線上人數：{{ online }}
-      </span>
+      <app-online
+        [user]="user"
+        [onlineList]="onlineList"
+        (invite)="invitePrivateMessage($event)"
+      ></app-online>
     </div>
 
     <nb-tabset #tabset fxFill (changeTab)="onChangeTab($event)">
@@ -103,36 +105,6 @@
     </div>
   </div>
 </div>
-
-<ng-template #onlineDialog let-data let-ref="dialogRef">
-  <nb-card accent="info">
-    <nb-card-header>
-      <font size="+2"><b>在線人員</b></font>
-    </nb-card-header>
-
-    <nb-card-body fxLayoutGap="8px">
-      <nb-list class="onlineList">
-        <nb-list-item *ngFor="let onlineUser of onlineList">
-          <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
-            <span>{{ onlineUser.userName }} {{ onlineUser.userId }}</span>
-            <button
-              nbButton
-              status="info"
-              size="small"
-              [disabled]="user.userName === onlineUser.userName"
-              (click)="invitePrivateMessage(onlineUser)"
-            >
-              私訊
-            </button>
-          </div>
-        </nb-list-item>
-      </nb-list>
-      <button nbButton status="danger" (click)="closeOnlineListDialog()">
-        關閉
-      </button>
-    </nb-card-body>
-  </nb-card>
-</ng-template>
 
 <ng-template #leaveConfrimDialog let-data let-ref="dialogRef">
   <nb-card accent="info">

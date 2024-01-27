@@ -15,7 +15,9 @@ import {
   NbTabsetModule,
   NbToastrModule,
 } from '@nebular/theme';
-import { InputNameComponent } from './dialog/inputNameDialog/inputName.component';
+import { InputNameDialogComponent } from './dialog/inputName/inputName.component';
+import { OnlineComponent } from './component/online/online.component';
+import { OnlineDialogComponent } from './dialog/online/online.component';
 
 @NgModule({
   imports: [
@@ -34,7 +36,13 @@ import { InputNameComponent } from './dialog/inputNameDialog/inputName.component
 
     RouterModule.forChild([{ path: '', component: ChatroomComponent }]),
   ],
-  declarations: [ChatroomComponent, InputNameComponent],
+  declarations: [
+    ChatroomComponent,
+    OnlineComponent,
+
+    InputNameDialogComponent,
+    OnlineDialogComponent,
+  ],
   exports: [ChatroomComponent],
 })
 export class ChatroomModule {}

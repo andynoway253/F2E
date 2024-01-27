@@ -1,0 +1,30 @@
+<nb-card accent="info">
+  <nb-card-header>
+    <font size="+2"><b>在線人員</b></font>
+  </nb-card-header>
+
+  <nb-card-body fxLayoutGap="8px">
+    <nb-list class="onlineList">
+      <nb-list-item *ngFor="let onlineUser of onlineList">
+        <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+          <span>{{ onlineUser.userName }} {{ onlineUser.userId }}</span>
+          <button
+            nbButton
+            status="info"
+            size="small"
+            [disabled]="user?.userName === onlineUser.userName"
+            (click)="invitePrivateMessage(onlineUser)"
+          >
+            私訊
+          </button>
+        </div>
+      </nb-list-item>
+    </nb-list>
+  </nb-card-body>
+
+  <nb-card-footer>
+    <button nbButton status="danger" (click)="closeOnlineListDialog()">
+      關閉
+    </button>
+  </nb-card-footer>
+</nb-card>

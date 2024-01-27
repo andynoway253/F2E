@@ -19,14 +19,13 @@ import {
   BehaviorSubject,
   Subject,
   filter,
-  of,
   switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
 import { ChatService } from './chatroom.service';
 import { messages, user } from './model/chatroom.model';
-import { InputNameComponent } from './dialog/inputNameDialog/inputName.component';
+import { InputNameDialogComponent } from './dialog/inputName/inputName.component';
 
 @Component({
   templateUrl: './chatroom.component.html',
@@ -50,37 +49,31 @@ export class ChatroomComponent implements OnInit {
 
   @ViewChildren('tab') tab: QueryList<NbTabsetComponent>;
 
-  @ViewChild('onlineDialog') onlineDialog: TemplateRef<any>;
-
   @ViewChild('leaveConfrimDialog') leaveConfrimDialog: TemplateRef<any>;
 
   destory$ = new Subject();
 
   join$ = new BehaviorSubject<boolean>(false);
 
-  changeTab$ = new BehaviorSubject<boolean>(false);
+  private changeTab$ = new BehaviorSubject<boolean>(false);
 
-  inputNameDialogRef: NbDialogRef<any>;
+  private inputNameDialogRef: NbDialogRef<any>;
 
-  onlineDialogRef: NbDialogRef<any>;
+  private leaveConfrimDialogRef: NbDialogRef<any>;
 
-  leaveConfrimDialogRef: NbDialogRef<any>;
+  private currectTabIndex = 0;
+
+  currectRoomId = 'lobby';
+
+  sendMsg = '';
+
+  showLeaveBtn = false;
+
+  onlineList: Array<user> = [];
 
   user: user;
 
   messages: messages = { lobby: [] };
-
-  showLeaveBtn = false;
-
-  sendMsg = '';
-
-  currectRoomId = 'lobby';
-
-  currectTabIndex = 0;
-
-  online = 0;
-
-  onlineList: Array<{ userId: string; userName: string }> = [];
 
   roomList: Array<{
     roomId: string;
@@ -208,7 +201,7 @@ export class ChatroomComponent implements OnInit {
         receiverName: userName,
       });
 
-      this.closeOnlineListDialog();
+      // this.closeOnlineListDialog();
 
       //  建立該房間的聊天陣列
       this.messages[roomId] = [];
@@ -258,20 +251,15 @@ export class ChatroomComponent implements OnInit {
     });
   }
 
-  openOnlineListDialog() {
-    this.onlineDialogRef = this.dialogService.open(this.onlineDialog);
-  }
-
-  closeOnlineListDialog() {
-    this.onlineDialogRef.close();
-  }
-
   private initialObservableListener() {
-    this.inputNameDialogRef = this.dialogService.open(InputNameComponent, {
-      closeOnBackdropClick: false,
-      closeOnEsc: false,
-      hasBackdrop: false,
-    });
+    this.inputNameDialogRef = this.dialogService.open(
+      InputNameDialogComponent,
+      {
+        closeOnBackdropClick: false,
+        closeOnEsc: false,
+        hasBackdrop: false,
+      }
+    );
 
     const startChat$ = this.inputNameDialogRef.onClose.pipe(
       tap((userName: string) => {
@@ -296,8 +284,6 @@ export class ChatroomComponent implements OnInit {
           userCount: number;
           userList: Array<{ userId: string; userName: string }>;
         }) => {
-          this.online = data.userCount;
-
           this.onlineList = data.userList;
 
           this.user.userId = data.userList.filter(
