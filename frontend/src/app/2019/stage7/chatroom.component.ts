@@ -4,14 +4,10 @@ import {
   ViewChildren,
   QueryList,
   ElementRef,
-  ViewChild,
-  TemplateRef,
 } from '@angular/core';
 import {
-  NbDialogService,
   NbToastrService,
   NbTabsetComponent,
-  NbDialogRef,
   NbGlobalPhysicalPosition,
   NbTabComponent,
 } from '@nebular/theme';
@@ -24,6 +20,7 @@ import {
   filter,
 } from 'rxjs';
 import { ChatService } from './chatroom.service';
+import { ConfrimService } from './dialog/confirm/confirm.service';
 import { InputNameService } from './dialog/inputName/inputName.service';
 import { user, messages } from './model/chatroom.model';
 
@@ -33,11 +30,11 @@ import { user, messages } from './model/chatroom.model';
 })
 export class ChatroomComponent implements OnInit {
   constructor(
-    private dialogService: NbDialogService,
-
     private toastrService: NbToastrService,
 
     private chatService: ChatService,
+
+    private confrimService: ConfrimService,
 
     private inputNameService: InputNameService
   ) {}
@@ -51,15 +48,11 @@ export class ChatroomComponent implements OnInit {
 
   @ViewChildren('tab') tab: QueryList<NbTabsetComponent>;
 
-  @ViewChild('leaveConfrimDialog') leaveConfrimDialog: TemplateRef<any>;
-
   destory$ = new Subject();
 
   join$ = new BehaviorSubject<boolean>(false);
 
   private changeTab$ = new BehaviorSubject<boolean>(false);
-
-  private leaveConfrimDialogRef: NbDialogRef<any>;
 
   private currectTabIndex = 0;
 
@@ -153,30 +146,17 @@ export class ChatroomComponent implements OnInit {
     this.sendMsg = '';
   }
 
-  //  離開私聊
-  leaveRoom() {
-    this.leaveConfrimDialogRef.close(true);
-  }
-
-  //  不離開私聊
-  stay() {
-    this.leaveConfrimDialogRef.close(false);
-  }
-
   //  離開私聊前的確認
   checkLeaveRoom() {
     const test = this.roomList[this.currectTabIndex];
 
     if (['invite', 'connect'].includes(test.connectStatus)) {
-      this.leaveConfrimDialogRef = this.dialogService.open(
-        this.leaveConfrimDialog
-      );
+      const dialogRef = this.confrimService.open();
 
-      this.leaveConfrimDialogRef.onClose.subscribe({
+      dialogRef.onClose.subscribe({
         next: (res: boolean) => {
           if (res) {
             this.chatService.liveRoom();
-
             this.deleteRoomList(this.currectTabIndex);
           }
         },
@@ -200,8 +180,6 @@ export class ChatroomComponent implements OnInit {
         roomId,
         receiverName: userName,
       });
-
-      // this.closeOnlineListDialog();
 
       //  建立該房間的聊天陣列
       this.messages[roomId] = [];

@@ -105,16 +105,3 @@
     </div>
   </div>
 </div>
-
-<ng-template #leaveConfrimDialog let-data let-ref="dialogRef">
-  <nb-card accent="info">
-    <nb-card-header>
-      <font size="+2"><b>確定要離開嗎?</b></font>
-    </nb-card-header>
-
-    <nb-card-body fxLayout="row" fxLayoutGap="8px">
-      <button nbButton status="danger" (click)="leaveRoom()">離開</button>
-      <button nbButton (click)="stay()">我想想</button>
-    </nb-card-body>
-  </nb-card>
-</ng-template>

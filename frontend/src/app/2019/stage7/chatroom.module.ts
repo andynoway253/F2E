@@ -3,20 +3,20 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { ChatroomComponent } from './chatroom.component';
 import {
   NbButtonModule,
   NbCardModule,
-  NbDialogModule,
-  NbDialogRef,
   NbIconModule,
   NbInputModule,
   NbListModule,
   NbTabsetModule,
+  NbDialogModule,
   NbToastrModule,
 } from '@nebular/theme';
-import { InputNameDialogComponent } from './dialog/inputName/inputName.component';
+import { ChatroomComponent } from './chatroom.component';
 import { OnlineComponent } from './component/online/online.component';
+import { ConfirmDialogComponent } from './dialog/confirm/confirm.component';
+import { InputNameDialogComponent } from './dialog/inputName/inputName.component';
 import { OnlineDialogComponent } from './dialog/online/online.component';
 
 @NgModule({
@@ -42,6 +42,7 @@ import { OnlineDialogComponent } from './dialog/online/online.component';
 
     InputNameDialogComponent,
     OnlineDialogComponent,
+    ConfirmDialogComponent,
   ],
   exports: [ChatroomComponent],
 })
