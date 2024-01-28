@@ -8,7 +8,7 @@ import { ConfirmDialogComponent } from './confirm.component';
 export class ConfrimService {
   constructor(private dialogService: NbDialogService) {}
 
-  dialogRef: NbDialogRef<ConfirmDialogComponent>;
+  private dialogRef: NbDialogRef<ConfirmDialogComponent>;
 
   open() {
     this.dialogRef = this.dialogService.open(ConfirmDialogComponent);
