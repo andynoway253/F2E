@@ -9,13 +9,18 @@ import {
 import { NbDialogService, NbDialogRef } from '@nebular/theme';
 import { OnlineDialogComponent } from '../../dialog/online/online.component';
 import { user } from '../../model/chatroom.model';
+import { OnlineService } from '../../dialog/online/online.service';
 
 @Component({
-  selector: 'app-online',
-  templateUrl: './online.component.html',
+  selector: 'app-usercount',
+  templateUrl: './usercount.component.html',
 })
-export class OnlineComponent implements OnInit {
-  constructor(private dialogService: NbDialogService) {}
+export class UsercountComponent implements OnInit {
+  constructor(
+    private dialogService: NbDialogService,
+
+    private onlineService: OnlineService
+  ) {}
   @Input() user: user;
 
   @Input() onlineList: Array<user>;
@@ -31,6 +36,7 @@ export class OnlineComponent implements OnInit {
       this.onlineList = changes.onlineList.currentValue;
 
       if (this.dialogRef) {
+        console.log(changes.onlineList.currentValue);
         this.dialogRef.componentRef.instance.onlineList =
           changes.onlineList.currentValue;
       }
