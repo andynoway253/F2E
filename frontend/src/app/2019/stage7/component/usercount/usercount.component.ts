@@ -9,18 +9,13 @@ import {
 import { NbDialogService, NbDialogRef } from '@nebular/theme';
 import { OnlineDialogComponent } from '../../dialog/online/online.component';
 import { user } from '../../model/chatroom.model';
-import { OnlineService } from '../../dialog/online/online.service';
 
 @Component({
   selector: 'app-usercount',
   templateUrl: './usercount.component.html',
 })
 export class UsercountComponent implements OnInit {
-  constructor(
-    private dialogService: NbDialogService,
-
-    private onlineService: OnlineService
-  ) {}
+  constructor(private dialogService: NbDialogService) {}
   @Input() user: user;
 
   @Input() onlineList: Array<user>;

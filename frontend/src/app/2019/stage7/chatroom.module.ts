@@ -14,7 +14,7 @@ import {
   NbToastrModule,
 } from '@nebular/theme';
 import { ChatroomComponent } from './chatroom.component';
-import { OnlineComponent } from './component/online/online.component';
+import { UsercountComponent } from './component/usercount/usercount.component';
 import { ConfirmDialogComponent } from './dialog/confirm/confirm.component';
 import { InputNameDialogComponent } from './dialog/inputName/inputName.component';
 import { OnlineDialogComponent } from './dialog/online/online.component';
@@ -38,7 +38,7 @@ import { OnlineDialogComponent } from './dialog/online/online.component';
   ],
   declarations: [
     ChatroomComponent,
-    OnlineComponent,
+    UsercountComponent,
 
     InputNameDialogComponent,
     OnlineDialogComponent,

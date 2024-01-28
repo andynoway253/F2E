@@ -1,11 +1,11 @@
 <div *ngIf="join$ | async" fxFill fxLayout="column" fxLayoutGap="8px">
   <div fxFlex class="background" fxLayout="column" fxLayoutGap="8px">
     <div class="online">
-      <app-online
+      <app-usercount
         [user]="user"
         [onlineList]="onlineList"
         (invite)="invitePrivateMessage($event)"
-      ></app-online>
+      ></app-usercount>
     </div>
 
     <nb-tabset #tabset fxFill (changeTab)="onChangeTab($event)">

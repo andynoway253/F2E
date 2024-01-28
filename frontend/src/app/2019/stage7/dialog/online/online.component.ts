@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { user } from '../../model/chatroom.model';
 
@@ -19,7 +19,7 @@ export class OnlineDialogComponent implements OnInit {
     this.dialogRef.close(onlineUser);
   }
 
-  closeOnlineListDialog() {
+  close() {
     this.dialogRef.close();
   }
 }
