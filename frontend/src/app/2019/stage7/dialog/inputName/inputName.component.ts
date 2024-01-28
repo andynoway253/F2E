@@ -4,6 +4,7 @@ import {
   NbGlobalPhysicalPosition,
   NbToastrService,
 } from '@nebular/theme';
+import { InputNameService } from './inputName.service';
 
 @Component({
   templateUrl: './inputName.component.html',
@@ -12,7 +13,7 @@ export class InputNameDialogComponent implements OnInit {
   constructor(
     private toastrService: NbToastrService,
 
-    private dialogRef: NbDialogRef<InputNameDialogComponent>
+    private inputNameService: InputNameService
   ) {}
 
   userName = '';
@@ -20,7 +21,8 @@ export class InputNameDialogComponent implements OnInit {
   ngOnInit(): void {}
 
   startChat() {
-    if (!this.userName.trim()) {
+    const userName = this.userName.trim();
+    if (!userName) {
       const physicalPositions = NbGlobalPhysicalPosition;
 
       const arr = ['(#`Д´)ﾉ', '(／‵Д′)／~ ╧╧', '(╬ﾟдﾟ)▄︻┻┳═一'];
@@ -36,6 +38,6 @@ export class InputNameDialogComponent implements OnInit {
       return;
     }
 
-    this.dialogRef.close(this.userName);
+    this.inputNameService.close(userName);
   }
 }

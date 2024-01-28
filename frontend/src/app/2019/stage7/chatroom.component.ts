@@ -3,29 +3,29 @@ import {
   OnInit,
   ViewChildren,
   QueryList,
-  ViewChild,
   ElementRef,
+  ViewChild,
   TemplateRef,
 } from '@angular/core';
 import {
-  NbDialogRef,
   NbDialogService,
+  NbToastrService,
+  NbTabsetComponent,
+  NbDialogRef,
   NbGlobalPhysicalPosition,
   NbTabComponent,
-  NbTabsetComponent,
-  NbToastrService,
 } from '@nebular/theme';
 import {
-  BehaviorSubject,
   Subject,
-  filter,
-  switchMap,
+  BehaviorSubject,
   takeUntil,
   tap,
+  switchMap,
+  filter,
 } from 'rxjs';
 import { ChatService } from './chatroom.service';
-import { messages, user } from './model/chatroom.model';
-import { InputNameDialogComponent } from './dialog/inputName/inputName.component';
+import { InputNameService } from './dialog/inputName/inputName.service';
+import { user, messages } from './model/chatroom.model';
 
 @Component({
   templateUrl: './chatroom.component.html',
@@ -37,7 +37,9 @@ export class ChatroomComponent implements OnInit {
 
     private toastrService: NbToastrService,
 
-    private chatService: ChatService
+    private chatService: ChatService,
+
+    private inputNameService: InputNameService
   ) {}
 
   //  做滾動用
@@ -56,8 +58,6 @@ export class ChatroomComponent implements OnInit {
   join$ = new BehaviorSubject<boolean>(false);
 
   private changeTab$ = new BehaviorSubject<boolean>(false);
-
-  private inputNameDialogRef: NbDialogRef<any>;
 
   private leaveConfrimDialogRef: NbDialogRef<any>;
 
@@ -103,7 +103,7 @@ export class ChatroomComponent implements OnInit {
 
     this.destory$.complete();
 
-    this.inputNameDialogRef.close();
+    this.inputNameService.close();
   }
 
   sendMessage() {
@@ -252,16 +252,7 @@ export class ChatroomComponent implements OnInit {
   }
 
   private initialObservableListener() {
-    this.inputNameDialogRef = this.dialogService.open(
-      InputNameDialogComponent,
-      {
-        closeOnBackdropClick: false,
-        closeOnEsc: false,
-        hasBackdrop: false,
-      }
-    );
-
-    const startChat$ = this.inputNameDialogRef.onClose.pipe(
+    const startChat$ = this.inputNameService.open().onClose.pipe(
       tap((userName: string) => {
         this.user.userName = userName;
 
