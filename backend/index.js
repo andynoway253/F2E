@@ -31,6 +31,31 @@ io.on("connection", (socket) => {
   /*當前登入用戶*/
   let userName = null;
 
+  socket.on("disconnecting", () => {
+    let userId = "";
+    Array.from(socket.rooms).forEach((roomId) => {
+      const arr = roomId.split("@");
+      if (arr.length > 1) {
+        const receiverId = arr.filter((id) => id !== userId);
+
+        socket.to(receiverId).emit("message", {
+          roomId,
+          type: "notify",
+          userName: userName,
+          text: "離開聊天",
+        });
+
+        //  通知「被離開者」更改聊天室狀態為leave
+        socket.to(receiverId).emit("changeConnectStatus", {
+          roomId,
+          connectStatus: "leave",
+        });
+      } else {
+        userId = arr[0]; //  取得自己的ID
+      }
+    });
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
@@ -46,7 +71,7 @@ io.on("connection", (socket) => {
     /* 大廳離開提示 */
     socket.broadcast.emit("message", {
       roomId: "lobby",
-      type: "leave",
+      type: "notify",
       userName: userName,
       text: "離開聊天",
     });
@@ -96,28 +121,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (message) => {
-    const { roomId, userName, text } = message;
+    const { roomId, text } = message;
 
     const receiverId = roomId.split("@")[1];
     if (receiverId) {
       //  如果連線已經在該房間裡，不須再發送聊天邀請通知
       if (socket.rooms.has(roomId)) {
         io.to(roomId).emit("message", {
-          roomId,
-          type: "message",
-          userName,
-          text,
-        });
-      } else {
-        socket.to(receiverId).emit("message", {
-          roomId,
-          type: "invite",
-          userName,
-          text,
-          accept: "",
-        });
-
-        socket.emit("message", {
           roomId,
           type: "message",
           userName,
@@ -151,8 +161,52 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("sendInvitePrivateMessage", (params) => {
+    const { roomId, receiverName } = params;
+    const userId = roomId.split("@")[0];
+    const receiverId = roomId.split("@")[1];
+
+    socket.to(receiverId).emit("message", {
+      roomId,
+      type: "invite",
+      userName,
+      accept: "",
+    });
+
+    socket.emit("message", {
+      roomId,
+      type: "notify",
+      userName: "",
+      text: `向 ${receiverName} 發出邀請，請等候對方回應`,
+    });
+  });
+
   socket.on("joinRoom", (params) => {
     socket.join(params.roomId);
+  });
+
+  socket.on("leaveRoom", (params) => {
+    const { roomId, userId } = params;
+
+    if (userId) {
+      const user = roomId.split("@").filter((id) => id !== userId);
+
+      socket.to(user).emit("message", {
+        roomId,
+        type: "notify",
+        userName: "",
+        text: `對方已離開`,
+      });
+
+      //  通知「被離開者」更改聊天室狀態為leave
+      socket.to(user).emit("changeConnectStatus", {
+        roomId,
+        connectStatus: "leave",
+      });
+    }
+
+    socket.leave(roomId);
+    console.log(socket.rooms);
   });
 });
 
