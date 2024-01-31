@@ -12,3 +12,11 @@ export interface messages {
     accept?: string;
   }>;
 }
+
+export interface message {
+  roomId: string;
+  type: string;
+  text: string;
+  userName: string;
+  accept?: string;
+}

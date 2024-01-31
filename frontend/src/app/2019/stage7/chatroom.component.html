@@ -14,7 +14,7 @@
         *ngFor="let room of roomList"
         [tabTitle]="room.roomName"
         [badgeDot]="
-          room.connectStatus === 'invite' && currectRoomId !== room.roomId
+          room.connectStatus === 'inviting' && currectRoomId !== room.roomId
         "
         badgeStatus="danger"
       >
@@ -54,8 +54,6 @@
                 <span *ngIf="message.accept === 'accept'">
                   已接受邀請，可以開始聊天囉!
                 </span>
-
-                <span *ngIf="message.accept === 'reject'">已拒絕邀請!</span>
 
                 <div
                   *ngIf="message.accept === ''"

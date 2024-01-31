@@ -56,6 +56,8 @@ export class ChatroomComponent implements OnInit {
 
   private currectTabIndex = 0;
 
+  private physicalPositions = NbGlobalPhysicalPosition;
+
   currectRoomId = 'lobby';
 
   sendMsg = '';
@@ -71,7 +73,7 @@ export class ChatroomComponent implements OnInit {
   roomList: Array<{
     roomId: string;
     roomName: string;
-    connectStatus: 'connect' | 'invite' | 'leave' | '';
+    connectStatus: 'connect' | 'inviting' | 'leave';
   }> = [{ roomId: 'lobby', roomName: '大廳', connectStatus: 'connect' }];
 
   ngOnInit(): void {
@@ -108,19 +110,17 @@ export class ChatroomComponent implements OnInit {
       (room) => room.roomId === this.currectRoomId
     )[0];
 
-    const physicalPositions = NbGlobalPhysicalPosition;
-
-    if (room.connectStatus === 'invite') {
+    if (room.connectStatus === 'inviting') {
       if (this.user.userId === room.roomId.split('@')[0]) {
         this.toastrService.show('等待對方回應', '請稍等', {
-          position: physicalPositions.TOP_RIGHT,
+          position: this.physicalPositions.TOP_RIGHT,
           status: 'warning',
         });
       }
 
       if (this.user.userId === room.roomId.split('@')[1]) {
         this.toastrService.show('請先接受或拒絕對方邀請', '請稍等', {
-          position: physicalPositions.TOP_RIGHT,
+          position: this.physicalPositions.TOP_RIGHT,
           status: 'warning',
         });
       }
@@ -130,7 +130,7 @@ export class ChatroomComponent implements OnInit {
         '對方已離開，按右下離開可以關閉頁籤',
         '(〒︿〒)',
         {
-          position: physicalPositions.TOP_RIGHT,
+          position: this.physicalPositions.TOP_RIGHT,
           status: 'danger',
         }
       );
@@ -146,21 +146,31 @@ export class ChatroomComponent implements OnInit {
     this.sendMsg = '';
   }
 
-  //  離開私聊前的確認
+  //  離開私聊
   checkLeaveRoom() {
-    const test = this.roomList[this.currectTabIndex];
+    const room = this.roomList[this.currectTabIndex];
 
-    if (['invite', 'connect'].includes(test.connectStatus)) {
+    if (['inviting', 'connect'].includes(room.connectStatus)) {
       const dialogRef = this.confrimService.open();
 
       dialogRef.onClose.subscribe({
         next: (res: boolean) => {
           if (res) {
-            this.chatService.liveRoom();
+            this.chatService.leaveRoom({
+              roomId: room.roomId,
+              userId: this.user.userId,
+            });
+
             this.deleteRoomList(this.currectTabIndex);
           }
         },
       });
+    } else if (room.connectStatus === 'leave') {
+      console.log(this.messages);
+
+      this.chatService.leaveRoom({ roomId: room.roomId });
+
+      this.deleteRoomList(this.currectTabIndex);
     }
   }
 
@@ -173,12 +183,17 @@ export class ChatroomComponent implements OnInit {
       this.roomList.push({
         roomId,
         roomName: userName,
-        connectStatus: 'invite',
+        connectStatus: 'inviting',
       });
 
       this.chatService.sendInvitePrivateMessage({
         roomId,
         receiverName: userName,
+      });
+
+      //  「邀請者」加入房間
+      this.chatService.joinRoom({
+        roomId,
       });
 
       //  建立該房間的聊天陣列
@@ -206,19 +221,39 @@ export class ChatroomComponent implements OnInit {
     e: { roomId: string; accept?: string },
     accept: boolean
   ) {
-    e.accept = accept ? 'accept' : 'reject';
-
     const room = this.roomList.filter((room) => room.roomId === e.roomId)[0];
 
-    if (accept) {
-      /* 接受邀請後，「被邀請者」加入房間 */
-      this.chatService.joinRoom({
-        roomId: e.roomId,
+    if (room.connectStatus === 'leave') {
+      this.toastrService.show('連結已失效', '╮(╯_╰)╭', {
+        position: this.physicalPositions.TOP_RIGHT,
+        status: 'danger',
       });
 
+      this.deleteRoomList(this.currectTabIndex);
+
+      return;
+    }
+
+    e.accept = accept ? 'accept' : 'reject';
+
+    //  收到邀請後，「被邀請者」直接加入房間
+    this.chatService.joinRoom({
+      roomId: e.roomId,
+    });
+
+    if (accept) {
+      //  接受後更改房間狀態
       room.connectStatus = 'connect';
     } else {
-      room.connectStatus = '';
+      //  拒絕則退出房間
+      this.chatService.leaveRoom({ roomId: room.roomId });
+
+      this.toastrService.show('已拒絕邀請', '｡:.ﾟヽ(*´∀`)ﾉﾟ.:｡', {
+        position: this.physicalPositions.TOP_RIGHT,
+        status: 'success',
+      });
+
+      this.deleteRoomList(this.currectTabIndex);
     }
 
     //  通知「邀請者」結果，接受或拒絕。傳 receiverName 是為了告訴 邀請者「是誰」答應或拒絕
@@ -237,7 +272,8 @@ export class ChatroomComponent implements OnInit {
         this.join$.next(true);
 
         this.chatService.checkConnectStatus();
-      })
+      }),
+      takeUntil(this.destory$)
     );
 
     //  取得線上人數及線上清單
@@ -245,8 +281,7 @@ export class ChatroomComponent implements OnInit {
       .pipe(
         switchMap(() => {
           return this.chatService.getOnlineInfo();
-        }),
-        takeUntil(this.destory$)
+        })
       )
       .subscribe({
         next: (data: {
@@ -266,8 +301,7 @@ export class ChatroomComponent implements OnInit {
       .pipe(
         switchMap(() => {
           return this.chatService.getMessages();
-        }),
-        takeUntil(this.destory$)
+        })
       )
       .subscribe({
         next: (res: {
@@ -281,14 +315,13 @@ export class ChatroomComponent implements OnInit {
             this.roomList.push({
               roomId: res.roomId,
               roomName: res.userName,
-              connectStatus: 'invite',
+              connectStatus: 'inviting',
             });
 
             this.messages[res.roomId] = [];
 
             this.changeTab$.next(false);
           }
-
           this.messages[res.roomId].push(res);
         },
       });
@@ -297,16 +330,13 @@ export class ChatroomComponent implements OnInit {
       .pipe(
         switchMap(() => {
           return this.chatService.joinLobby(this.user.userName);
-        }),
-        takeUntil(this.destory$)
+        })
       )
       .subscribe({
         next: (res: boolean) => {
           if (!res) {
-            const physicalPositions = NbGlobalPhysicalPosition;
-
             this.toastrService.show('名稱重複', '╮(╯_╰)╭', {
-              position: physicalPositions.TOP_RIGHT,
+              position: this.physicalPositions.TOP_RIGHT,
               status: 'danger',
             });
           }
@@ -317,8 +347,7 @@ export class ChatroomComponent implements OnInit {
       .pipe(
         switchMap(() => {
           return this.chatService.getResponseForPrivateMessage();
-        }),
-        takeUntil(this.destory$)
+        })
       )
       .subscribe({
         next: (res: { accept: boolean; roomId: string }) => {
@@ -329,12 +358,28 @@ export class ChatroomComponent implements OnInit {
           if (res.accept) {
             room.connectStatus = 'connect';
 
-            this.chatService.joinRoom({ roomId: res.roomId });
-
             return;
           }
 
-          room.connectStatus = '';
+          room.connectStatus = 'leave';
+        },
+      });
+
+    startChat$
+      .pipe(
+        switchMap(() => {
+          return this.chatService.getConnectStatus();
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          const room = this.roomList.filter(
+            (room) => room.roomId === res.roomId
+          )[0];
+
+          room.connectStatus = res.connectStatus;
+
+          console.log(room);
         },
       });
 
@@ -347,6 +392,7 @@ export class ChatroomComponent implements OnInit {
         next: (res: { toArray: () => NbTabComponent[] }) => {
           //  發請私聊請求的人才需要在按下私聊按鈕時切換頁
           setTimeout(() => {
+            console.log(res.toArray().length);
             this.tabsetEl.first.selectTab(
               res.toArray()[res.toArray().length - 1]
             );
@@ -378,7 +424,9 @@ export class ChatroomComponent implements OnInit {
     return this.roomList.some((room) => room.roomName === userName);
   }
 
-  private deleteRoomList(deleteIndex: any) {
+  private deleteRoomList(deleteIndex: number) {
     this.roomList.splice(deleteIndex, 1);
+
+    this.changeTab$.next(true);
   }
 }

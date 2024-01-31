@@ -1,43 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
+import { message } from './model/chatroom.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
-  private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
+  // private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
 
-  // private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
+  private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
   private socket = io(this.apiUrl, { withCredentials: true });
 
-  sendMessage(message: {
-    roomId: string;
-    userId: string;
-    userName: string;
-    text: string;
-  }) {
+  sendMessage(message: { roomId: string; userId: string; text: string }) {
     this.socket.emit('sendMessage', message);
   }
 
-  getMessages(): Observable<{
-    roomId: string;
-    type: string;
-    text: string;
-    userName: string;
-  }> {
+  getMessages(): Observable<message> {
     return new Observable((obs) => {
-      this.socket.on(
-        'message',
-        (data: {
-          roomId: string;
-          type: string;
-          text: string;
-          userName: string;
-        }) => {
-          obs.next(data);
-        }
-      );
+      this.socket.on('message', (data: message) => {
+        obs.next(data);
+      });
     });
   }
 
@@ -66,6 +49,23 @@ export class ChatService {
       this.socket.on(
         'getResponseForPrivateMessage',
         (data: { accept: boolean; roomId: string }) => {
+          obs.next(data);
+        }
+      );
+    });
+  }
+
+  getConnectStatus(): Observable<{
+    roomId: string;
+    connectStatus: 'connect' | 'inviting' | 'leave';
+  }> {
+    return new Observable((obs) => {
+      this.socket.on(
+        'changeConnectStatus',
+        (data: {
+          roomId: string;
+          connectStatus: 'connect' | 'inviting' | 'leave';
+        }) => {
           obs.next(data);
         }
       );
@@ -114,5 +114,7 @@ export class ChatService {
     this.socket.emit('joinRoom', params);
   }
 
-  liveRoom() {}
+  leaveRoom(params: { roomId: string; userId?: string }) {
+    this.socket.emit('leaveRoom', params);
+  }
 }

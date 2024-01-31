@@ -31,6 +31,31 @@ io.on("connection", (socket) => {
   /*當前登入用戶*/
   let userName = null;
 
+  socket.on("disconnecting", () => {
+    let userId = "";
+    Array.from(socket.rooms).forEach((roomId) => {
+      const arr = roomId.split("@");
+      if (arr.length > 1) {
+        const receiverId = arr.filter((id) => id !== userId);
+
+        socket.to(receiverId).emit("message", {
+          roomId,
+          type: "notify",
+          userName: userName,
+          text: "離開聊天",
+        });
+
+        //  通知「被離開者」更改聊天室狀態為leave
+        socket.to(receiverId).emit("changeConnectStatus", {
+          roomId,
+          connectStatus: "leave",
+        });
+      } else {
+        userId = arr[0]; //  取得自己的ID
+      }
+    });
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
 
@@ -96,7 +121,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (message) => {
-    const { roomId, userName, text } = message;
+    const { roomId, text } = message;
 
     const receiverId = roomId.split("@")[1];
     if (receiverId) {
@@ -158,6 +183,30 @@ io.on("connection", (socket) => {
 
   socket.on("joinRoom", (params) => {
     socket.join(params.roomId);
+  });
+
+  socket.on("leaveRoom", (params) => {
+    const { roomId, userId } = params;
+
+    if (userId) {
+      const user = roomId.split("@").filter((id) => id !== userId);
+
+      socket.to(user).emit("message", {
+        roomId,
+        type: "notify",
+        userName: "",
+        text: `對方已離開`,
+      });
+
+      //  通知「被離開者」更改聊天室狀態為leave
+      socket.to(user).emit("changeConnectStatus", {
+        roomId,
+        connectStatus: "leave",
+      });
+    }
+
+    socket.leave(roomId);
+    console.log(socket.rooms);
   });
 });
 
