@@ -166,8 +166,6 @@ export class ChatroomComponent implements OnInit {
         },
       });
     } else if (room.connectStatus === 'leave') {
-      console.log(this.messages);
-
       this.chatService.leaveRoom({ roomId: room.roomId });
 
       this.deleteRoomList(this.currectTabIndex);
@@ -329,23 +327,6 @@ export class ChatroomComponent implements OnInit {
     startChat$
       .pipe(
         switchMap(() => {
-          return this.chatService.joinLobby(this.user.userName);
-        })
-      )
-      .subscribe({
-        next: (res: boolean) => {
-          if (!res) {
-            this.toastrService.show('名稱重複', '╮(╯_╰)╭', {
-              position: this.physicalPositions.TOP_RIGHT,
-              status: 'danger',
-            });
-          }
-        },
-      });
-
-    startChat$
-      .pipe(
-        switchMap(() => {
           return this.chatService.getResponseForPrivateMessage();
         })
       )
@@ -378,8 +359,6 @@ export class ChatroomComponent implements OnInit {
           )[0];
 
           room.connectStatus = res.connectStatus;
-
-          console.log(room);
         },
       });
 
@@ -392,7 +371,6 @@ export class ChatroomComponent implements OnInit {
         next: (res: { toArray: () => NbTabComponent[] }) => {
           //  發請私聊請求的人才需要在按下私聊按鈕時切換頁
           setTimeout(() => {
-            console.log(res.toArray().length);
             this.tabsetEl.first.selectTab(
               res.toArray()[res.toArray().length - 1]
             );
