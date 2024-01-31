@@ -163,7 +163,6 @@ io.on("connection", (socket) => {
 
   socket.on("sendInvitePrivateMessage", (params) => {
     const { roomId, receiverName } = params;
-    const userId = roomId.split("@")[0];
     const receiverId = roomId.split("@")[1];
 
     socket.to(receiverId).emit("message", {
