@@ -4,6 +4,7 @@ import {
   ViewChildren,
   QueryList,
   ElementRef,
+  ViewChild,
 } from '@angular/core';
 import {
   NbToastrService,
@@ -48,11 +49,16 @@ export class ChatroomComponent implements OnInit {
 
   @ViewChildren('tab') tab: QueryList<NbTabsetComponent>;
 
+  @ViewChild('inputBox') inputBox: ElementRef;
+
   destory$ = new Subject();
 
   join$ = new BehaviorSubject<boolean>(false);
 
-  private changeTab$ = new BehaviorSubject<boolean>(false);
+  private changeTab$ = new BehaviorSubject<{ change: boolean; push: boolean }>({
+    change: false,
+    push: true,
+  });
 
   private currectTabIndex = 0;
 
@@ -74,7 +80,15 @@ export class ChatroomComponent implements OnInit {
     roomId: string;
     roomName: string;
     connectStatus: 'connect' | 'inviting' | 'leave';
-  }> = [{ roomId: 'lobby', roomName: '大廳', connectStatus: 'connect' }];
+    check: boolean;
+  }> = [
+    {
+      roomId: 'lobby',
+      roomName: '大廳',
+      connectStatus: 'connect',
+      check: true,
+    },
+  ];
 
   ngOnInit(): void {
     this.user = {
@@ -106,9 +120,7 @@ export class ChatroomComponent implements OnInit {
       return;
     }
 
-    const room = this.roomList.filter(
-      (room) => room.roomId === this.currectRoomId
-    )[0];
+    const room = this.roomList[this.currectTabIndex];
 
     if (room.connectStatus === 'inviting') {
       if (this.user.userId === room.roomId.split('@')[0]) {
@@ -173,7 +185,7 @@ export class ChatroomComponent implements OnInit {
   }
 
   //  發送私聊邀請
-  invitePrivateMessage(onlineUser: { userId: string; userName: string }) {
+  invitePrivateMessage(onlineUser: user) {
     const { userId, userName } = onlineUser;
     if (!this.includeRoom(userName)) {
       const roomId = this.user.userId + '@' + userId;
@@ -182,6 +194,7 @@ export class ChatroomComponent implements OnInit {
         roomId,
         roomName: userName,
         connectStatus: 'inviting',
+        check: false,
       });
 
       this.chatService.sendInvitePrivateMessage({
@@ -197,7 +210,7 @@ export class ChatroomComponent implements OnInit {
       //  建立該房間的聊天陣列
       this.messages[roomId] = [];
 
-      this.changeTab$.next(true);
+      this.changeTab$.next({ change: true, push: true });
     }
   }
 
@@ -206,11 +219,9 @@ export class ChatroomComponent implements OnInit {
       (room) => room.roomName === e.tabTitle
     );
 
-    this.currectRoomId =
-      e.tabTitle === '大廳'
-        ? 'lobby'
-        : this.roomList.filter((room) => room.roomName === e.tabTitle)[0]
-            .roomId;
+    this.currectRoomId = this.roomList[this.currectTabIndex].roomId;
+
+    this.roomList[this.currectTabIndex].check = true;
 
     this.showLeaveBtn = e.tabTitle !== '大廳';
   }
@@ -308,19 +319,28 @@ export class ChatroomComponent implements OnInit {
           text: string;
           userName: string;
         }) => {
+          console.log(res);
           //  「被邀請者」收到invite後，頁籤上會直接多出「邀請者」姓名的頁籤
           if (!this.includeRoom(res.userName) && res.type === 'invite') {
             this.roomList.push({
               roomId: res.roomId,
               roomName: res.userName,
               connectStatus: 'inviting',
+              check: false,
             });
 
             this.messages[res.roomId] = [];
 
-            this.changeTab$.next(false);
+            this.changeTab$.next({ change: false, push: true });
           }
+
           this.messages[res.roomId].push(res);
+
+          if (this.currectRoomId !== res.roomId) {
+            this.roomList.filter(
+              (room) => room.roomId === res.roomId
+            )[0].check = false;
+          }
         },
       });
 
@@ -365,15 +385,31 @@ export class ChatroomComponent implements OnInit {
     startChat$
       .pipe(
         switchMap(() => this.tab.changes),
-        filter(() => this.changeTab$.getValue())
+        filter(() => this.changeTab$.getValue().change)
       )
       .subscribe({
         next: (res: { toArray: () => NbTabComponent[] }) => {
-          //  發請私聊請求的人才需要在按下私聊按鈕時切換頁
           setTimeout(() => {
-            this.tabsetEl.first.selectTab(
-              res.toArray()[res.toArray().length - 1]
-            );
+            const toArray = res.toArray();
+            const length = toArray.length;
+            const push = this.changeTab$.getValue().push;
+
+            let component;
+
+            if (length === 1 || length === 2) {
+              component = toArray[length - 1];
+            } else if (length > 2) {
+              component =
+                toArray[
+                  length === this.currectTabIndex
+                    ? length - 1
+                    : push
+                    ? length - 1
+                    : this.currectTabIndex
+                ];
+            }
+
+            this.tabsetEl.first.selectTab(component);
           });
         },
       });
@@ -399,12 +435,18 @@ export class ChatroomComponent implements OnInit {
   }
 
   private includeRoom(userName: string) {
+    if (
+      this.roomList.some(
+        (room) => room.roomName === userName && room.connectStatus === 'leave'
+      )
+    ) {
+    }
     return this.roomList.some((room) => room.roomName === userName);
   }
 
   private deleteRoomList(deleteIndex: number) {
     this.roomList.splice(deleteIndex, 1);
 
-    this.changeTab$.next(true);
+    this.changeTab$.next({ change: true, push: false });
   }
 }

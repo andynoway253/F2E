@@ -13,9 +13,7 @@
         #tab
         *ngFor="let room of roomList"
         [tabTitle]="room.roomName"
-        [badgeDot]="
-          room.connectStatus === 'inviting' && currectRoomId !== room.roomId
-        "
+        [badgeDot]="!room.check"
         badgeStatus="danger"
       >
         <div #content class="content" fxLayout="column" fxLayoutGap="24px">
@@ -85,6 +83,7 @@
 
     <div class="input" fxLayout="row" fxLayoutGap="4px">
       <input
+        #inputBox
         nbInput
         autofocus
         [fullWidth]="true"
