@@ -205,7 +205,6 @@ io.on("connection", (socket) => {
     }
 
     socket.leave(roomId);
-    console.log(socket.rooms);
   });
 });
 

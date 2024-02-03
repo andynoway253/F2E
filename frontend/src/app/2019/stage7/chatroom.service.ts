@@ -7,9 +7,9 @@ import { message } from './model/chatroom.model';
   providedIn: 'root',
 })
 export class ChatService {
-  // private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
+  private apiUrl = 'https://f2e.onrender.com'; // 你的Node.js服务器地址
 
-  private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
+  // private apiUrl = 'http://localhost:3000'; // 你的Node.js服务器地址
   private socket = io(this.apiUrl, { withCredentials: true });
 
   sendMessage(message: { roomId: string; userId: string; text: string }) {
