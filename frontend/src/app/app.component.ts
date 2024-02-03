@@ -102,7 +102,7 @@ export class AppComponent {
           link: '/FreeCell',
         },
         {
-          title: '第三關 - MP3 Player',
+          title: '第三關 - MP3 Player(施工中)',
           link: '/MP3Player/Index',
         },
         {
