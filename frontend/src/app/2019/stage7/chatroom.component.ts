@@ -196,6 +196,7 @@ export class ChatroomComponent implements OnInit {
     } else if (existingRoom && existingRoom.connectStatus === 'leave') {
       if (existingRoom.roomId.split('@')[1] === this.user.userId) {
         //  如果已經有相同名子的房間，再檢查roomId，切分id為陣列，第一個位置的id被邀請方的話，就先把房間砍掉，再創一個新房間
+        //  情況1: 原「邀請方」離開，這時原「被邀請方」變成邀請方發出邀請
         const deleteIndex = this.roomList.findIndex(
           (room) => room.roomId === existingRoom.roomId
         );
@@ -206,7 +207,8 @@ export class ChatroomComponent implements OnInit {
         return;
       }
 
-      //  已存在相同名子的房間，且房間狀態為leave(對方已離開)，再發出一次邀請
+      // 已存在相同名子的房間，且房間狀態為leave(對方已離開)，再發出一次邀請
+      //  情況2: 「被邀請方」離開，這時「邀請方」繼續發邀請
       existingRoom.connectStatus = 'inviting';
       existingRoom.check = this.currectRoomId === roomId ? true : false;
 
