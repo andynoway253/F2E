@@ -187,30 +187,33 @@ export class ChatroomComponent implements OnInit {
   //  發送私聊邀請
   invitePrivateMessage(onlineUser: user) {
     const { userId, userName } = onlineUser;
-    if (!this.includeRoom(userName)) {
-      const roomId = this.user.userId + '@' + userId;
+    const roomId = this.user.userId + '@' + userId;
 
-      this.roomList.push({
-        roomId,
-        roomName: userName,
-        connectStatus: 'inviting',
-        check: false,
-      });
+    const existingRoom = this.includeRoom(userName);
+
+    if (!existingRoom) {
+      this.creatNewRoom({ roomId, userName, invite: 'inviter' });
+    } else if (existingRoom && existingRoom.connectStatus === 'leave') {
+      if (existingRoom.roomId.split('@')[1] === this.user.userId) {
+        //  如果已經有相同名子的房間，再檢查roomId，切分id為陣列，第一個位置的id被邀請方的話，就先把房間砍掉，再創一個新房間
+        const deleteIndex = this.roomList.findIndex(
+          (room) => room.roomId === existingRoom.roomId
+        );
+        this.deleteRoomList(deleteIndex);
+
+        this.creatNewRoom({ roomId, userName, invite: 'inviter' });
+
+        return;
+      }
+
+      //  已存在相同名子的房間，且房間狀態為leave(對方已離開)，再發出一次邀請
+      existingRoom.connectStatus = 'inviting';
+      existingRoom.check = this.currectRoomId === roomId ? true : false;
 
       this.chatService.sendInvitePrivateMessage({
         roomId,
         receiverName: userName,
       });
-
-      //  「邀請者」加入房間
-      this.chatService.joinRoom({
-        roomId,
-      });
-
-      //  建立該房間的聊天陣列
-      this.messages[roomId] = [];
-
-      this.changeTab$.next({ change: true, push: true });
     }
   }
 
@@ -319,19 +322,27 @@ export class ChatroomComponent implements OnInit {
           text: string;
           userName: string;
         }) => {
-          console.log(res);
           //  「被邀請者」收到invite後，頁籤上會直接多出「邀請者」姓名的頁籤
-          if (!this.includeRoom(res.userName) && res.type === 'invite') {
-            this.roomList.push({
-              roomId: res.roomId,
-              roomName: res.userName,
-              connectStatus: 'inviting',
-              check: false,
-            });
+          const existingRoom = this.includeRoom(res.userName);
+          const { roomId, userName } = res;
 
-            this.messages[res.roomId] = [];
+          if (res.type === 'invite') {
+            if (!existingRoom) {
+              //  房間不存在，新建房間
+              this.creatNewRoom({
+                roomId,
+                userName,
+                invite: 'invitee',
+              });
+            } else {
+              //  有相同名稱的房間存在
+              const deleteIndex = this.roomList.findIndex(
+                (room) => room.roomName === existingRoom.roomName
+              );
+              this.deleteRoomList(deleteIndex);
 
-            this.changeTab$.next({ change: false, push: true });
+              this.creatNewRoom({ roomId, userName, invite: 'invitee' });
+            }
           }
 
           this.messages[res.roomId].push(res);
@@ -435,13 +446,40 @@ export class ChatroomComponent implements OnInit {
   }
 
   private includeRoom(userName: string) {
-    if (
-      this.roomList.some(
-        (room) => room.roomName === userName && room.connectStatus === 'leave'
-      )
-    ) {
-    }
-    return this.roomList.some((room) => room.roomName === userName);
+    return this.roomList.find((room) => room.roomName === userName);
+  }
+
+  private creatNewRoom(params: {
+    roomId: string;
+    userName: string;
+    invite: 'inviter' | 'invitee';
+  }) {
+    const { roomId, userName, invite } = params;
+
+    this.roomList.push({
+      roomId,
+      roomName: userName,
+      connectStatus: 'inviting',
+      check: false,
+    });
+
+    //  「邀請者」加入房間
+    this.chatService.joinRoom({
+      roomId,
+    });
+    //  建立該房間的聊天陣列
+    this.messages[roomId] = [];
+
+    this.changeTab$.next({
+      change: invite === 'inviter' ? true : false,
+      push: true,
+    });
+
+    invite === 'inviter' &&
+      this.chatService.sendInvitePrivateMessage({
+        roomId,
+        receiverName: userName,
+      });
   }
 
   private deleteRoomList(deleteIndex: number) {
