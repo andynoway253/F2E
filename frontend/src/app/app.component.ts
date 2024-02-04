@@ -102,7 +102,7 @@ export class AppComponent {
           link: '/FreeCell',
         },
         {
-          title: '第三關 - MP3 Player(施工中)',
+          title: '第三關 - MP3 Player(構思中)',
           link: '/MP3Player/Index',
         },
         {
@@ -123,7 +123,8 @@ export class AppComponent {
           title: '第八關 - 雲端硬碟(沒做)',
         },
         {
-          title: '第九關 - 筆記軟體(沒做)',
+          title: '第九關 - 筆記軟體(施工中)',
+          link: '/Note',
         },
         {
           title: '第十關 - 口罩地圖',

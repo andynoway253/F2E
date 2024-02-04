@@ -32,6 +32,7 @@
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "lodash": "^4.17.21",
+    "ngx-editor": "^16.0.1",
     "ngx-socket-io": "^4.5.0",
     "rxjs": "^7.4.0",
     "socket.io-client": "^4.5.0",

@@ -1,0 +1,37 @@
+<div fxFill fxLayout="row">
+  <div fxFlex="20" [class]="classMode('tool')">
+    <div class="title">
+      <span>FreeNote.</span>
+    </div>
+
+    <div class="addNote">
+      <nb-icon icon="plus-circle"> </nb-icon>
+      <span>新增筆記</span>
+    </div>
+
+    <div class="menu">
+      <ng-container *ngFor="let item of menu">
+        <div class="menuItem">
+          <nb-icon [icon]="item.icon"> </nb-icon>
+          <span> {{ item.title }}</span>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="mode" fxLayoutGap="8px">
+      <span>模式</span>
+
+      <button class="modeBtn sunBtn" (click)="changeMode('light')">
+        <nb-icon icon="sun-outline" class="sun"> </nb-icon>
+      </button>
+
+      <button class="modeBtn moonBtn" (click)="changeMode('night')">
+        <nb-icon icon="moon-outline" class="moon"> </nb-icon>
+      </button>
+    </div>
+  </div>
+
+  <div fxFlex="20" [class]="classMode('list')"></div>
+
+  <div fxFlex [class]="classMode('editor')"></div>
+</div>

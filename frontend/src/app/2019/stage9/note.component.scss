@@ -1,0 +1,169 @@
+// 定義 mixin 來處理共用的樣式
+@mixin tool($bg-color, $color) {
+  display: flex;
+  flex-direction: column;
+  background-color: $bg-color;
+  color: $color;
+  padding: 50px;
+}
+
+@mixin addNote($background-color, $color) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  width: 220px;
+  height: 50px;
+  margin: 20px auto;
+  font-size: xx-large;
+
+  background-color: $background-color;
+  color: $color;
+  border-radius: 5px;
+
+  nb-icon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@mixin modeBtn($bg-color) {
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border: if($bg-color == #2f419b, 2px solid #ffffff, none);
+  border-radius: 50px;
+}
+
+%title {
+  font-size: xx-large;
+}
+
+%mode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+%menu {
+  height: 600px;
+  .menuItem {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 40px auto 40px auto;
+    font-size: x-large;
+  }
+}
+
+$tool-bg-light: #2f419b;
+$list-bg-light: #f4f6f7;
+$editor-bg-light: #ffffff;
+$tool-text-light: #ffffff;
+
+$tool-bg-night: #26252a;
+$list-bg-night: #343338;
+$editor-bg-night: #26252a;
+$text-night: #ffffff;
+
+.light {
+  &.tool {
+    @include tool($tool-bg-light, $tool-text-light);
+
+    .title {
+      @extend %title;
+    }
+
+    .addNote {
+      @include addNote(#ffffff, #2f419b);
+    }
+
+    .menu {
+      @extend %menu;
+    }
+
+    .mode {
+      @extend %mode;
+
+      .modeBtn {
+        @include modeBtn($tool-bg-night);
+
+        &.sunBtn {
+          background-color: #ffffff;
+          .sun {
+            color: #2f419b;
+          }
+        }
+
+        &.moonBtn {
+          background-color: #2f419b;
+          .moon {
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+
+  &.list {
+    background-color: $list-bg-light;
+  }
+
+  &.editor {
+    background-color: $editor-bg-light;
+  }
+}
+
+.night {
+  &.tool {
+    @include tool($tool-bg-night, $text-night);
+
+    .title {
+      @extend %title;
+    }
+
+    .addNote {
+      @include addNote(#fed32c, #26252a);
+    }
+
+    .menu {
+      @extend %menu;
+    }
+
+    .mode {
+      @extend %mode;
+
+      .modeBtn {
+        @include modeBtn($tool-bg-night);
+
+        &.sunBtn {
+          background-color: unset;
+          .sun {
+            color: #ffffff;
+          }
+        }
+
+        &.moonBtn {
+          background-color: #ffffff;
+          .moon {
+            color: #26252a;
+          }
+        }
+      }
+    }
+  }
+
+  &.list {
+    background-color: $list-bg-night;
+    color: $text-night;
+  }
+
+  &.editor {
+    background-color: $editor-bg-night;
+    color: $text-night;
+  }
+}

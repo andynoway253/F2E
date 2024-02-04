@@ -18,6 +18,7 @@ import { PaymentModule } from './2019/stage4/payment.module';
 import { ChatroomModule } from './2019/stage7/chatroom.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FreeCellModule } from './2019/stage2/freeCell.module';
+import { NoteModule } from './2019/stage9/note.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +39,7 @@ import { FreeCellModule } from './2019/stage2/freeCell.module';
     MP3PlayerModule,
     PaymentModule,
     ChatroomModule,
+    NoteModule,
     MaskMapModule,
   ],
   providers: [],
