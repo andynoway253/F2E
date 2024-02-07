@@ -4,10 +4,10 @@
       <span>FreeNote.</span>
     </div>
 
-    <div class="addNote">
+    <button class="addNote" (click)="addNote()">
       <nb-icon icon="plus-circle"> </nb-icon>
       <span>新增筆記</span>
-    </div>
+    </button>
 
     <div class="menu">
       <ng-container *ngFor="let item of menu">
@@ -31,7 +31,42 @@
     </div>
   </div>
 
-  <div fxFlex="20" [class]="classMode('list')"></div>
+  <div fxFlex="20" [class]="classMode('list')">
+    <nb-form-field class="search">
+      <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
+      <input type="text" nbInput placeholder="搜尋您的筆記" />
+    </nb-form-field>
 
-  <div fxFlex [class]="classMode('editor')"></div>
+    <div class="filter">
+      <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
+        <span>{{ 123 }}</span>
+        <nb-icon icon="arrow-ios-downward-outline"></nb-icon>
+      </div>
+
+      <button class="showType" [nbContextMenu]="showType">
+        <nb-icon [icon]="showTypeIcon + '-outline'"></nb-icon>
+      </button>
+    </div>
+
+    <ul class="noteList">
+      <li
+        [class]="showTypeIcon"
+        *ngFor="let note of noteList"
+        [class.selected]="note.selected"
+        (click)="selectNote(note)"
+      >
+        <i class="angle" [nbContextMenu]="noteAction"> </i>
+      </li>
+    </ul>
+  </div>
+
+  <div fxFlex [class]="classMode('editor')">
+    <form fxFlex [formGroup]="form" class="NgxEditor__Wrapper">
+      <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+      <ngx-editor
+        [editor]="editor"
+        formControlName="editorContent"
+      ></ngx-editor>
+    </form>
+  </div>
 </div>
