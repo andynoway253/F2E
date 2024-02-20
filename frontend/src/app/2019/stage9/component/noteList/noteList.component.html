@@ -1,0 +1,23 @@
+<ul class="noteList">
+  <li
+    *ngFor="let note of noteList"
+    [class]="showType"
+    [class.selected]="note.selected"
+    (click)="selectNote(note)"
+  >
+    <i class="angle" [nbContextMenu]="noteAction" nbContextMenuTag="action">
+    </i>
+
+    <div class="noteContent">
+      <div class="title">
+        <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
+
+        <span>{{ note.title }}</span>
+      </div>
+
+      <hr />
+
+      <span [innerHTML]="note.content"></span>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,12 @@
+<form
+  fxFlex
+  fxLayout="column"
+  fxLayoutGap="8px"
+  class="NgxEditor__Wrapper"
+  [formGroup]="form"
+>
+  <input nbInput fullWidth formControlName="editorTitle" placeholder="Title" />
+
+  <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+  <ngx-editor formControlName="editorContent" [editor]="editor"></ngx-editor>
+</form>

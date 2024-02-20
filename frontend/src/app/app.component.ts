@@ -94,11 +94,11 @@ export class AppComponent {
       expanded: true,
       children: [
         {
-          title: '第一關 - 番茄鐘',
+          title: '第一關 - 番茄鐘(完成)',
           link: '/Pompdoro',
         },
         {
-          title: '第二關 - 新接龍(沒做)',
+          title: '第二關 - 新接龍',
           link: '/FreeCell',
         },
         {
@@ -106,28 +106,28 @@ export class AppComponent {
           link: '/MP3Player/Index',
         },
         {
-          title: '第四關 - 線上支付',
+          title: '第四關 - 線上支付(完成)',
           link: '/Payment',
         },
         {
-          title: '第五關 - 90 秒挑戰遊戲(沒做)',
+          title: '第五關 - 90 秒挑戰遊戲',
         },
         {
-          title: '第六關 - 旅館預約服務(沒做)',
+          title: '第六關 - 旅館預約服務',
         },
         {
-          title: '第七關 - 匿名聊天室',
+          title: '第七關 - 匿名聊天室(完成)',
           link: '/Chatroom',
         },
         {
-          title: '第八關 - 雲端硬碟(沒做)',
+          title: '第八關 - 雲端硬碟',
         },
         {
           title: '第九關 - 筆記軟體(施工中)',
           link: '/Note',
         },
         {
-          title: '第十關 - 口罩地圖',
+          title: '第十關 - 口罩地圖(完成)',
           link: '/MaskMap',
         },
       ],

@@ -4,14 +4,14 @@
       <span>FreeNote.</span>
     </div>
 
-    <button class="addNote" (click)="addNote()">
+    <button class="addNote" (click)="onAddNote()">
       <nb-icon icon="plus-circle"> </nb-icon>
       <span>新增筆記</span>
     </button>
 
     <div class="menu">
       <ng-container *ngFor="let item of menu">
-        <div class="menuItem">
+        <div class="menuItem" (click)="onFilterByType(item)">
           <nb-icon [icon]="item.icon"> </nb-icon>
           <span> {{ item.title }}</span>
         </div>
@@ -31,42 +31,49 @@
     </div>
   </div>
 
-  <div fxFlex="20" [class]="classMode('list')">
+  <div fxFlex="21" [class]="classMode('list')">
     <nb-form-field class="search">
       <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
-      <input type="text" nbInput placeholder="搜尋您的筆記" />
+      <input
+        type="text"
+        nbInput
+        [placeholder]="
+          filterType === '標籤'
+            ? '搜尋您的筆記(依標籤內容搜尋)'
+            : '搜尋您的筆記(依標題搜尋)'
+        "
+        [(ngModel)]="filterInputValue"
+        (blur)="onFilterByType(filterItem)"
+      />
     </nb-form-field>
 
     <div class="filter">
       <div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="start center">
-        <span>{{ 123 }}</span>
+        <span>{{ filterType }}</span>
         <nb-icon icon="arrow-ios-downward-outline"></nb-icon>
       </div>
 
-      <button class="showType" [nbContextMenu]="showType">
+      <button
+        class="showType"
+        [nbContextMenu]="showType"
+        nbContextMenuTag="show"
+      >
         <nb-icon [icon]="showTypeIcon + '-outline'"></nb-icon>
       </button>
     </div>
 
-    <ul class="noteList">
-      <li
-        [class]="showTypeIcon"
-        *ngFor="let note of noteList"
-        [class.selected]="note.selected"
-        (click)="selectNote(note)"
-      >
-        <i class="angle" [nbContextMenu]="noteAction"> </i>
-      </li>
-    </ul>
+    <app-noteList
+      [showType]="showTypeIcon"
+      [noteList]="noteList"
+      (selectedChange)="onSelectedChange($event)"
+      (deleteNote)="onDeleteNote($event)"
+    ></app-noteList>
   </div>
 
   <div fxFlex [class]="classMode('editor')">
-    <form fxFlex [formGroup]="form" class="NgxEditor__Wrapper">
-      <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-      <ngx-editor
-        [editor]="editor"
-        formControlName="editorContent"
-      ></ngx-editor>
-    </form>
+    <app-editorForm
+      fxFlex
+      [selectedNote]="currentSelectedNote"
+    ></app-editorForm>
   </div>
 </div>

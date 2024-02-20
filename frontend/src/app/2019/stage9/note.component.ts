@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
 import { NbMenuService } from '@nebular/theme';
-import { Toolbar, Validators, Editor } from 'ngx-editor';
-import { Note } from './model/note.model';
+import { Menu, Note } from './model/note.model';
 
 @Component({
   templateUrl: './note.component.html',
@@ -13,96 +11,62 @@ export class NoteComponent implements OnInit {
 
   mode: 'light' | 'night' = 'light';
 
-  menu = [
+  menu: Menu[] = [
     {
       title: '所有筆記',
       icon: 'file-text-outline',
+      filter: 'all',
     },
     {
       title: '捷徑',
       icon: 'star',
+      filter: 'favorite',
     },
     {
       title: '標籤',
       icon: 'pricetags-outline',
+      filter: 'tag',
     },
     {
       title: '月曆',
       icon: 'calendar-outline',
+      filter: 'calendar',
     },
-
     {
       title: '垃圾桶',
       icon: 'trash-2-outline',
+      filter: 'trash',
     },
   ];
 
-  showType = [
-    { title: '卡片檢視', icon: 'grid-outline', showType: true },
-    { title: '摘要檢視', icon: 'list-outline', showType: true },
-    { title: '文字列表檢視', icon: 'menu-outline', showType: true },
-  ];
+  filterType = '所有筆記';
 
-  noteAction = [
-    { title: '最愛', icon: 'star-outline' },
-    { title: '刪除', icon: 'trash-2-outline' },
+  filterItem: Menu = this.menu[0];
+
+  filterInputValue: string;
+
+  showType = [
+    { title: '卡片檢視', icon: 'grid-outline' },
+    { title: '摘要檢視', icon: 'list-outline' },
+    { title: '文字列表檢視', icon: 'menu-outline' },
   ];
 
   showTypeIcon = 'grid';
 
-  noteList: Note[] = [
-    // {
-    //   title: 'test1',
-    //   content: 'testtest',
-    //   tag: ['test1', 'test2'],
-    //   favorite: true,
-    //   createDate: '2024/02/05',
-    //   editorDate: '2024/02/05',
-    //   selected: false,
-    // },
-  ];
+  currentSelectedNote: Note;
 
-  editor: Editor;
+  noteList: Note[] = [];
 
-  toolbar: Toolbar = [
-    ['bold', 'italic'],
-    ['underline', 'strike'],
-    ['code', 'blockquote'],
-    ['ordered_list', 'bullet_list'],
-    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
-    ['link', 'image'],
-    ['text_color', 'background_color'],
-    ['align_left', 'align_center', 'align_right', 'align_justify'],
-  ];
-
-  form = new FormGroup(
-    {
-      editorContent: new FormControl('', Validators.required()),
-    },
-    { updateOn: 'blur' }
-  );
+  originList: Note[] = [];
 
   ngOnInit(): void {
-    this.editor = new Editor();
-
     this.menuService.onItemClick().subscribe({
-      next: (res: any) => {
-        if (res.item.showType) {
-          console.log(res.item.icon.split('-')[0]);
-          this.showTypeIcon = res.item.icon.split('-')[0] as string;
+      next: (res) => {
+        if (res.tag === 'show') {
+          this.showTypeIcon = (res.item.icon as string).split('-')[0];
         }
       },
     });
-
-    this.form.get('editorContent').valueChanges.subscribe({
-      next: (res) => {
-        console.log(res);
-      },
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.editor.destroy();
   }
 
   classMode(className: string) {
@@ -117,26 +81,50 @@ export class NoteComponent implements OnInit {
     this.mode = mode;
   }
 
-  addNote() {
-    this.noteList.forEach((note) => (note.selected = false));
+  onFilterByType(menuItem: Menu) {
+    const { title, filter } = menuItem;
+    this.filterItem = menuItem;
+    this.filterType = title;
 
-    this.noteList.push({
+    const filters: { [key: string]: (note: any) => boolean } = {
+      all: (note: Note) =>
+        this.filterInputValue
+          ? note.title.indexOf(this.filterInputValue) !== -1
+          : true,
+      favorite: (note: Note) => note.favorite,
+      tag: (note: Note) => note.tag.length > 0,
+    };
+
+    const filterFunction = filters[filter];
+    this.noteList = this.originList.filter(filterFunction);
+  }
+
+  onAddNote() {
+    const newNote: Note = {
+      id: Number(
+        Math.random().toString().substring(2, 10) + Date.now()
+      ).toString(36),
       title: '',
       content: '',
-      tag: [],
-      favorite: false,
+      tag: [] as string[],
       createDate: '2024/02/05',
       editorDate: '2024/02/05',
+      favorite: false,
+      selected: false,
+    };
 
-      selected: true,
-    });
+    const list = [...this.noteList];
+    list.push(newNote);
+    this.originList = this.noteList = list;
   }
 
-  selectNote(selectNote: Note) {
-    this.noteList.forEach((note) => (note.selected = false));
-
-    selectNote.selected = true;
+  onSelectedChange(e: Note) {
+    this.currentSelectedNote = e;
   }
 
-  action(selectNote: Note) {}
+  onDeleteNote(e: string) {
+    const deleteIndex = this.noteList.findIndex((note) => note.id === e);
+
+    this.noteList.splice(deleteIndex, 1);
+  }
 }

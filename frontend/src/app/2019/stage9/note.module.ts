@@ -13,6 +13,8 @@ import {
   NbMenuModule,
 } from '@nebular/theme';
 import { NgxEditorModule } from 'ngx-editor';
+import { NoteListComponent } from './component/noteList/noteList.component';
+import { EditorFormComponent } from './component/editorForm/editorForm.component';
 
 @NgModule({
   imports: [
@@ -32,7 +34,7 @@ import { NgxEditorModule } from 'ngx-editor';
 
     RouterModule.forChild([{ path: '', component: NoteComponent }]),
   ],
-  declarations: [NoteComponent],
+  declarations: [NoteComponent, NoteListComponent, EditorFormComponent],
   exports: [NoteComponent],
 })
 export class NoteModule {}
