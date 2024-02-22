@@ -1,12 +1,8 @@
-import { ChatService } from './../../chatroom.service';
 import { Component, OnInit } from '@angular/core';
-import {
-  NbDialogRef,
-  NbGlobalPhysicalPosition,
-  NbToastrService,
-} from '@nebular/theme';
-import { InputNameService } from './inputName.service';
+import { NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { Subject, filter, switchMap } from 'rxjs';
+import { ChatService } from '../../chatroom.service';
+import { InputNameService } from './inputName.service';
 
 @Component({
   templateUrl: './inputName.component.html',
@@ -19,14 +15,16 @@ export class InputNameDialogComponent implements OnInit {
 
     private chatService: ChatService
   ) {}
-  private test$ = new Subject<boolean>();
+  private startChat$ = new Subject<boolean>();
 
   private physicalPositions = NbGlobalPhysicalPosition;
 
   userName = '';
 
   ngOnInit(): void {
-    this.test$
+    this.chatService.checkConnectStatus();
+
+    this.startChat$
       .pipe(
         filter((boolean) => boolean),
         switchMap(() => {
@@ -62,11 +60,11 @@ export class InputNameDialogComponent implements OnInit {
           status: 'danger',
         }
       );
-      this.test$.next(false);
+      this.startChat$.next(false);
 
       return;
     }
 
-    this.test$.next(true);
+    this.startChat$.next(true);
   }
 }

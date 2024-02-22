@@ -284,8 +284,6 @@ export class ChatroomComponent implements OnInit {
         this.user.userName = userName;
 
         this.join$.next(true);
-
-        this.chatService.checkConnectStatus();
       }),
       takeUntil(this.destory$)
     );
