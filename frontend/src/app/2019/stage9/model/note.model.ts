@@ -9,6 +9,7 @@ export interface Note {
   tag: string[];
   favorite: boolean;
   selected: boolean;
+  trash: boolean;
 }
 
 export interface Menu {

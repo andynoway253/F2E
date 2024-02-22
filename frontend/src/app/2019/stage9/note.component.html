@@ -11,7 +11,7 @@
 
     <div class="menu">
       <ng-container *ngFor="let item of menu">
-        <div class="menuItem" (click)="onFilterByType(item)">
+        <div class="menuItem" (click)="onFilter(item)">
           <nb-icon [icon]="item.icon"> </nb-icon>
           <span> {{ item.title }}</span>
         </div>
@@ -43,7 +43,7 @@
             : '搜尋您的筆記(依標題搜尋)'
         "
         [(ngModel)]="filterInputValue"
-        (blur)="onFilterByType(filterItem)"
+        (blur)="onFilter(filterItem)"
       />
     </nb-form-field>
 
@@ -65,7 +65,10 @@
     <app-noteList
       [showType]="showTypeIcon"
       [noteList]="noteList"
+      [changeAction]="changeAction"
+      [mode]="mode"
       (selectedChange)="onSelectedChange($event)"
+      (throwNote)="onThrowNote($event)"
       (deleteNote)="onDeleteNote($event)"
     ></app-noteList>
   </div>

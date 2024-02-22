@@ -75,4 +75,15 @@ export class EditorFormComponent implements OnInit {
       });
     }
   }
+
+  onCheckInput() {
+    const editorTitleControl = this.form.get('editorTitle');
+    const currentValue = editorTitleControl.value;
+
+    if (currentValue === '無標題') {
+      editorTitleControl.setValue('');
+    } else if (currentValue === '') {
+      editorTitleControl.setValue('無標題');
+    }
+  }
 }

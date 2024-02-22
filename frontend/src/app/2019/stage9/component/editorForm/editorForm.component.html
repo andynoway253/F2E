@@ -5,7 +5,7 @@
   class="NgxEditor__Wrapper"
   [formGroup]="form"
 >
-  <input nbInput fullWidth formControlName="editorTitle" placeholder="Title" />
+  <input nbInput fullWidth formControlName="editorTitle" placeholder="Title" (focus)="onCheckInput()" (blur)="onCheckInput()"/>
 
   <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
   <ngx-editor formControlName="editorContent" [editor]="editor"></ngx-editor>

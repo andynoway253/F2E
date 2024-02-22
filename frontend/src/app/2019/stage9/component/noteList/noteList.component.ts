@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Note } from '../../model/note.model';
-import { NbMenuService } from '@nebular/theme';
+import { NbMenuItem, NbMenuService } from '@nebular/theme';
 
 @Component({
   selector: 'app-noteList',
@@ -21,13 +21,20 @@ export class NoteListComponent implements OnInit {
 
   @Input() showType: string = 'grid';
 
+  @Input() mode: string = 'light';
+
+  @Input() changeAction: string = '';
+
   @Output() selectedChange: EventEmitter<Note> = new EventEmitter();
 
-  @Output() deleteNote: EventEmitter<string> = new EventEmitter();
+  @Output() throwNote: EventEmitter<Note> = new EventEmitter(); //  丟到垃圾桶
+
+  @Output() deleteNote: EventEmitter<Note> = new EventEmitter();
 
   selectedNote: Note;
 
-  noteAction = [
+  noteAction: NbMenuItem[] = [
+    { title: '復原', icon: 'undo-outline', hidden: true },
     { title: '最愛', icon: 'star-outline' },
     { title: '刪除', icon: 'trash-2-outline' },
   ];
@@ -41,7 +48,9 @@ export class NoteListComponent implements OnInit {
           }
 
           if (res.item.title === '刪除') {
-            this.deleteNote.emit(this.selectedNote.id);
+            this.selectedNote.trash
+              ? this.deleteNote.emit(this.selectedNote)
+              : this.throwNote.emit(this.selectedNote);
           }
         }
       },
@@ -54,8 +63,10 @@ export class NoteListComponent implements OnInit {
       preNoteList.forEach((note) => (note.selected = false));
 
       const noteList: Array<Note> = changes.noteList.currentValue;
-
-      this.selectNote(noteList[noteList.length - 1]);
+      noteList.length &&
+        this.selectNote(
+          noteList[this.changeAction === '增加' ? noteList.length - 1 : 0]
+        );
     }
   }
 

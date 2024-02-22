@@ -45,6 +45,8 @@ export class NoteComponent implements OnInit {
 
   filterInputValue: string;
 
+  changeAction: string; //  noteList 異動的原因
+
   showType = [
     { title: '卡片檢視', icon: 'grid-outline' },
     { title: '摘要檢視', icon: 'list-outline' },
@@ -81,50 +83,69 @@ export class NoteComponent implements OnInit {
     this.mode = mode;
   }
 
-  onFilterByType(menuItem: Menu) {
+  onFilter(menuItem: Menu) {
     const { title, filter } = menuItem;
     this.filterItem = menuItem;
     this.filterType = title;
 
-    const filters: { [key: string]: (note: any) => boolean } = {
+    const filters: { [key: string]: (note: Note) => boolean } = {
       all: (note: Note) =>
-        this.filterInputValue
-          ? note.title.indexOf(this.filterInputValue) !== -1
-          : true,
-      favorite: (note: Note) => note.favorite,
-      tag: (note: Note) => note.tag.length > 0,
+        (this.filterInputValue
+          ? note.title.includes(this.filterInputValue)
+          : true) && !note.trash,
+      favorite: (note: Note) => note.favorite && !note.trash,
+      tag: (note: Note) => note.tag.length > 0 && !note.trash,
+      trash: (note: Note) => note.trash,
     };
 
     const filterFunction = filters[filter];
     this.noteList = this.originList.filter(filterFunction);
+
+    this.changeAction = '篩選';
   }
 
   onAddNote() {
+    this.onFilter(this.menu[0]);
+
     const newNote: Note = {
       id: Number(
         Math.random().toString().substring(2, 10) + Date.now()
       ).toString(36),
-      title: '',
+      title: '無標題',
       content: '',
       tag: [] as string[],
       createDate: '2024/02/05',
       editorDate: '2024/02/05',
       favorite: false,
       selected: false,
+      trash: false,
     };
 
-    const list = [...this.noteList];
-    list.push(newNote);
-    this.originList = this.noteList = list;
+    this.originList = [...this.originList, newNote];
+    this.noteList = this.originList;
+
+    this.changeAction = '增加';
   }
 
   onSelectedChange(e: Note) {
     this.currentSelectedNote = e;
   }
 
-  onDeleteNote(e: string) {
-    const deleteIndex = this.noteList.findIndex((note) => note.id === e);
+  onThrowNote(e: Note) {
+    this.originList.forEach((note) => {
+      if (note.id === e.id) {
+        note.trash = true;
+      }
+    });
 
-    this.noteList.splice(deleteIndex, 1);
+    this.onFilter(this.filterItem);
+  }
+
+  onDeleteNote(e: Note) {
+    const deleteIndex = this.originList.findIndex((note) => note.id === e.id);
+
+    this.originList.splice(deleteIndex, 1);
+
+    this.onFilter(this.filterItem);
   }
 }

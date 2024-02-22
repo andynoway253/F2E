@@ -1,4 +1,4 @@
-<ul class="noteList">
+<ul [class]="'noteList ' + mode">
   <li
     *ngFor="let note of noteList"
     [class]="showType"
@@ -17,7 +17,9 @@
 
       <hr />
 
-      <span [innerHTML]="note.content"></span>
+      <div class="content">
+        <span [innerHTML]="note.content"></span>
+      </div>
     </div>
   </li>
 </ul>
