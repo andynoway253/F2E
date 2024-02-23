@@ -31,7 +31,6 @@ export class UsercountComponent implements OnInit {
       this.onlineList = changes.onlineList.currentValue;
 
       if (this.dialogRef) {
-        console.log(changes.onlineList.currentValue);
         this.dialogRef.componentRef.instance.onlineList =
           changes.onlineList.currentValue;
       }
