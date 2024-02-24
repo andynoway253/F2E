@@ -2,11 +2,34 @@
   fxFlex
   fxLayout="column"
   fxLayoutGap="8px"
-  class="NgxEditor__Wrapper"
+  [class]="'NgxEditor__Wrapper ' + mode"
   [formGroup]="form"
 >
-  <input nbInput fullWidth formControlName="editorTitle" placeholder="Title" (focus)="onCheckInput()" (blur)="onCheckInput()"/>
+  <input
+    nbInput
+    fullWidth
+    class="titleInput"
+    formControlName="editorTitle"
+    placeholder="Title"
+    (focus)="onCheckInput()"
+    (blur)="onCheckInput()"
+  />
 
   <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
   <ngx-editor formControlName="editorContent" [editor]="editor"></ngx-editor>
+
+  <div class="tagContent">
+    <input
+      nbInput
+      class="tagInput"
+      formControlName="editorTag"
+      fieldSize="small"
+      placeholder="+Tag"
+      (keyup.enter)="onTagAdd()"
+    />
+
+    <nb-tag-list (tagRemove)="onTagRemove($event)">
+      <nb-tag *ngFor="let tag of tags" [text]="tag" removable></nb-tag>
+    </nb-tag-list>
+  </div>
 </form>

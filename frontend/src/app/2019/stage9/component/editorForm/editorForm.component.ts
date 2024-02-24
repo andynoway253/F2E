@@ -1,14 +1,12 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Editor, Toolbar } from 'ngx-editor';
 import { Note } from '../../model/note.model';
+import {
+  NbGlobalPhysicalPosition,
+  NbTagComponent,
+  NbToastrService,
+} from '@nebular/theme';
 
 @Component({
   selector: 'app-editorForm',
@@ -16,9 +14,11 @@ import { Note } from '../../model/note.model';
   styleUrls: ['./editorForm.component.scss'],
 })
 export class EditorFormComponent implements OnInit {
-  constructor() {}
+  constructor(private toastrService: NbToastrService) {}
 
   @Input() selectedNote: Note;
+
+  @Input() mode: string = 'light';
 
   editor: Editor;
 
@@ -37,9 +37,15 @@ export class EditorFormComponent implements OnInit {
     {
       editorTitle: new FormControl({ value: '', disabled: true }),
       editorContent: new FormControl({ value: '', disabled: true }),
+      editorTag: new FormControl(
+        { value: '', disabled: true },
+        { updateOn: 'change' }
+      ),
     },
     { updateOn: 'blur' }
   );
+
+  tags: string[] = [];
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -85,5 +91,42 @@ export class EditorFormComponent implements OnInit {
     } else if (currentValue === '') {
       editorTitleControl.setValue('無標題');
     }
+  }
+
+  onTagAdd(): void {
+    const physicalPositions = NbGlobalPhysicalPosition;
+
+    if (this.tags.length === 10) {
+      this.toastrService.show('Tag最多十個', '太多了拉', {
+        position: physicalPositions.TOP_RIGHT,
+        status: 'warning',
+      });
+      return;
+    }
+
+    const editorTag = this.form.get('editorTag');
+    if (!editorTag.value) {
+      return;
+    }
+
+    if (this.tags.includes(editorTag.value)) {
+      this.toastrService.show('已經有這個標籤囉', '重複', {
+        position: physicalPositions.TOP_RIGHT,
+        status: 'warning',
+      });
+      return;
+    }
+
+    this.tags.push(editorTag.value);
+
+    this.selectedNote.tag = this.tags;
+
+    editorTag.reset();
+  }
+
+  onTagRemove(e: NbTagComponent) {
+    this.tags = this.tags.filter((t) => t !== e.text);
+
+    this.selectedNote.tag = this.tags;
   }
 }

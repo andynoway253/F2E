@@ -1,12 +1,69 @@
 :host::ng-deep {
-  /* to penetrate <ngx-editor> CSS styling */
-
   .NgxEditor {
-    height: calc(100vh - 95px);
+    height: calc(100vh - 105px);
     overflow-y: scroll;
   }
 
-  .NgxEditor__Content {
-    min-height: 400px; /* make all of the editor area clickable */
+  .NgxEditor {
+    background-color: unset;
+  }
+
+  .light {
+    p {
+      color: #000000;
+    }
+  }
+
+  .night {
+    p {
+      color: #ffffff;
+    }
+  }
+}
+
+.light {
+  &.NgxEditor__Wrapper {
+    .titleInput {
+      background-color: #eeeeee;
+    }
+
+    .tagContent {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      width: 100%;
+      bottom: 20px;
+
+      .tagInput {
+        width: 90px;
+        text-align: center;
+        border: 1px dashed #2f419b;
+        margin-bottom: 8px;
+      }
+    }
+  }
+}
+
+.night {
+  &.NgxEditor__Wrapper {
+    .titleInput {
+      background-color: #26252a;
+      color: #ffffff;
+    }
+
+    .tagContent {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      width: 100%;
+      bottom: 20px;
+
+      .tagInput {
+        width: 90px;
+        text-align: center;
+        border: 1px dashed #fed32c;
+        margin-bottom: 8px;
+      }
+    }
   }
 }
