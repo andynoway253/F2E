@@ -6,12 +6,19 @@
   }
 }
 
-@mixin notecontent($title-color, $bg-color, $icon-color) {
+@mixin notecontent($title-color, $bg-color, $dynamic-color) {
   color: $title-color;
   background-color: $bg-color;
 
+  .tag {
+    .tagName {
+      border: 1px dashed $dynamic-color;
+    }
+  }
+
   nb-icon {
-    color: $icon-color;
+    color: $dynamic-color;
+    min-width: 20px;
   }
 }
 
@@ -49,6 +56,30 @@
   .noteContent {
     padding: 10px;
     height: 250px;
+    .tag {
+      display: flex;
+      flex-direction: row;
+      height: 25px;
+      margin-bottom: 10px;
+
+      overflow: hidden;
+
+      .tagName {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        min-width: 50px;
+        margin-right: 4px;
+        border-radius: 5px;
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
 
     .title {
       display: flex;
@@ -57,12 +88,12 @@
       min-width: 0;
       height: 25px;
       line-height: 25px;
-      margin-top: 35px;
       font-size: x-large;
 
       span {
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
 

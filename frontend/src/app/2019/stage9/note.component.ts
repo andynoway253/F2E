@@ -94,7 +94,11 @@ export class NoteComponent implements OnInit {
           ? note.title.includes(this.filterInputValue)
           : true) && !note.trash,
       favorite: (note: Note) => note.favorite && !note.trash,
-      tag: (note: Note) => note.tag.length > 0 && !note.trash,
+      tag: (note: Note) =>
+        (this.filterInputValue
+          ? note.tag.includes(this.filterInputValue) && note.tag.length > 0
+          : note.tag.length > 0) && !note.trash,
+      calendar: (note: Note) => true,
       trash: (note: Note) => note.trash,
     };
 
@@ -127,7 +131,7 @@ export class NoteComponent implements OnInit {
     this.changeAction = '增加';
   }
 
-  onSelectedChange(e: Note) {
+  onSelectedChange(e: Note | null) {
     this.currentSelectedNote = e;
   }
 

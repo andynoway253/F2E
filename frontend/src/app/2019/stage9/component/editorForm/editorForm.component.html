@@ -26,6 +26,7 @@
       fieldSize="small"
       placeholder="+Tag"
       (keyup.enter)="onTagAdd()"
+      (blur)="onTagAdd()"
     />
 
     <nb-tag-list (tagRemove)="onTagRemove($event)">

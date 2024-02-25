@@ -25,7 +25,7 @@ export class NoteListComponent implements OnInit {
 
   @Input() changeAction: string = '';
 
-  @Output() selectedChange: EventEmitter<Note> = new EventEmitter();
+  @Output() selectedChange: EventEmitter<Note | null> = new EventEmitter();
 
   @Output() throwNote: EventEmitter<Note> = new EventEmitter(); //  丟到垃圾桶
 
@@ -63,14 +63,21 @@ export class NoteListComponent implements OnInit {
       preNoteList.forEach((note) => (note.selected = false));
 
       const noteList: Array<Note> = changes.noteList.currentValue;
-      noteList.length &&
-        this.selectNote(
-          noteList[this.changeAction === '增加' ? noteList.length - 1 : 0]
-        );
+      this.selectNote(
+        noteList.length
+          ? noteList[this.changeAction === '增加' ? noteList.length - 1 : 0]
+          : null
+      );
     }
   }
 
-  selectNote(selectNote: Note) {
+  selectNote(selectNote: Note | null) {
+    if (selectNote === null) {
+      this.selectedChange.emit(null);
+
+      return;
+    }
+
     if (!selectNote.selected) {
       this.noteList.forEach((note) => (note.selected = false));
 

@@ -52,13 +52,17 @@ export class EditorFormComponent implements OnInit {
 
     this.form.get('editorTitle').valueChanges.subscribe({
       next: (title) => {
-        this.selectedNote.title = title;
+        if (this.selectedNote) {
+          this.selectedNote.title = title;
+        }
       },
     });
 
     this.form.get('editorContent').valueChanges.subscribe({
       next: (content) => {
-        this.selectedNote.content = content;
+        if (this.selectedNote) {
+          this.selectedNote.content = content;
+        }
       },
     });
   }
@@ -76,9 +80,12 @@ export class EditorFormComponent implements OnInit {
       const selectedNote = changes.selectedNote.currentValue as Note;
 
       this.form.patchValue({
-        editorTitle: selectedNote.title,
-        editorContent: selectedNote.content,
+        editorTitle: selectedNote?.title,
+        editorContent: selectedNote?.content,
+        editorTag: '',
       });
+
+      this.tags = selectedNote?.tag;
     }
   }
 

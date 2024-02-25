@@ -9,6 +9,12 @@
     </i>
 
     <div class="noteContent">
+      <div class="tag">
+        <div *ngFor="let tag of note.tag" class="tagName">
+          <span>{{ tag }}</span>
+        </div>
+      </div>
+
       <div class="title">
         <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
 
