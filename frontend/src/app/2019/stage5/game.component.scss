@@ -1,0 +1,57 @@
+#map {
+  height: 100vh;
+}
+
+:host::ng-deep {
+  .leaflet-popup-content {
+    width: 250px !important;
+  }
+
+  .mask-status {
+    display: flex;
+    .mask-item {
+      flex: 1;
+      font-size: 14px;
+      padding: 10px 20px;
+      text-align: center;
+
+      &.popup {
+        padding: 5px 10px;
+      }
+
+      &.stock {
+        background-color: #668afe;
+        color: #ffff;
+      }
+      &.soldout {
+        background-color: #e2e2e2;
+        color: #9c9c9c;
+      }
+      &.adult {
+        border-radius: 4px 0px 0px 4px;
+      }
+      &.child {
+        border-radius: 0px 4px 4px 0px;
+      }
+    }
+  }
+
+  .store-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .store-info {
+    font-size: 16px;
+    margin-bottom: 8px;
+
+    a {
+      text-decoration: none;
+      color: #383a40;
+    }
+    a:hover {
+      color: #668afe;
+    }
+  }
+}
