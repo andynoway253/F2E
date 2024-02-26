@@ -15,22 +15,23 @@
     (blur)="onCheckInput()"
   />
 
-  <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-  <ngx-editor formControlName="editorContent" [editor]="editor"></ngx-editor>
-
   <div class="tagContent">
     <input
       nbInput
       class="tagInput"
       formControlName="editorTag"
       fieldSize="small"
-      placeholder="+Tag"
+      placeholder="Add +"
       (keyup.enter)="onTagAdd()"
       (blur)="onTagAdd()"
     />
 
-    <nb-tag-list (tagRemove)="onTagRemove($event)">
-      <nb-tag *ngFor="let tag of tags" [text]="tag" removable></nb-tag>
-    </nb-tag-list>
+    <div *ngFor="let tag of tags" class="tag" (click)="onTagRemove(tag)">
+      <span> {{ tag }} </span>
+      <nb-icon icon="close-outline"></nb-icon>
+    </div>
   </div>
+
+  <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+  <ngx-editor formControlName="editorContent" [editor]="editor"></ngx-editor>
 </form>

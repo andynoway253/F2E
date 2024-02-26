@@ -11,7 +11,6 @@ import {
   NbIconModule,
   NbInputModule,
   NbMenuModule,
-  NbTagModule,
   NbToastrModule,
 } from '@nebular/theme';
 import { NgxEditorModule } from 'ngx-editor';
@@ -31,7 +30,6 @@ import { EditorFormComponent } from './component/editorForm/editorForm.component
     NbIconModule,
     NbInputModule,
     NbMenuModule,
-    NbTagModule,
     NbToastrModule,
 
     NgxEditorModule,
@@ -41,4 +39,4 @@ import { EditorFormComponent } from './component/editorForm/editorForm.component
   declarations: [NoteComponent, NoteListComponent, EditorFormComponent],
   exports: [NoteComponent],
 })
-export class NoteModule { }
+export class NoteModule {}

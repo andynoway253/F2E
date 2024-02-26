@@ -6,13 +6,14 @@
   }
 }
 
-@mixin notecontent($title-color, $bg-color, $dynamic-color) {
+@mixin notecontent($title-color, $bg-color, $tab-bg-color, $dynamic-color) {
   color: $title-color;
   background-color: $bg-color;
 
   .tag {
     .tagName {
-      border: 1px dashed $dynamic-color;
+      color: $dynamic-color;
+      background-color: $tab-bg-color;
     }
   }
 
@@ -100,6 +101,10 @@
     .content {
       height: 130px;
       overflow: hidden;
+    }
+
+    .time {
+      text-align: end;
     }
   }
 
@@ -245,7 +250,7 @@
       }
 
       .noteContent {
-        @include notecontent(#000000, unset, #2f419b);
+        @include notecontent(#000000, unset, #e9ebf4, #2f419b);
       }
     }
 
@@ -271,7 +276,7 @@
       }
 
       .noteContent {
-        @include notecontent(#ffffff, #26252a, #fed32c);
+        @include notecontent(#ffffff, #26252a, #343338, #fed32c);
       }
     }
 

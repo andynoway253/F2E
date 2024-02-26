@@ -23,9 +23,9 @@
 
       <hr />
 
-      <div class="content">
-        <span [innerHTML]="note.content"></span>
-      </div>
+      <div class="content" [innerHTML]="note.content"></div>
+
+      <div class="time">{{ note.editorDate }}</div>
     </div>
   </li>
 </ul>

@@ -101,6 +101,11 @@ export class EditorFormComponent implements OnInit {
   }
 
   onTagAdd(): void {
+    const editorTag = this.form.get('editorTag');
+    if (!editorTag.value) {
+      return;
+    }
+
     const physicalPositions = NbGlobalPhysicalPosition;
 
     if (this.tags.length === 10) {
@@ -108,11 +113,8 @@ export class EditorFormComponent implements OnInit {
         position: physicalPositions.TOP_RIGHT,
         status: 'warning',
       });
-      return;
-    }
+      editorTag.reset();
 
-    const editorTag = this.form.get('editorTag');
-    if (!editorTag.value) {
       return;
     }
 
@@ -121,6 +123,8 @@ export class EditorFormComponent implements OnInit {
         position: physicalPositions.TOP_RIGHT,
         status: 'warning',
       });
+      editorTag.reset();
+
       return;
     }
 
@@ -131,8 +135,8 @@ export class EditorFormComponent implements OnInit {
     editorTag.reset();
   }
 
-  onTagRemove(e: NbTagComponent) {
-    this.tags = this.tags.filter((t) => t !== e.text);
+  onTagRemove(tag: string) {
+    this.tags = this.tags.filter((item) => item !== tag);
 
     this.selectedNote.tag = this.tags;
   }

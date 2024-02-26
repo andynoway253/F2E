@@ -1,6 +1,6 @@
 :host::ng-deep {
   .NgxEditor {
-    height: calc(100vh - 105px);
+    height: calc(100vh - 135px);
     overflow-y: scroll;
   }
 
@@ -15,6 +15,33 @@
   }
 
   .night {
+    .NgxEditor__MenuBar {
+      background-color: unset;
+      color: #ffffff;
+
+      .NgxEditor__MenuItem {
+        &:hover {
+          background-color: #343338;
+        }
+      }
+
+      .NgxEditor__Dropdown--Text {
+        &:hover {
+          background-color: #343338;
+        }
+      }
+    }
+
+    .NgxEditor__Dropdown .NgxEditor__Dropdown--DropdownMenu {
+      background-color: unset;
+
+      .NgxEditor__Dropdown--Item {
+        &:hover {
+          background-color: #343338;
+        }
+      }
+    }
+
     p {
       color: #ffffff;
     }
@@ -29,16 +56,40 @@
 
     .tagContent {
       display: flex;
-      flex-direction: column;
-      position: fixed;
-      width: 100%;
-      bottom: 20px;
+      flex-direction: row;
+      align-items: center;
 
       .tagInput {
         width: 90px;
         text-align: center;
         border: 1px dashed #2f419b;
-        margin-bottom: 8px;
+      }
+
+      .tag {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        width: 80px;
+        height: 32px;
+
+        color: #2f419b;
+        background-color: #e9ebf4;
+        border-radius: 5px;
+
+        margin-left: 4px;
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        nb-icon {
+          min-width: 20px;
+        }
       }
     }
   }
@@ -53,16 +104,42 @@
 
     .tagContent {
       display: flex;
-      flex-direction: column;
-      position: fixed;
-      width: 100%;
-      bottom: 20px;
+      flex-direction: row;
+      align-items: center;
 
       .tagInput {
         width: 90px;
         text-align: center;
         border: 1px dashed #fed32c;
-        margin-bottom: 8px;
+        background-color: #26252a;
+        color: #ffffff;
+      }
+
+      .tag {
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        width: 80px;
+        height: 32px;
+
+        color: #fed32c;
+        background-color: #343338;
+        border-radius: 5px;
+
+        margin-left: 4px;
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        nb-icon {
+          min-width: 20px;
+        }
       }
     }
   }
