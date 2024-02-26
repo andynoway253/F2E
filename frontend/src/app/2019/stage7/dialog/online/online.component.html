@@ -7,7 +7,7 @@
     <nb-list class="onlineList">
       <nb-list-item *ngFor="let onlineUser of onlineList">
         <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
-          <span>{{ onlineUser.userName }} {{ onlineUser.userId }}</span>
+          <span>{{ onlineUser.userName }}</span>
           <button
             nbButton
             status="info"
@@ -23,8 +23,6 @@
   </nb-card-body>
 
   <nb-card-footer>
-    <button nbButton status="danger" (click)="close()">
-      關閉
-    </button>
+    <button nbButton status="danger" (click)="close()">關閉</button>
   </nb-card-footer>
 </nb-card>
