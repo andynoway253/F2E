@@ -1,25 +1,24 @@
-// 定義 mixin 來處理共用的樣式
 @mixin tool($bg-color, $color) {
-  @extend %tool_some;
+  @extend %tool_same;
 
   background-color: $bg-color;
   color: $color;
 }
 
-%tool_some {
+%tool_same {
   display: flex;
   flex-direction: column;
   padding: 50px;
 }
 
 @mixin addNote($background-color, $color) {
-  @extend %addNote_some;
+  @extend %addNote_same;
 
   background-color: $background-color;
   color: $color;
 }
 
-%addNote_some {
+%addNote_same {
   cursor: pointer;
   display: flex;
   flex-direction: row;
@@ -40,19 +39,17 @@
 }
 
 @mixin modeBtn($bg-color) {
-  @extend %modeBtn_some;
+  @extend %modeBtn_same;
 
   border: if($bg-color == #2f419b, 2px solid #ffffff, none);
 }
 
-%modeBtn_some {
+%modeBtn_same {
   cursor: pointer;
   width: 40px;
   height: 40px;
   border-radius: 50px;
 }
-
-//--------------
 
 %title {
   font-size: xx-large;
@@ -78,10 +75,51 @@
   }
 }
 
+//--------------
+@mixin list($bg-color) {
+  background-color: $bg-color;
+}
+
+%list_same {
+  height: 100vh;
+  padding: 20px 0 20px;
+  border-left: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
+
+  .search {
+    width: 284px;
+    margin: auto;
+  }
+
+  .filter {
+    display: flex;
+    flex-direction: row;
+    place-content: center space-between;
+    align-items: center;
+    margin: auto;
+    font-size: xx-large;
+
+    width: 284px;
+    height: 80px;
+  }
+
+  .showType {
+    background-color: unset;
+    border: none;
+  }
+
+  nb-icon {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+//--------------
+
+$tool-text-light: #ffffff;
 $tool-bg-light: #2f419b;
 $list-bg-light: #f4f6f7;
 $editor-bg-light: #ffffff;
-$tool-text-light: #ffffff;
 
 $bg-night: #26252a;
 $list-bg-night: #343338;
@@ -127,35 +165,12 @@ $text-night: #ffffff;
   }
 
   &.list {
-    background-color: $list-bg-light;
-    height: 100vh;
-    padding: 20px 0 20px;
-    border-right: 1px solid #d3d3d3;
+    @include list($list-bg-light);
 
-    .search {
-      width: 284px;
-      margin: auto;
+    @extend %list_same;
 
-      input {
-        background-color: #eeeeee;
-      }
-    }
-
-    .filter {
-      display: flex;
-      flex-direction: row;
-      place-content: center space-between;
-      align-items: center;
-      margin: auto;
-      font-size: xx-large;
-
-      width: 284px;
-      height: 80px;
-    }
-
-    .showType {
-      background-color: unset;
-      border: none;
+    input {
+      background-color: #eeeeee;
     }
   }
 
@@ -204,107 +219,18 @@ $text-night: #ffffff;
   }
 
   &.list {
-    background-color: $list-bg-night;
+    @include list($list-bg-night);
     color: $text-night;
-    height: 100vh;
-    padding: 20px 0 20px;
-    border-right: 1px solid #d3d3d3;
 
-    .search {
-      width: 284px;
-      margin: auto;
+    @extend %list_same;
 
-      input {
-        background-color: $bg-night;
-        color: #ffffff;
-      }
-    }
-
-    .filter {
-      display: flex;
-      flex-direction: row;
-      place-content: center space-between;
-      align-items: center;
-      margin: auto;
-      font-size: xx-large;
-
-      width: 284px;
-      height: 80px;
-    }
-
-    .showType {
-      background-color: unset;
-      border: none;
-    }
-
-    ul {
-      list-style: none;
-      overflow-y: auto;
-      height: calc(100% - 130px);
-      padding: 15px;
-      border-top: 1px solid #d3d3d3;
-
-      li {
-        cursor: pointer;
-        position: relative;
-        margin: auto;
-        width: 275px;
-        height: 250px;
-        margin-bottom: 20px;
-        border-radius: 5px 0 5px 5px;
-        background-color: $bg-night;
-        clip-path: polygon(0 0, 83% 0, 100% 17%, 100% 100%, 0 100%);
-
-        &.active {
-          border: 3px solid #fed32c;
-
-          &::after {
-            content: "";
-            height: 70px;
-            width: 4px;
-            background-color: #fed32c;
-            position: absolute;
-            top: -16px;
-            right: 20px;
-            -webkit-transform: rotate(-47.5deg);
-            transform: rotate(-47.5deg);
-          }
-        }
-
-        .angle {
-          position: absolute;
-          top: -9px;
-          right: -7px;
-          width: 50px;
-          height: 50px;
-          border-radius: 5px;
-          background-color: blue;
-          -webkit-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.178);
-          box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.178);
-          -webkit-transition: 1s;
-          transition: 1s;
-          overflow: hidden;
-
-          &::after {
-            content: "";
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(120deg, #8fd3f4, #84fab0);
-            position: absolute;
-            top: -50px;
-            left: 50px;
-            z-index: 0;
-            -webkit-transition: 0.5s;
-            transition: 0.5s;
-            border-radius: 5px;
-          }
-        }
-      }
+    input {
+      background-color: $bg-night;
+      color: $text-night;
     }
   }
 
   &.editor {
     background-color: $bg-night;
-    // color: $text-night;
   }
 }

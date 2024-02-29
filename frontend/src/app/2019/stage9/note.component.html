@@ -58,7 +58,10 @@
         [nbContextMenu]="showType"
         nbContextMenuTag="show"
       >
-        <nb-icon [icon]="showTypeIcon + '-outline'"></nb-icon>
+        <nb-icon
+          [style]="mode === 'light' ? 'color:black' : 'color:white'"
+          [icon]="showTypeIcon + '-outline'"
+        ></nb-icon>
       </button>
     </div>
 

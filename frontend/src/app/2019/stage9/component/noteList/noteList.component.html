@@ -7,25 +7,62 @@
   >
     <i class="angle" [nbContextMenu]="noteAction" nbContextMenuTag="action">
     </i>
+    <div [ngSwitch]="showType">
+      <ng-container *ngSwitchCase="'grid'">
+        <div class="noteContent">
+          <div class="tag">
+            <div *ngFor="let tag of note.tag" class="tagName">
+              <span>{{ tag }}</span>
+            </div>
+          </div>
 
-    <div class="noteContent">
-      <div class="tag">
-        <div *ngFor="let tag of note.tag" class="tagName">
-          <span>{{ tag }}</span>
+          <div class="title">
+            <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
+
+            <span>{{ note.title }}</span>
+          </div>
+
+          <hr />
+
+          <div class="content" [innerHTML]="note.content"></div>
+
+          <div class="time">{{ note.editorDate }}</div>
         </div>
-      </div>
+      </ng-container>
 
-      <div class="title">
-        <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
+      <ng-container *ngSwitchCase="'list'">
+        <div class="noteContent">
+          <div class="tag">
+            <div *ngFor="let tag of note.tag" class="tagName">
+              <span>{{ tag }}</span>
+            </div>
+          </div>
 
-        <span>{{ note.title }}</span>
-      </div>
+          <div class="title">
+            <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
 
-      <hr />
+            <span><b>{{ note.title }}</b></span>
+          </div>
 
-      <div class="content" [innerHTML]="note.content"></div>
+          <div class="content" [innerHTML]="note.content"></div>
 
-      <div class="time">{{ note.editorDate }}</div>
+          <div class="time"><b>{{ note.editorDate }}</b></div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'menu'">
+        <div class="noteContent">
+          <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
+
+          <div class="time">
+            <b>{{ note.editorDate }}</b>
+          </div>
+
+          <div class="title">
+            <span>{{ note.title }}</span>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </li>
 </ul>
