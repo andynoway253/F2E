@@ -318,9 +318,8 @@
         @include gridSelected(#2f419b);
       }
 
-      .noteContent {
-        @include gridNotecontent(#ffffff);
-      }
+      @include gridNotecontent(#ffffff);
+      @include notecontent(#000000, #e9ebf4, #2f419b);
     }
 
     .list {
@@ -330,8 +329,7 @@
         background-color: #e9ebf4;
       }
 
-      .noteContent {
-      }
+      @include notecontent(#000000, #ffffff, #2f419b);
     }
 
     .menu {
@@ -341,8 +339,7 @@
         background-color: #e9ebf4;
       }
 
-      .noteContent {
-      }
+      @include notecontent(#000000, unset, #2f419b);
     }
   }
 }
@@ -358,9 +355,8 @@
         @include gridSelected(#fed32c);
       }
 
-      .noteContent {
-        @include gridNotecontent(#26252a);
-      }
+      @include gridNotecontent(#26252a);
+      @include notecontent(#ffffff, #343338, #fed32c);
     }
 
     .list {
@@ -370,8 +366,7 @@
         background-color: #fed42c90;
       }
 
-      .noteContent {
-      }
+      @include notecontent(#ffffff, #26252a, #fed32c);
     }
 
     .menu {
@@ -381,8 +376,7 @@
         background-color: #fed42c90;
       }
 
-      .noteContent {
-      }
+      @include notecontent(#ffffff, unset, #fed32c);
     }
   }
 }
