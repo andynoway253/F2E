@@ -332,7 +332,6 @@
       }
 
       .noteContent {
-        @include notecontent(#000000, #ffffff, #2f419b);
       }
     }
 
@@ -344,7 +343,6 @@
       }
 
       .noteContent {
-        @include notecontent(#000000, #e9ebf4, #2f419b);
       }
     }
   }
@@ -375,7 +373,7 @@
       }
 
       .noteContent {
-        @include notecontent(#ffffff, #26252a, #fed32c);
+
       }
     }
 
@@ -387,7 +385,6 @@
       }
 
       .noteContent {
-        @include notecontent(#ffffff, #343338, #fed32c);
       }
     }
   }
