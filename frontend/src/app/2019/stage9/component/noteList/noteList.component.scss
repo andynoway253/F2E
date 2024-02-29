@@ -320,7 +320,6 @@
 
       .noteContent {
         @include gridNotecontent(#ffffff);
-        @include notecontent(#000000, #e9ebf4, #2f419b);
       }
     }
 
@@ -361,7 +360,6 @@
 
       .noteContent {
         @include gridNotecontent(#26252a);
-        @include notecontent(#ffffff, #343338, #fed32c);
       }
     }
 
@@ -373,7 +371,6 @@
       }
 
       .noteContent {
-
       }
     }
 
