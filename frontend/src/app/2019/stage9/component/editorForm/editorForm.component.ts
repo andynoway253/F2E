@@ -72,7 +72,7 @@ export class EditorFormComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedNote && !changes.selectedNote.firstChange) {
+    if (changes.selectedNote) {
       changes.selectedNote.currentValue
         ? this.form.enable({ emitEvent: false })
         : this.form.disable({ emitEvent: false });

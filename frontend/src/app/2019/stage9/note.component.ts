@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NbMenuService } from '@nebular/theme';
 import { Menu, Note } from './model/note.model';
 
@@ -8,6 +8,15 @@ import { Menu, Note } from './model/note.model';
 })
 export class NoteComponent implements OnInit {
   constructor(private menuService: NbMenuService) {}
+
+  @HostListener('window:beforeunload')
+  canDeactivate(): boolean {
+    this.originList.length
+      ? localStorage.setItem('list', JSON.stringify(this.originList))
+      : localStorage.removeItem('list');
+
+    return true;
+  }
 
   mode: 'light' | 'night' = 'light';
 
@@ -62,6 +71,13 @@ export class NoteComponent implements OnInit {
   originList: Note[] = [];
 
   ngOnInit(): void {
+    const list = localStorage.getItem('list');
+    if (list) {
+      this.originList = [...this.originList, ...JSON.parse(list)];
+
+      this.onFilter(this.filterItem);
+    }
+
     this.menuService.onItemClick().subscribe({
       next: (res) => {
         if (res.tag === 'show') {
@@ -69,6 +85,10 @@ export class NoteComponent implements OnInit {
         }
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    localStorage.setItem('list', JSON.stringify(this.originList));
   }
 
   classMode(className: string) {
@@ -109,8 +129,6 @@ export class NoteComponent implements OnInit {
   }
 
   onAddNote() {
-    this.onFilter(this.menu[0]);
-
     const newNote: Note = {
       id: Number(
         Math.random().toString().substring(2, 10) + Date.now()
@@ -126,7 +144,8 @@ export class NoteComponent implements OnInit {
     };
 
     this.originList = [...this.originList, newNote];
-    this.noteList = this.originList;
+
+    this.onFilter(this.menu[0]);
 
     this.changeAction = '增加';
   }

@@ -58,11 +58,10 @@ export class NoteListComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.noteList && !changes.noteList.firstChange) {
-      const preNoteList: Array<Note> = changes.noteList.previousValue;
-      preNoteList.forEach((note) => (note.selected = false));
-
+    if (changes.noteList) {
       const noteList: Array<Note> = changes.noteList.currentValue;
+      noteList?.forEach((note) => (note.selected = false));
+
       this.selectNote(
         noteList.length
           ? noteList[this.changeAction === '增加' ? noteList.length - 1 : 0]
