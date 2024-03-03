@@ -1,0 +1,19 @@
+<div fxFill>
+  <div class="board">
+    <div
+      class="cell"
+      *ngFor="let cell of cells; let i = index"
+      (click)="handleCellClick(i)"
+    >
+      {{ cell }}
+    </div>
+  </div>
+
+  <div class="test">
+    <h2>Winner: {{ winner }}</h2>
+
+    <button nbButton status="primary" (click)="restartGame()">
+      <nb-icon icon="refresh-outline"></nb-icon>
+    </button>
+  </div>
+</div>

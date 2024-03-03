@@ -26,7 +26,10 @@
   </div>
 
   <nb-list fxFlex class="list">
-    <nb-list-item *ngFor="let clinic of clinicList" (click)="itemClicked(clinic)">
+    <nb-list-item
+      *ngFor="let clinic of clinicList"
+      (click)="itemClicked(clinic)"
+    >
       <div fxFlex class="listItem">
         <div class="store-name">{{ clinic.properties.name }}</div>
         <div class="store-info">
@@ -37,8 +40,9 @@
               clinic.properties.address
             "
             target="_blank"
-            >{{ clinic.properties.address }}</a
           >
+            {{ clinic.properties.address }}
+          </a>
         </div>
         <div class="store-info">
           <img class="icon" src="assets/image/stage10/phone.svg" />

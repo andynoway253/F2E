@@ -111,6 +111,7 @@ export class AppComponent {
         },
         {
           title: '第五關 - 90 秒挑戰遊戲',
+          link: '/Game',
         },
         {
           title: '第六關 - 旅館預約服務',

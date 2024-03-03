@@ -23,6 +23,11 @@ const routes: Routes = [
       import('./2019/stage4/payment.module').then((m) => m.PaymentModule),
   },
   {
+    path: 'Game',
+    loadChildren: () =>
+      import('./2019/stage5/game.module').then((m) => m.GameModule),
+  },
+  {
     path: 'Chatroom',
     loadChildren: () =>
       import('./2019/stage7/chatroom.module').then((m) => m.ChatroomModule),
