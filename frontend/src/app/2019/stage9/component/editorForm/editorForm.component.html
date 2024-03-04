@@ -10,7 +10,7 @@
     fullWidth
     class="titleInput"
     formControlName="editorTitle"
-    placeholder="Title"
+    [placeholder]="form.status !== 'DISABLED' ? 'Title' : '請先新增筆記'"
     (focus)="onCheckInput()"
     (blur)="onCheckInput()"
   />
@@ -33,5 +33,9 @@
   </div>
 
   <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
-  <ngx-editor formControlName="editorContent" [editor]="editor"></ngx-editor>
+  <ngx-editor
+    formControlName="editorContent"
+    [editor]="editor"
+    [placeholder]="form.status !== 'DISABLED' ? 'Type Here' : '請先新增筆記'"
+  ></ngx-editor>
 </form>

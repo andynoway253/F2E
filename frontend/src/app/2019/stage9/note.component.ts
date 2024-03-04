@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
 import { NbMenuService } from '@nebular/theme';
 import { Menu, Note } from './model/note.model';
 
@@ -7,7 +7,7 @@ import { Menu, Note } from './model/note.model';
   styleUrls: ['./note.component.scss'],
 })
 export class NoteComponent implements OnInit {
-  constructor(private menuService: NbMenuService) {}
+  constructor(private renderer: Renderer2, private menuService: NbMenuService) {}
 
   @HostListener('window:beforeunload')
   canDeactivate(): boolean {
@@ -71,6 +71,9 @@ export class NoteComponent implements OnInit {
   originList: Note[] = [];
 
   ngOnInit(): void {
+    this.renderer.setStyle(document.body, 'overflow', 'hidden');
+
+
     const list = localStorage.getItem('list');
     if (list) {
       this.originList = [...this.originList, ...JSON.parse(list)];
