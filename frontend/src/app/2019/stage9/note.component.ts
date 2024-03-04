@@ -7,7 +7,11 @@ import { Menu, Note } from './model/note.model';
   styleUrls: ['./note.component.scss'],
 })
 export class NoteComponent implements OnInit {
-  constructor(private renderer: Renderer2, private menuService: NbMenuService) {}
+  constructor(
+    private renderer: Renderer2,
+
+    private menuService: NbMenuService
+  ) {}
 
   @HostListener('window:beforeunload')
   canDeactivate(): boolean {
@@ -73,7 +77,6 @@ export class NoteComponent implements OnInit {
   ngOnInit(): void {
     this.renderer.setStyle(document.body, 'overflow', 'hidden');
 
-
     const list = localStorage.getItem('list');
     if (list) {
       this.originList = [...this.originList, ...JSON.parse(list)];
@@ -91,6 +94,8 @@ export class NoteComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
+    this.renderer.removeStyle(document.body, 'overflow');
+
     localStorage.setItem('list', JSON.stringify(this.originList));
   }
 
