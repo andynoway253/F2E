@@ -1,9 +1,10 @@
-<ul [class]="'noteList ' + mode">
+<ul #listContent [class]="'noteList ' + mode">
   <li
-    *ngFor="let note of noteList"
+    #list
+    *ngFor="let note of noteList; let i = index"
     [class]="showType"
     [class.selected]="note.selected"
-    (click)="selectNote(note)"
+    (click)="selectNote(i)"
   >
     <i class="angle" [nbContextMenu]="noteAction" nbContextMenuTag="action">
     </i>
@@ -41,12 +42,16 @@
           <div class="title">
             <nb-icon [icon]="note.favorite ? 'star' : 'star-outline'"></nb-icon>
 
-            <span><b>{{ note.title }}</b></span>
+            <span
+              ><b>{{ note.title }}</b></span
+            >
           </div>
 
           <div class="content" [innerHTML]="note.content"></div>
 
-          <div class="time"><b>{{ note.editorDate }}</b></div>
+          <div class="time">
+            <b>{{ note.editorDate }}</b>
+          </div>
         </div>
       </ng-container>
 

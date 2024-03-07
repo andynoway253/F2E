@@ -11,7 +11,7 @@
 
     <div class="menu">
       <ng-container *ngFor="let item of menu">
-        <div class="menuItem" (click)="onFilter(item)">
+        <div class="menuItem" (click)="onClickMenu(item)">
           <nb-icon [icon]="item.icon"> </nb-icon>
           <span> {{ item.title }}</span>
         </div>
@@ -34,17 +34,30 @@
   <div fxFlex="350px" [class]="classMode('list')">
     <nb-form-field class="search">
       <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
-      <input
-        type="text"
-        nbInput
-        [placeholder]="
-          filterType === '標籤'
-            ? '搜尋您的筆記(依標籤內容搜尋)'
-            : '搜尋您的筆記(依標題搜尋)'
-        "
-        [(ngModel)]="filterInputValue"
-        (blur)="onFilter(filterItem)"
-      />
+      <div *ngIf="filterType !== '月曆'; else calendar">
+        <input
+          type="text"
+          nbInput
+          [placeholder]="
+            filterType === '標籤'
+              ? '搜尋您的筆記(依標籤內容搜尋)'
+              : '搜尋您的筆記(依標題搜尋)'
+          "
+          [(ngModel)]="filterInputValue"
+          (ngModelChange)="onFilter()"
+        />
+      </div>
+
+      <ng-template #calendar>
+        <input
+          nbInput
+          placeholder="搜尋您的筆記(依日期搜尋)"
+          [nbDatepicker]="dateTimePicker"
+          [(ngModel)]="filterInputValue"
+          (ngModelChange)="onFilter()"
+        />
+        <nb-datepicker #dateTimePicker format="yyyy-MM-dd"></nb-datepicker>
+      </ng-template>
     </nb-form-field>
 
     <div class="filter">
@@ -68,11 +81,11 @@
     <app-noteList
       [showType]="showTypeIcon"
       [noteList]="noteList"
-      [changeAction]="changeAction"
+      [noteAction]="noteAction"
+      [changeBehavior]="changeBehavior"
       [mode]="mode"
       (selectedChange)="onSelectedChange($event)"
-      (throwNote)="onThrowNote($event)"
-      (deleteNote)="onDeleteNote($event)"
+      (changeNoteStatus)="onChangeNoteStatus($event)"
     ></app-noteList>
   </div>
 

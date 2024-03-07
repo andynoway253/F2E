@@ -5,17 +5,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NoteComponent } from './note.component';
 import {
+  NB_TIME_PICKER_CONFIG,
   NbButtonModule,
   NbContextMenuModule,
+  NbDatepickerModule,
   NbFormFieldModule,
   NbIconModule,
   NbInputModule,
-  NbMenuModule,
   NbToastrModule,
 } from '@nebular/theme';
 import { NgxEditorModule } from 'ngx-editor';
 import { NoteListComponent } from './component/noteList/noteList.component';
 import { EditorFormComponent } from './component/editorForm/editorForm.component';
+import { NbDateFnsDateModule } from '@nebular/date-fns';
 
 @NgModule({
   imports: [
@@ -26,10 +28,11 @@ import { EditorFormComponent } from './component/editorForm/editorForm.component
 
     NbButtonModule,
     NbContextMenuModule,
+    NbDatepickerModule.forRoot(),
+    NbDateFnsDateModule,
     NbFormFieldModule,
     NbIconModule,
     NbInputModule,
-    NbMenuModule,
     NbToastrModule,
 
     NgxEditorModule,

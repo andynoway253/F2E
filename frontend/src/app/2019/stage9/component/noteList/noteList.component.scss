@@ -26,6 +26,15 @@
   }
 }
 
+@mixin angle($color1, $color2) {
+  &::after {
+    content: "";
+    position: absolute;
+
+    background: linear-gradient(120deg, $color1, $color2);
+  }
+}
+
 //--------------------------------------------------------------
 
 %noteList {
@@ -193,6 +202,7 @@
       text-align: end;
     }
   }
+
   .angle {
     @extend %angle;
 
@@ -279,7 +289,7 @@
     content: "";
     position: absolute;
 
-    background: linear-gradient(120deg, #8195f9, #2f419b);
+    // background: linear-gradient(120deg, #9cacff, #2f419b);
 
     border-radius: 5px;
     -webkit-transition: 0.5s;
@@ -320,6 +330,10 @@
 
       @include gridNotecontent(#ffffff);
       @include notecontent(#000000, #e9ebf4, #2f419b);
+
+      .angle {
+        @include angle(#9cacff, #2f419b);
+      }
     }
 
     .list {
@@ -330,6 +344,10 @@
       }
 
       @include notecontent(#000000, #ffffff, #2f419b);
+
+      .angle {
+        @include angle(#9cacff, #2f419b);
+      }
     }
 
     .menu {
@@ -340,6 +358,10 @@
       }
 
       @include notecontent(#000000, unset, #2f419b);
+
+      .angle {
+        @include angle(#9cacff, #2f419b);
+      }
     }
   }
 }
@@ -357,6 +379,10 @@
 
       @include gridNotecontent(#26252a);
       @include notecontent(#ffffff, #343338, #fed32c);
+
+      .angle {
+        @include angle(#ffdd5390, #fed32c);
+      }
     }
 
     .list {
@@ -367,6 +393,10 @@
       }
 
       @include notecontent(#ffffff, #26252a, #fed32c);
+
+      .angle {
+        @include angle(#ffdd5390, #fed32c);
+      }
     }
 
     .menu {
@@ -377,6 +407,10 @@
       }
 
       @include notecontent(#ffffff, unset, #fed32c);
+
+      .angle {
+        @include angle(#fed42c90, #fed32c);
+      }
     }
   }
 }

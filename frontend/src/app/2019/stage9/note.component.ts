@@ -1,6 +1,14 @@
-import { Component, HostListener, OnInit, Renderer2 } from '@angular/core';
-import { NbMenuService } from '@nebular/theme';
+import {
+  Component,
+  HostListener,
+  Inject,
+  LOCALE_ID,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
+import { NbMenuItem, NbMenuService } from '@nebular/theme';
 import { Menu, Note } from './model/note.model';
+import { formatDate } from '@angular/common';
 
 @Component({
   templateUrl: './note.component.html',
@@ -8,6 +16,8 @@ import { Menu, Note } from './model/note.model';
 })
 export class NoteComponent implements OnInit {
   constructor(
+    @Inject(LOCALE_ID) public locale: string,
+
     private renderer: Renderer2,
 
     private menuService: NbMenuService
@@ -31,7 +41,7 @@ export class NoteComponent implements OnInit {
       filter: 'all',
     },
     {
-      title: '捷徑',
+      title: '標記',
       icon: 'star',
       filter: 'favorite',
     },
@@ -58,7 +68,7 @@ export class NoteComponent implements OnInit {
 
   filterInputValue: string;
 
-  changeAction: string; //  noteList 異動的原因
+  changeBehavior: string; //  noteList 異動的原因
 
   showType = [
     { title: '卡片檢視', icon: 'grid-outline' },
@@ -74,6 +84,11 @@ export class NoteComponent implements OnInit {
 
   originList: Note[] = [];
 
+  noteAction: NbMenuItem[] = [
+    { title: '標記', icon: 'star-outline' },
+    { title: '刪除', icon: 'trash-2-outline' },
+  ];
+
   ngOnInit(): void {
     this.renderer.setStyle(document.body, 'overflow', 'hidden');
 
@@ -81,7 +96,7 @@ export class NoteComponent implements OnInit {
     if (list) {
       this.originList = [...this.originList, ...JSON.parse(list)];
 
-      this.onFilter(this.filterItem);
+      this.onFilter();
     }
 
     this.menuService.onItemClick().subscribe({
@@ -111,29 +126,60 @@ export class NoteComponent implements OnInit {
     this.mode = mode;
   }
 
-  onFilter(menuItem: Menu) {
+  onClickMenu(menuItem: Menu) {
     const { title, filter } = menuItem;
+
     this.filterItem = menuItem;
     this.filterType = title;
+    this.filterInputValue = '';
 
+    if (filter === 'trash') {
+      this.noteAction = [
+        { title: '復原', icon: 'undo-outline' },
+        { title: '刪除', icon: 'trash-2-outline' },
+      ];
+    } else {
+      this.noteAction = [
+        { title: '標記', icon: 'star-outline' },
+        { title: '刪除', icon: 'trash-2-outline' },
+      ];
+    }
+
+    this.onFilter();
+  }
+
+  onFilter(behavior = 'filter') {
     const filters: { [key: string]: (note: Note) => boolean } = {
       all: (note: Note) =>
-        (this.filterInputValue
-          ? note.title.includes(this.filterInputValue)
-          : true) && !note.trash,
-      favorite: (note: Note) => note.favorite && !note.trash,
+        (!this.filterInputValue ||
+          note.title.includes(this.filterInputValue)) &&
+        !note.trash,
+
+      favorite: (note: Note) =>
+        (!this.filterInputValue ||
+          note.title.includes(this.filterInputValue)) &&
+        note.favorite &&
+        !note.trash,
+
       tag: (note: Note) =>
-        (this.filterInputValue
-          ? note.tag.includes(this.filterInputValue) && note.tag.length > 0
-          : note.tag.length > 0) && !note.trash,
-      calendar: (note: Note) => true,
+        (!this.filterInputValue || note.tag.includes(this.filterInputValue)) &&
+        note.tag.length > 0 &&
+        !note.trash,
+
+      calendar: (note: Note) =>
+        this.filterInputValue
+          ? note.createDate.includes(
+              formatDate(this.filterInputValue, 'yyyy-MM-dd', this.locale)
+            )
+          : true && !note.trash,
+
       trash: (note: Note) => note.trash,
     };
 
-    const filterFunction = filters[filter];
+    const filterFunction = filters[this.filterItem.filter];
     this.noteList = this.originList.filter(filterFunction);
 
-    this.changeAction = '篩選';
+    this.changeBehavior = behavior;
   }
 
   onAddNote() {
@@ -153,30 +199,33 @@ export class NoteComponent implements OnInit {
 
     this.originList = [...this.originList, newNote];
 
-    this.onFilter(this.menu[0]);
+    this.filterItem = this.menu[0];
 
-    this.changeAction = '增加';
+    this.onFilter('add');
   }
 
   onSelectedChange(e: Note | null) {
     this.currentSelectedNote = e;
   }
 
-  onThrowNote(e: Note) {
-    this.originList.forEach((note) => {
-      if (note.id === e.id) {
-        note.trash = true;
+  onChangeNoteStatus(e: { note: Note; behavior: string }) {
+    const { note, behavior } = e;
+
+    this.originList.forEach((item, idx) => {
+      if (item.id === note.id) {
+        switch (behavior) {
+          case 'delete':
+            this.originList.splice(idx, 1);
+            break;
+          case 'throw':
+            note.trash = true;
+            break;
+          case 'rollback':
+            note.trash = false;
+            break;
+        }
       }
     });
-
-    this.onFilter(this.filterItem);
-  }
-
-  onDeleteNote(e: Note) {
-    const deleteIndex = this.originList.findIndex((note) => note.id === e.id);
-
-    this.originList.splice(deleteIndex, 1);
-
-    this.onFilter(this.filterItem);
+    this.onFilter(behavior !== 'rollback' ? 'delete' : 'filter');
   }
 }
