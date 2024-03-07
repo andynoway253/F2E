@@ -289,8 +289,6 @@
     content: "";
     position: absolute;
 
-    // background: linear-gradient(120deg, #9cacff, #2f419b);
-
     border-radius: 5px;
     -webkit-transition: 0.5s;
     transition: 0.5s;
@@ -304,16 +302,28 @@
 
 //--------------------------------------------------------------
 
+$light-basic: #2f419b;
+$light-text: #000000;
+$light-bg: #ffffff;
+$light-bg-100: #e9ebf4;
+$light-start-color: #9cacff;
+
+$night-basic: #fed32c;
+$night-text: #ffffff;
+$night-bg: #26252a;
+$night-bg-100: #343338;
+$night-start-color: #fed42c90;
+
 :host::ng-deep {
   .light {
     p {
-      color: #000000;
+      color: $light-text;
     }
   }
 
   .night {
     p {
-      color: #ffffff;
+      color: $night-text;
     }
   }
 }
@@ -325,14 +335,14 @@
       @extend %grid;
 
       &.selected {
-        @include gridSelected(#2f419b);
+        @include gridSelected($light-basic);
       }
 
-      @include gridNotecontent(#ffffff);
-      @include notecontent(#000000, #e9ebf4, #2f419b);
+      @include gridNotecontent($light-bg);
+      @include notecontent($light-text, $light-bg-100, $light-basic);
 
       .angle {
-        @include angle(#9cacff, #2f419b);
+        @include angle($light-start-color, $light-basic);
       }
     }
 
@@ -340,13 +350,13 @@
       @extend %list;
 
       &.selected {
-        background-color: #e9ebf4;
+        background-color: $light-bg-100;
       }
 
-      @include notecontent(#000000, #ffffff, #2f419b);
+      @include notecontent($light-text, $light-bg, $light-basic);
 
       .angle {
-        @include angle(#9cacff, #2f419b);
+        @include angle($light-start-color, $light-basic);
       }
     }
 
@@ -354,13 +364,13 @@
       @extend %menu;
 
       &.selected {
-        background-color: #e9ebf4;
+        background-color: $light-bg-100;
       }
 
-      @include notecontent(#000000, unset, #2f419b);
+      @include notecontent($light-text, unset, $light-basic);
 
       .angle {
-        @include angle(#9cacff, #2f419b);
+        @include angle($light-start-color, $light-basic);
       }
     }
   }
@@ -374,14 +384,14 @@
       @extend %grid;
 
       &.selected {
-        @include gridSelected(#fed32c);
+        @include gridSelected($night-basic);
       }
 
-      @include gridNotecontent(#26252a);
-      @include notecontent(#ffffff, #343338, #fed32c);
+      @include gridNotecontent($night-bg);
+      @include notecontent($night-text, $night-bg-100, $night-basic);
 
       .angle {
-        @include angle(#ffdd5390, #fed32c);
+        @include angle($night-start-color, $night-basic);
       }
     }
 
@@ -392,10 +402,10 @@
         background-color: #fed42c90;
       }
 
-      @include notecontent(#ffffff, #26252a, #fed32c);
+      @include notecontent($night-text, $night-bg, $night-basic);
 
       .angle {
-        @include angle(#ffdd5390, #fed32c);
+        @include angle($night-start-color, $night-basic);
       }
     }
 
@@ -406,10 +416,10 @@
         background-color: #fed42c90;
       }
 
-      @include notecontent(#ffffff, unset, #fed32c);
+      @include notecontent($night-text, unset, $night-basic);
 
       .angle {
-        @include angle(#fed42c90, #fed32c);
+        @include angle($night-start-color, $night-basic);
       }
     }
   }

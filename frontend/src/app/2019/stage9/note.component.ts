@@ -104,6 +104,9 @@ export class NoteComponent implements OnInit {
         if (res.tag === 'show') {
           this.showTypeIcon = (res.item.icon as string).split('-')[0];
         }
+
+        if (res.tag === 'extra') {
+        }
       },
     });
   }
